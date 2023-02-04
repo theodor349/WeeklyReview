@@ -11,5 +11,5 @@ Functionality includes
 # Techstack
  - API: Azure Functions
  - Authentication: Azure Active Directory 
- - Database: TBA
+ - Database: MS SQL
  - Frontend: Blazor PWA
