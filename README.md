@@ -13,3 +13,6 @@ Functionality includes
  - Authentication: Azure Active Directory 
  - Database: MS SQL
  - Frontend: Blazor PWA
+
+# Documentation
+ - [Azure Setup](https://github.com/theodor349/WeeklyReview/blob/main/Documentation/AzureSetup.md)
