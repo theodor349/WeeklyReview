@@ -16,6 +16,7 @@
 | Setting | Value | Comment |
 |---------|-------|---------|
 | AuthorizationLevel | `Function` | This makes sure that you can call the function if you also provide a kay in the url e.g. `https://{functionName}.azurewebsites.net/api/GetUserId?code={key}` |
+| Default Headder | `x-functions-key` `{key}` | This way the `URI` does not have to include the `key`, as it has been move to the headder |
 | Dependency | `ClaimsPrincipal` | This enables the function to read information about the user e.g. oid |
 | Authentication | Microsoft | This makes sure that all request must be sent with a valid `JWT` so that we can access user information |
 | CORS | `https://localhost:7037` | This enables the client to call the function |
