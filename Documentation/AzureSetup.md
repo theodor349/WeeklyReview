@@ -3,8 +3,8 @@
 ## Functions
 | Setting | Value | Comment |
 |---------|-------|---------|
-| Redirect URL | `https://{funcName}.azurewebsites.net/.auth/login/aad/callback` | Auttomatically set by Visual Studio |
-| Scopes | `api://{clientId}/user_impersonation` | Auttomatically set by Visual Studio |
+| Redirect URL | `https://{funcName}.azurewebsites.net/.auth/login/aad/callback` | Automatically set by Visual Studio |
+| Scopes | `api://{clientId}/user_impersonation` | Automatically set by Visual Studio |
 
 ## Blazor Client
 | Setting | Value | Comment |
