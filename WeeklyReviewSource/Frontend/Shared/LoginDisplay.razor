@@ -4,7 +4,7 @@
 
 <AuthorizeView>
     <Authorized>
-        Hello, @context.User.Identity?.Name!
+        <RadzenLabel Style="margin-right: 10px">Hello, @context.User.Identity?.Name!</RadzenLabel>
         <RadzenButton Click=@(() => BeginLogOut()) Text="Log out"></RadzenButton>
     </Authorized>
     <NotAuthorized>
