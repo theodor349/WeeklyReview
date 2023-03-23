@@ -7,17 +7,23 @@
 
 <RadzenText>This component demonstrates fetching data from the server.</RadzenText>
 
-
-<RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced"
-            AllowGrouping="false" AllowSorting="true" PageSize="5" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left"
-            Data="@forecasts" TItem="WeatherForecast" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or" ShowPagingSummary="true"
-            IsLoading=@isLoading>
-            <Columns>
-                <RadzenDataGridColumn TItem="WeatherForecast" Property="Date" Title="Date" TextAlign="TextAlign.Left" />
-                <RadzenDataGridColumn TItem="WeatherForecast" Property="TemperatureC" Title="Temp. (C)" TextAlign="TextAlign.Center" />
-                <RadzenDataGridColumn TItem="WeatherForecast" Property="Summary" Title="Summary" TextAlign="TextAlign.Left" />
-            </Columns>
-</RadzenDataGrid>
+@if (isLoading)
+{
+    <RadzenProgressBar ProgressBarStyle="ProgressBarStyle.Info" Value="100" ShowValue="false" Mode="ProgressBarMode.Indeterminate"/>
+} 
+else
+{
+    <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" AllowAlternatingRows="false" FilterMode="FilterMode.Advanced"
+                AllowGrouping="false" AllowSorting="true" PageSize="5" AllowPaging="true" PagerHorizontalAlign="HorizontalAlign.Left"
+                Data="@forecasts" TItem="WeatherForecast" ColumnWidth="300px" LogicalFilterOperator="LogicalFilterOperator.Or" ShowPagingSummary="true"
+                IsLoading=@isLoading>
+        <Columns>
+            <RadzenDataGridColumn TItem="WeatherForecast" Property="Date" Title="Date" TextAlign="TextAlign.Left" />
+            <RadzenDataGridColumn TItem="WeatherForecast" Property="TemperatureC" Title="Temp. (C)" TextAlign="TextAlign.Center" />
+            <RadzenDataGridColumn TItem="WeatherForecast" Property="Summary" Title="Summary" TextAlign="TextAlign.Left" />
+        </Columns>
+    </RadzenDataGrid>
+}
 
 @code {
     private WeatherForecast[]? forecasts;
@@ -26,8 +32,15 @@
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+        forecasts = await GetData();
         isLoading = false;
+    }
+
+    private async Task<WeatherForecast[]?> GetData()
+    {
+        var random = new Random();
+        await Task.Delay((random.Next() % 5 + 1) * 1000);
+        return await  Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
     }
 
     public class WeatherForecast

@@ -1,9 +1,12 @@
 ﻿@inherits LayoutComponentBase
+@inject IJSRuntime jsRuntime
+
 
 <RadzenLayout>
     <RadzenHeader>
         <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" Gap="0">
             <RadzenSidebarToggle Click="@(() => sidebar1Expanded = !sidebar1Expanded)" />
+            <RadzenLabel>@Title</RadzenLabel>
             <div style="padding: 10px">
                 <LoginDisplay />
             </div>
@@ -22,4 +25,13 @@
 
 @code {
     bool sidebar1Expanded = true;
+    public string Title { get; set; } = "Home";
+
+    @code {
+
+        protected async override void OnInitialized()
+        {
+            Title = await jsRuntime.InvokeAsync<string>("getTitle");
+        }
+    }
 }
