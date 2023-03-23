@@ -4,6 +4,8 @@
 @inject Microsoft.Graph.GraphServiceClient GraphServiceClient
 @attribute [Authorize]
 
+<PageTitle>Profile</PageTitle>
+
 <RadzenText TextStyle="TextStyle.DisplayH5">User Profile</RadzenText>
 @if (user == null)
 {
@@ -13,9 +15,18 @@ else
 {
 
     <RadzenRow>
-        <RadzenColumn>Property</RadzenColumn>
-        <RadzenColumn>Value</RadzenColumn>
+        <RadzenColumn>
+            <RadzenText TextStyle="TextStyle.Overline">
+                Property
+            </RadzenText>
+        </RadzenColumn>
+        <RadzenColumn>
+            <RadzenText TextStyle="TextStyle.Overline">
+                Value
+            </RadzenText>
+        </RadzenColumn>
     </RadzenRow>
+    <Radzen.Blazor.Rendering.Line></Radzen.Blazor.Rendering.Line>
     <RadzenRow>
         <RadzenColumn>DisplayName</RadzenColumn>
         <RadzenColumn>@user.DisplayName</RadzenColumn>
@@ -24,23 +35,6 @@ else
         <RadzenColumn>UserPrincipalName</RadzenColumn>
         <RadzenColumn>@user.UserPrincipalName</RadzenColumn>
     </RadzenRow>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Property</th>
-                <th>Value</th>
-            </tr>
-        </thead>
-        <tr>
-            <td> DisplayName </td>
-            <td> @user.DisplayName </td>
-        </tr>
-        <tr>
-            <td> UserPrincipalName </td>
-            <td> @user.UserPrincipalName </td>
-        </tr>
-    </table>
 }
 
 @code {
