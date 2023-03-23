@@ -1,5 +1,4 @@
 ﻿@inherits LayoutComponentBase
-@inject IJSRuntime jsRuntime
 
 
 <RadzenLayout>
@@ -16,7 +15,9 @@
         <NavMenu />
     </RadzenSidebar>
     <RadzenBody>
-        @Body
+        <CascadingValue Value="this">
+            @Body
+        </CascadingValue>
     </RadzenBody>
     <RadzenFooter>
         <Footer/>
@@ -24,14 +25,6 @@
 </RadzenLayout>
 
 @code {
-    bool sidebar1Expanded = true;
+    private bool sidebar1Expanded = true;
     public string Title { get; set; } = "Home";
-
-    @code {
-
-        protected async override void OnInitialized()
-        {
-            Title = await jsRuntime.InvokeAsync<string>("getTitle");
-        }
-    }
 }

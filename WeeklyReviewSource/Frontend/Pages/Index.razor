@@ -11,3 +11,12 @@
     You can check out the state of development over at <RadzenLink Path="https://github.com/theodor349/WeeklyReview" Text="GitHub" />.
 </RadzenText>
 
+@code {
+    [CascadingParameter]
+    public MainLayout Layout { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Layout.Title = "Home";
+    }
+}

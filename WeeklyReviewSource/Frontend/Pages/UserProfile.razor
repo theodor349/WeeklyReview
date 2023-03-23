@@ -38,7 +38,15 @@ else
 }
 
 @code {
-    User? user;
+    [CascadingParameter]
+    public MainLayout Layout { get; set; }
+
+    private User? user;
+
+    protected override void OnInitialized()
+    {
+        Layout.Title = "Counter";
+    }
 
     protected override async Task OnInitializedAsync()
     {

@@ -1,8 +1,6 @@
 ﻿@page "/fetchdata"
 @inject HttpClient Http
 
-<PageTitle>Weather forecast</PageTitle>
-
 <RadzenText TextStyle="TextStyle.DisplayH5">Weather forecast</RadzenText>
 
 <RadzenText>This component demonstrates fetching data from the server.</RadzenText>
@@ -26,12 +24,15 @@ else
 }
 
 @code {
-    private WeatherForecast[]? forecasts;
+    [CascadingParameter]
+    public MainLayout Layout { get; set; }
 
+    private WeatherForecast[]? forecasts;
     private bool isLoading = true;
 
     protected override async Task OnInitializedAsync()
     {
+        Layout.Title = "Fetching Data";
         forecasts = await GetData();
         isLoading = false;
     }
