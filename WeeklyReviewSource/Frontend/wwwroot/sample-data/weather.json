@@ -23,5 +23,30 @@
     "date": "2022-01-10",
     "temperatureC": -2,
     "summary": "Chilly"
+  },
+  {
+    "date": "2022-01-11",
+    "temperatureC": 1,
+    "summary": "Freezing"
+  },
+  {
+    "date": "2022-01-12",
+    "temperatureC": 14,
+    "summary": "Bracing"
+  },
+  {
+    "date": "2022-01-13",
+    "temperatureC": -13,
+    "summary": "Freezing"
+  },
+  {
+    "date": "2022-01-14",
+    "temperatureC": -16,
+    "summary": "Balmy"
+  },
+  {
+    "date": "2022-01-15",
+    "temperatureC": -2,
+    "summary": "Chilly"
   }
 ]

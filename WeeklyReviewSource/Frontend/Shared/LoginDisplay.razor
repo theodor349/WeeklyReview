@@ -8,7 +8,7 @@
         <RadzenButton Click=@(() => BeginLogOut()) Text="Log out"></RadzenButton>
     </Authorized>
     <NotAuthorized>
-        <RadzenLink Path="authentication/login" Text="Log in" />
+        <RadzenButton Click=@(() => BeginLogIn()) Text="Log in"></RadzenButton>
     </NotAuthorized>
 </AuthorizeView>
 
@@ -16,5 +16,9 @@
     public void BeginLogOut()
     {
         Navigation.NavigateToLogout("authentication/logout");
+    }
+    public void BeginLogIn()
+    {
+        Navigation.NavigateToLogout("authentication/login");
     }
 }

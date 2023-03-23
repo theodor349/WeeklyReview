@@ -4,13 +4,27 @@
 @inject Microsoft.Graph.GraphServiceClient GraphServiceClient
 @attribute [Authorize]
 
-<h3>User Profile</h3>
+<RadzenText TextStyle="TextStyle.DisplayH5">User Profile</RadzenText>
 @if (user == null)
 {
-    <p><em>Loading...</em></p>
+    <RadzenText>Loading...</RadzenText>
 }
 else
 {
+
+    <RadzenRow>
+        <RadzenColumn>Property</RadzenColumn>
+        <RadzenColumn>Value</RadzenColumn>
+    </RadzenRow>
+    <RadzenRow>
+        <RadzenColumn>DisplayName</RadzenColumn>
+        <RadzenColumn>@user.DisplayName</RadzenColumn>
+    </RadzenRow>
+    <RadzenRow>
+        <RadzenColumn>UserPrincipalName</RadzenColumn>
+        <RadzenColumn>@user.UserPrincipalName</RadzenColumn>
+    </RadzenRow>
+
     <table class="table">
         <thead>
             <tr>
