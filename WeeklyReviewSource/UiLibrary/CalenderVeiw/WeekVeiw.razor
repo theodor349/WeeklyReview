@@ -1,0 +1,14 @@
+﻿@using System.Drawing;
+@inject DialogService DialogService
+
+<RadzenScheduler @ref=@scheduler SlotRender=@OnSlotRender style="height: 1000px;" TItem="Appointment" Data=@appointments StartProperty="Start" EndProperty="End"
+    TextProperty="Text" SelectedIndex="1">
+    <Template Context="data">
+        <strong>@data.Text</strong>
+    </Template>
+    <ChildContent>
+        <RadzenDayView MinutesPerSlot="15" StartTime="@TimeSpan.FromHours(0)" EndTime="@TimeSpan.FromHours(24)" TimeFormat="HH:mm"/>
+        <RadzenWeekView MinutesPerSlot="15" StartTime="@TimeSpan.FromHours(0)" EndTime="@TimeSpan.FromHours(24)" TimeFormat="HH:mm"/>
+    </ChildContent>
+</RadzenScheduler>
+
