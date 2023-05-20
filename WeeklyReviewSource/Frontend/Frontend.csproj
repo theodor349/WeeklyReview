@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
     <UserSecretsId>eb5eda46-c608-44de-a3bc-679c47c9d6e6</UserSecretsId>
+    <EnableSdkContainerSupport>true</EnableSdkContainerSupport>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +14,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.4" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Authentication.WebAssembly.Msal" Version="7.0.4" />
     <PackageReference Include="Microsoft.Graph" Version="4.29.0" />
+    <PackageReference Include="Microsoft.NET.Build.Containers" Version="7.0.302" />
     <PackageReference Include="Radzen.Blazor" Version="4.7.13" />
   </ItemGroup>
 

@@ -10,7 +10,7 @@ using System.Drawing;
 
 namespace UiLibrary.CalenderVeiw
 {
-    public partial class WeekVeiw
+    public partial class WeekVeiw : ComponentBase
     {
         RadzenScheduler<Appointment> scheduler;
         Dictionary<DateTime, string> events = new Dictionary<DateTime, string>();
