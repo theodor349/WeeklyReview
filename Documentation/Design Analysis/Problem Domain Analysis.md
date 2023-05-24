@@ -5,8 +5,10 @@ The system is an activity tracking and analysis tool that allows users to log an
 ## FACTOR
 ### Functionality
 - The user can start and stop activities at any time. Including in the past, the pressent and the future
-- Activities can be categorized
-- Activities are visualized using different colors, which is user defined
+- Activities can be 
+  - Categorized
+  - Visualized using different colors, which is user defined
+  - Migrate/convert to other activites, e.g. converting `diner` to `dinner` 
 - Possible to query all activities for metrics like 
   - Hours spent doing the activity
   - Number of times the activity has been logged
@@ -45,24 +47,27 @@ Furthermore it must give correct numbers with regard to how much time and how ma
 	  - Do I exercise at least 10 hours a week?
 	  - How often do I call my parents?
 	  - How much time have I spent calling my parents?
+  - Input for a query could be a date range e.g. this year, or something even more complex like every evening this month
 
 ## Events 
 - Activity 
   - Start
   - End
-  - Create 
+  - Create
   - Edit Name
   - Delete
-  - Transfer to a new Activity
+  - Convert to a new Activity
 - Category
   - Create
   - Edit Name
   - Edit Color
   - Edit Activates and Categories
   - Delete
-- Group
+- Query
   - Create
   - Edit Name
   - Edit Activities and Categories 
   - Query for analysis 
   - Delete
+
+## Event Table
