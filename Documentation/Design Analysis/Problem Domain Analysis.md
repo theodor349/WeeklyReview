@@ -88,7 +88,7 @@ Furthermore it must give correct numbers with regard to how much time and how ma
 | Query Changed Name                     |       |          |          | *     |
 | Query Changed Activities               |       |          |          | *     |
 | Query Changed Categories               |       |          |          | *     |
-| Executed                               |       |          |          | *     |
+| Query Executed                         |       |          |          | *     |
 | Query Deleted                          |       |          |          | +     |
 
 ## Class Diagram
@@ -173,4 +173,5 @@ stateDiagram-v2
     Query --> Query: Query Changed Name
     Query --> Query: Query Changed Activities
     Query --> Query: Query Changed Categories
+    Query --> Query: Query Executed
 ```
