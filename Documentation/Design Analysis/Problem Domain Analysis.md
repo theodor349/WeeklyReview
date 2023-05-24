@@ -53,46 +53,46 @@ Furthermore it must give correct numbers with regard to how much time and how ma
 
 ## Events 
 - Activity 
-  - Start
-  - End
-  - Create
-  - Edit Name
-  - Delete
-  - Convert to a new Activity
+  - Started
+  - Ended
+  - Created
+  - Edited Name
+  - Deleted
+  - Converted to a new Activity
 - Category
-  - Create
-  - Edit Name
-  - Edit Color
-  - Edit Activates
-  - Delete
+  - Created
+  - Edited Name
+  - Edited Color
+  - Edited Activates
+  - Deleted
 - Query
-  - Create
-  - Edit Name
-  - Edit Activities and Categories 
-  - Execute 
-  - Delete
+  - Created
+  - Edited Name
+  - Edited Activities and Categories 
+  - Executed 
+  - Deleted
 - User
-  - Signup
-  - Delete
+  - Signed up
+  - Deleted
 
 ## Event Table
 | Event \ Object                         | Entry | Activity | Category | Query | User |
 | --------------                         | :-:   | :-:      | :-:      | :-:   | :-:  |
-| Activity Start                         | x     | x        |          |       | x    |
-| Activity End                           | x     | x        |          |       |      |
-| Activity Create                        |       | x        |          |       | x    |
-| Activity Edit name                     |       | x        |          |       |      |
-| Activity Delete                        |       | x        | x        | x     | x    |
-| Activity Convert to a new Activity     |       | x        | x        | x     | x    |
-| Category Create                        |       |          | x        |       | x    |
-| Category Edit Name                     |       |          | x        |       |      |
-| Category Edit Color                    |       |          | x        |       |      |
-| Category Edit Activates                |       |          | x        | x     |      |
-| Category Delete                        |       |          | x        | x     | x    |
-| Query Create                           |       |          |          | x     | x    |
-| Query Edit Name                        |       |          |          | x     |      |
-| Query Edit Activities and Categories   |       |          |          | x     |      |
-| Execute                                |       |          |          | x     |      |
-| Query Delete                           |       |          |          | x     | x    |
-| User Signup                            |       |          |          |       | x    |
-| User Delete                            | x     | x        | x        | x     | x    |
+| Activity Started                       | x     | x        |          |       | x    |
+| Activity Ended                         | x     | x        |          |       |      |
+| Activity Created                       |       | x        |          |       | x    |
+| Activity Edited name                   |       | x        |          |       |      |
+| Activity Deleted                       |       | x        | x        | x     | x    |
+| Activity Converted to a new Activity   |       | x        | x        | x     | x    |
+| Category Created                       |       |          | x        |       | x    |
+| Category Edited Name                   |       |          | x        |       |      |
+| Category Edited Color                  |       |          | x        |       |      |
+| Category Edited Activates              |       |          | x        | x     |      |
+| Category Deleted                       |       |          | x        | x     | x    |
+| Query Createed                         |       |          |          | x     | x    |
+| Query Edited Name                      |       |          |          | x     |      |
+| Query Edited Activities and Categories |       |          |          | x     |      |
+| Executed                               |       |          |          | x     |      |
+| Query Deleted                          |       |          |          | x     | x    |
+| User Signed up                         |       |          |          |       | x    |
+| User Deleted                           | x     | x        | x        | x     | x    |
