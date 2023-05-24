@@ -28,7 +28,7 @@ Furthermore it must give correct numbers with regard to how much time and how ma
 
 
 # Problem Domain
-## Objects
+## Classes
 - Entry
   - Contains time information and what activity is started
   - E.g. At 10:15 I was on call with the doctor, while out walking
@@ -53,10 +53,8 @@ Furthermore it must give correct numbers with regard to how much time and how ma
 
 ## Events 
 - Activity 
-  - Started
-  - Ended
-  - Created
-  - Edited Name
+  - Logged
+    - It start a new entry and ends another 
   - Deleted
   - Converted to a new Activity
 - Category
@@ -78,10 +76,7 @@ Furthermore it must give correct numbers with regard to how much time and how ma
 ## Event Table
 | Event \ Object                         | Entry | Activity | Category | Query | User |
 | --------------                         | :-:   | :-:      | :-:      | :-:   | :-:  |
-| Activity Started                       | x     | x        |          |       | x    |
-| Activity Ended                         | x     | x        |          |       |      |
-| Activity Created                       |       | x        |          |       | x    |
-| Activity Edited name                   |       | x        |          |       |      |
+| Activity Logged                        | x     | x        |          |       | x    |
 | Activity Deleted                       |       | x        | x        | x     | x    |
 | Activity Converted to a new Activity   |       | x        | x        | x     | x    |
 | Category Created                       |       |          | x        |       | x    |
@@ -89,7 +84,7 @@ Furthermore it must give correct numbers with regard to how much time and how ma
 | Category Edited Color                  |       |          | x        |       |      |
 | Category Edited Activates              |       |          | x        | x     |      |
 | Category Deleted                       |       |          | x        | x     | x    |
-| Query Createed                         |       |          |          | x     | x    |
+| Query Created                          |       |          |          | x     | x    |
 | Query Edited Name                      |       |          |          | x     |      |
 | Query Edited Activities and Categories |       |          |          | x     |      |
 | Executed                               |       |          |          | x     |      |
