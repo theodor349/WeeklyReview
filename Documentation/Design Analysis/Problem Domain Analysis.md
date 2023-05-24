@@ -48,6 +48,8 @@ Furthermore it must give correct numbers with regard to how much time and how ma
 	  - How often do I call my parents?
 	  - How much time have I spent calling my parents?
   - Input for a query could be a date range e.g. this year, or something even more complex like every evening this month
+- User
+  - Unique identifier used to seperate different users information
 
 ## Events 
 - Activity 
@@ -61,13 +63,36 @@ Furthermore it must give correct numbers with regard to how much time and how ma
   - Create
   - Edit Name
   - Edit Color
-  - Edit Activates and Categories
+  - Edit Activates
   - Delete
 - Query
   - Create
   - Edit Name
   - Edit Activities and Categories 
-  - Query for analysis 
+  - Execute 
+  - Delete
+- User
+  - Signup
   - Delete
 
 ## Event Table
+| Event \ Object                         | Entry | Activity | Category | Query | User |
+| --------------                         | :-:   | :-:      | :-:      | :-:   | :-:  |
+| Activity Start                         | x     | x        |          |       | x    |
+| Activity End                           | x     | x        |          |       |      |
+| Activity Create                        |       | x        |          |       | x    |
+| Activity Edit name                     |       | x        |          |       |      |
+| Activity Delete                        |       | x        | x        | x     | x    |
+| Activity Convert to a new Activity     |       | x        | x        | x     | x    |
+| Category Create                        |       |          | x        |       | x    |
+| Category Edit Name                     |       |          | x        |       |      |
+| Category Edit Color                    |       |          | x        |       |      |
+| Category Edit Activates                |       |          | x        | x     |      |
+| Category Delete                        |       |          | x        | x     | x    |
+| Query Create                           |       |          |          | x     | x    |
+| Query Edit Name                        |       |          |          | x     |      |
+| Query Edit Activities and Categories   |       |          |          | x     |      |
+| Execute                                |       |          |          | x     |      |
+| Query Delete                           |       |          |          | x     | x    |
+| User Signup                            |       |          |          |       | x    |
+| User Delete                            | x     | x        | x        | x     | x    |
