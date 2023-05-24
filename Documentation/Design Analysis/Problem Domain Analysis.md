@@ -21,7 +21,7 @@ Developed mostly by a single developer in his freetime, but with help from frien
 - VPS, for hosting with limited resources 
 - Web base UI for access anywhere
 ### Objects
-See the section `Problem Domain/Objects`
+See the section `Problem Domain/Classes`
 ### Responsibilities 
 It must make sure that all activities which are recorded are safely stored and always avaliable for the user. 
 Furthermore it must give correct numbers with regard to how much time and how many times an activity has been logged.
@@ -50,12 +50,14 @@ Furthermore it must give correct numbers with regard to how much time and how ma
   - Input for a query could be a date range e.g. this year, or something even more complex like every evening this month
 - User
   - Unique identifier used to seperate different users information
+  - It is not modeled as it is just part of every object, and would cludder the analysis 
 
 ## Events 
 - Activity 
   - Logged
     - It start a new entry and ends another 
   - Deleted
+    - Only possible if no entries reference this activity 
   - Converted to a new Activity
 - Category
   - Created
@@ -66,28 +68,62 @@ Furthermore it must give correct numbers with regard to how much time and how ma
 - Query
   - Created
   - Edited Name
-  - Edited Activities and Categories 
+  - Edited Activities  
+  - Edited Categories 
   - Executed 
-  - Deleted
-- User
-  - Signed up
   - Deleted
 
 ## Event Table
-| Event \ Object                         | Entry | Activity | Category | Query | User |
-| --------------                         | :-:   | :-:      | :-:      | :-:   | :-:  |
-| Activity Logged                        | x     | x        |          |       | x    |
-| Activity Deleted                       |       | x        | x        | x     | x    |
-| Activity Converted to a new Activity   |       | x        | x        | x     | x    |
-| Category Created                       |       |          | x        |       | x    |
-| Category Edited Name                   |       |          | x        |       |      |
-| Category Edited Color                  |       |          | x        |       |      |
-| Category Edited Activates              |       |          | x        | x     |      |
-| Category Deleted                       |       |          | x        | x     | x    |
-| Query Created                          |       |          |          | x     | x    |
-| Query Edited Name                      |       |          |          | x     |      |
-| Query Edited Activities and Categories |       |          |          | x     |      |
-| Executed                               |       |          |          | x     |      |
-| Query Deleted                          |       |          |          | x     | x    |
-| User Signed up                         |       |          |          |       | x    |
-| User Deleted                           | x     | x        | x        | x     | x    |
+| Event \ Object                         | Entry | Activity | Category | Query |
+| --------------                         | :-:   | :-:      | :-:      | :-:   |
+| Activity Logged                        | +     | *        |          |       |
+| Activity Deleted                       |       | +        | *        | *     |
+| Activity Converted to a new Activity   |       | *        | *        | *     |
+| Category Created                       |       |          | +        |       |
+| Category Edited Name                   |       |          | *        |       |
+| Category Edited Color                  |       |          | *        |       |
+| Category Edited Activates              |       |          | *        | *     |
+| Category Deleted                       |       |          | +        | *     |
+| Query Created                          |       |          |          | +     |
+| Query Edited Name                      |       |          |          | *     |
+| Query Edited Activities                |       |          |          | *     |
+| Query Edited Categories                |       |          |          | *     |
+| Executed                               |       |          |          | *     |
+| Query Deleted                          |       |          |          | +     |
+
+
+```mermaid
+classDiagram
+  Entry "*" *-- "*" Activity 
+  Category "1" *-- "*" Activity
+  Query "*" *-- "*" Activity
+  Query "*" *-- "*" Category
+
+  class Entry {
+    + DateTime Start
+    + DateTime End
+    + TimeSpan GetDuration()
+  }
+  class Activity {
+    + int Id
+    + string Name
+    + void ConvertToAnother()
+  }
+  class Category {
+    + int Id
+    + string Name
+    + Color Color
+    + void ChangeName()
+    + void ChangeColor()
+    + void AddActivity()
+  }
+  class Query {
+    + int Id
+    + string Name
+    + TimeSpan GetTimeSpan()
+    + int GetEntryCount()
+    + void ChangeName()
+    + void AddActivity()
+    + void AddCategory()
+  }
+```
