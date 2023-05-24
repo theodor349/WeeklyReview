@@ -91,7 +91,7 @@ Furthermore it must give correct numbers with regard to how much time and how ma
 | Executed                               |       |          |          | *     |
 | Query Deleted                          |       |          |          | +     |
 
-
+## Class Diagram
 ```mermaid
 classDiagram
   Entry "*" *-- "*" Activity 
