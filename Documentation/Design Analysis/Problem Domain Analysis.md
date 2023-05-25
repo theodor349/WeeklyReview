@@ -1,5 +1,5 @@
-
-# System Definition 
+# Problem Domain Analysis
+## System Definition 
 The system is an Activity tracking and analysis tool that allows users to log and categorize their Activities. The system provides an easy and intuitive interface for starting and ending Activities, such as Running, Attending University, or Taking the Train, as well as categorizing them for analysis and visualization. The system is capable of tracking all 24 hours of the day, allowing the user to log and analyze their Activities at any time. The system presents the user’s Activities in a clear and organized manner, allowing the user to analyze their time usage and gain insights into their behavior.
 
 ## FACTOR
@@ -63,6 +63,7 @@ Furthermore it must give correct numbers with regard to how much time and how ma
   - Created
   - Changed Name
   - Changed Color
+  - Changed Priority
   - Changed Activates
   - Deleted
 - Query
@@ -70,6 +71,7 @@ Furthermore it must give correct numbers with regard to how much time and how ma
   - Changed Name
   - Changed Activities  
   - Changed Categories 
+  - Changed to Pulbic 
   - Executed 
   - Deleted
 
@@ -82,12 +84,14 @@ Furthermore it must give correct numbers with regard to how much time and how ma
 | Category Created                       |       |          | +        |       |
 | Category Changed Name                  |       |          | *        |       |
 | Category Changed Color                 |       |          | *        |       |
+| Category Changed Priority              |       |          | *        |       |
 | Category Changed Activates             |       |          | *        | *     |
 | Category Deleted                       |       |          | +        | *     |
 | Query Created                          |       |          |          | +     |
 | Query Changed Name                     |       |          |          | *     |
 | Query Changed Activities               |       |          |          | *     |
 | Query Changed Categories               |       |          |          | *     |
+| Query Changed to Pulbic                |       |          |          | *     |
 | Query Executed                         |       |          |          | *     |
 | Query Deleted                          |       |          |          | +     |
 
@@ -112,6 +116,7 @@ classDiagram
   class Category {
     + int Id
     + string Name
+    + int Priority
     + Color Color
     + void ChangeName()
     + void ChangeColor()
@@ -120,6 +125,8 @@ classDiagram
   class Query {
     + int Id
     + string Name
+    + Guid PublicId
+    + bool is Public
     + TimeSpan GetTimeSpan()
     + int GetEntryCount()
     + void ChangeName()
