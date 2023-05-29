@@ -13,15 +13,10 @@ builder.Services.AddHttpClient("WeeklyReview.ServerAPI", client => client.BaseAd
 // Supply HttpClient instances that include access tokens when making requests to the server project
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("WeeklyReview.ServerAPI"));
 
-builder.Services.AddMicrosoftGraphClient("https://graph.microsoft.com/User.Read");
-
-//builder.Services.AddMicrosoftGraphClient("https://graph.microsoft.com/User.Read");
-
 builder.Services.AddMsalAuthentication(options =>
 {
     builder.Configuration.Bind("AzureAd", options.ProviderOptions.Authentication);
-    options.ProviderOptions.DefaultAccessTokenScopes.Add("api://api.id.uri/access_as_user");
-    options.ProviderOptions.DefaultAccessTokenScopes.Add("https://graph.microsoft.com/User.Read");
+    options.ProviderOptions.DefaultAccessTokenScopes.Add(builder.Configuration.GetSection("ServerApi")["Scopes"]);
 });
 
 await builder.Build().RunAsync();
