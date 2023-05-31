@@ -1,0 +1,16 @@
+﻿@page "/weekview"
+
+<SfSchedule TValue="ScheduleEntry" Width="100%" Height="650px" @bind-SelectedDate="@CurrentDate" EnableAutoRowHeight="true">
+    <ScheduleResources>
+        <ScheduleResource TItem="CatagoryColor" TValue="int" DataSource="@Colors" Field="ColorId" IdField="Id" ColorField="Color"></ScheduleResource>
+    </ScheduleResources>
+    <ScheduleEventSettings DataSource="@DataSource" IgnoreWhitespace="true">
+    </ScheduleEventSettings>
+    <ScheduleViews>
+        <ScheduleView Option="View.Day"></ScheduleView>
+        <ScheduleView Option="View.Week"></ScheduleView>
+        <ScheduleView Option="View.WorkWeek"></ScheduleView>
+        <ScheduleView Option="View.Month"></ScheduleView>
+        <ScheduleView Option="View.Agenda"></ScheduleView>
+    </ScheduleViews>
+</SfSchedule>

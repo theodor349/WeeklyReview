@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeeklyReview.Server", "WeeklyReview\Server\WeeklyReview.Server.csproj", "{DDAB141E-BB93-4742-93DD-3DEC268425DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeeklyReview.Server", "WeeklyReview\Server\WeeklyReview.Server.csproj", "{DDAB141E-BB93-4742-93DD-3DEC268425DA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeeklyReview.Client", "WeeklyReview\Client\WeeklyReview.Client.csproj", "{86DF2DDC-0895-4B25-825C-4B0339394C29}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeeklyReview.Client", "WeeklyReview\Client\WeeklyReview.Client.csproj", "{86DF2DDC-0895-4B25-825C-4B0339394C29}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeeklyReview.Shared", "WeeklyReview\Shared\WeeklyReview.Shared.csproj", "{195C74BA-DDCA-44C2-BF65-4A02DFDAC649}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeeklyReview.Shared", "WeeklyReview\Shared\WeeklyReview.Shared.csproj", "{195C74BA-DDCA-44C2-BF65-4A02DFDAC649}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
