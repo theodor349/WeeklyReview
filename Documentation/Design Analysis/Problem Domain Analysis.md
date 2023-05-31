@@ -48,6 +48,7 @@ Furthermore it must give correct numbers with regard to how much time and how ma
 	  - How often do I call my parents?
 	  - How much time have I spent calling my parents?
   - Input for a query could be a date range e.g. this year, or something even more complex like every evening this month
+  - Maybe Queries can also reference quereies? (This could result in dependency cycles)
 - User
   - Unique identifier used to seperate different users information
   - It is not modeled as it is just part of every object, and would cludder the analysis 
