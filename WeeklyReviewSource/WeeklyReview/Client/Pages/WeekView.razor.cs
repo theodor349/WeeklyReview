@@ -48,13 +48,13 @@ namespace WeeklyReview.Client.Pages
 
         private void GenerateEntries()
         {
-            var date = DateTime.Now.AddDays(-(int)DateTime.Now.DayOfWeek);
+            var date = DateTime.Now.AddDays(-(int)DateTime.Now.DayOfWeek + 1);
             date = new DateTime(date.Year, date.Month, date.Day);
 
             var random = new Random();
-            for (int i = 1; i <= 30; i++)
+            for (int i = 1; i <= 100; i++)
             {
-                int minutesToAdd = 15 * random.Next(1, 4 * 8);
+                int minutesToAdd = 15 * random.Next(1, 4 * 2);
 
                 var e = new Entry();
                 e.Id = i;
