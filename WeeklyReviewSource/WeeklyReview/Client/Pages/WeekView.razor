@@ -1,8 +1,8 @@
 ﻿@page "/weekview"
 
-<SfSchedule TValue="ScheduleEntry" Width="100%" Height="650px" @bind-SelectedDate="@CurrentDate" EnableAutoRowHeight="true">
+<SfSchedule TValue="ScheduleViewModel" Width="100%" Height="800px" @bind-SelectedDate="@CurrentDate" EnableAutoRowHeight="true">
     <ScheduleResources>
-        <ScheduleResource TItem="CatagoryColor" TValue="int" DataSource="@Colors" Field="ColorId" IdField="Id" ColorField="Color"></ScheduleResource>
+        <ScheduleResource TItem="CategoryViewModel" TValue="int" DataSource="@Categories" Field="CategoryId" IdField="Id" ColorField="Color"></ScheduleResource>
     </ScheduleResources>
     <ScheduleEventSettings DataSource="@DataSource" IgnoreWhitespace="true">
     </ScheduleEventSettings>
