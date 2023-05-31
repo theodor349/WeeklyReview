@@ -106,13 +106,13 @@ classDiagram
   class Entry {
     + DateTime Start
     + DateTime End
-    + DateTime LastEdit
+    + DateTime Entered
     + TimeSpan GetDuration()
   }
   class Activity {
     + int Id
     + string Name
-    + DateTime LastEdit
+    + DateTime LastNameEdit
     + void ConvertToAnother()
   }
   class Category {
