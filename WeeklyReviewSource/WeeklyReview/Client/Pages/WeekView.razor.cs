@@ -15,6 +15,8 @@ namespace WeeklyReview.Client.Pages
         public DateTime ViewDate = DateTime.Now;
         public List<ScheduleViewModel> DataSource { get; set; } = new List<ScheduleViewModel>();
         public List<CategoryViewModel> Categories { get; set; } = new List<CategoryViewModel>();
+        public List<Activity> Activities => WRService.Activities;
+        public string EnteredActivity { get; set; }
 
         protected override void OnParametersSet()
         {
