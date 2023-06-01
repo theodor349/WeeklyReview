@@ -65,11 +65,6 @@ namespace WeeklyReview.Client.Pages
                 AddInputActivity();
         }
 
-        private void ActivitiesChanged(ChangeEventArgs<string, Activity> args, int index)
-        {
-            InputActivities[index] = args.Value;
-        }
-
         private void AddInputSocial()
         {
             InputSocials.Add("");
@@ -80,11 +75,6 @@ namespace WeeklyReview.Client.Pages
             InputSocials.RemoveAt(InputSocials.Count() - 1);
             if (InputSocials.Count == 0)
                 AddInputSocial();
-        }
-
-        private void SocialsChanged(ChangeEventArgs<string, Activity> args, int index)
-        {
-            InputSocials[index] = args.Value;
         }
 
         public void TimeUpdated()
