@@ -1,34 +1,93 @@
 ﻿@page "/weekview"
 @using System.Globalization;
 
-<SfSchedule TValue="ScheduleViewModel" Width="100%" Height="calc(100vh - 4.6rem)" @bind-SelectedDate="@CurrentDate"
-        EnableAutoRowHeight="true" 
-        AllowMultiCellSelection="false" AllowMultiRowSelection="false" AllowDragAndDrop="false" AllowResizing="false" 
-        DateFormat="yyyy-MM-dd" TimeFormat="HH:mm" StartHour="06:00" FirstDayOfWeek="1" ShowWeekNumber="true">
-    <ScheduleTimeScale Interval="60" SlotCount="4"></ScheduleTimeScale>
-    <ScheduleTemplates>
-        <DateHeaderTemplate>
-            <div class="date-text">@(getDateHeaderText((context as TemplateContext).Date))</div>
-        </DateHeaderTemplate>
-    </ScheduleTemplates>
-    <ScheduleResources>
-        <ScheduleResource TItem="CategoryViewModel" TValue="int" DataSource="@Categories" Field="CategoryId" IdField="Id" ColorField="Color"></ScheduleResource>
-    </ScheduleResources>
-    <ScheduleEventSettings DataSource="@DataSource" IgnoreWhitespace="true">
-    </ScheduleEventSettings>
-    <ScheduleViews>
-        <ScheduleView Option="View.Day"></ScheduleView>
-        <ScheduleView Option="View.Week"></ScheduleView>
-        <ScheduleView Option="View.WorkWeek"></ScheduleView>
-        <ScheduleView Option="View.Month"></ScheduleView>
-        <ScheduleView Option="View.Agenda"></ScheduleView>
-    </ScheduleViews>
-</SfSchedule>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <SfCard>
+                <CardHeader Title="Add Entry" />
+                <CardContent>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <SfDateTimePicker TValue="DateTime" Value="@InputDate" CssClass="e-popup-expand" Placeholder="Choose a Date"
+                                              ShowClearButton="false" Format="yyyy-MM-dd HH:mm" WeekNumber="true">
+                                <DateTimePickerEvents TValue="DateTime" ValueChange="@OnDateChange"></DateTimePickerEvents>
+                            </SfDateTimePicker>
+                        </div>
+                        <div class="row justify-content-center my-1">
+                            <div class="col-4 col-md-3 d-flex justify-content-center">
+                                <SfButton CssClass="e-block" @onclick="@Sub15Minutes">-15</SfButton>
+                            </div>
+                            <div class="col-4 d-flex justify-content-center">
+                                <SfButton CssClass="e-block" @onclick="@ResetTime">Reset</SfButton>
+                            </div>
+                            <div class="col-4 col-md-3 d-flex justify-content-center">
+                                <SfButton CssClass="e-block" @onclick="@Add15Minutes">+15</SfButton>
+                            </div>
+                        </div>
+                        <div class="row justify-content-center">
+                            <div class="col-6 col-md-4 d-flex justify-content-center">
+                                <SfButton CssClass="e-block" @onclick="@GoToView">Go to view</SfButton>
+                            </div>
+                            <div class="col-6 col-md-4 d-flex justify-content-center">
+                                <SfButton CssClass="e-block">Submit</SfButton>
+                            </div>
+                        </div>
+                    </div>
+                </CardContent>
+                <CardFooter>
+                    <CardFooterContent>
+                    </CardFooterContent>
+                </CardFooter>
+            </SfCard>
+        </div>
+        <div class="col-md-10">
+            <SfSchedule TValue="ScheduleViewModel" Width="100%" Height="calc(100vh - 4.6rem)" @bind-SelectedDate="@ViewDate"
+                        EnableAutoRowHeight="true"
+                        AllowMultiCellSelection="false" AllowMultiRowSelection="false" AllowDragAndDrop="false" AllowResizing="false"
+                        DateFormat="yyyy-MM-dd" TimeFormat="HH:mm" StartHour="06:00" FirstDayOfWeek="1" ShowWeekNumber="true">
+                <ScheduleTimeScale Interval="60" SlotCount="4"></ScheduleTimeScale>
+                <ScheduleTemplates>
+                    <DateHeaderTemplate>
+                        <div class="date-text">@(getDateHeaderText((context as TemplateContext).Date))</div>
+                    </DateHeaderTemplate>
+                </ScheduleTemplates>
+                <ScheduleResources>
+                    <ScheduleResource TItem="CategoryViewModel" TValue="int" DataSource="@Categories" Field="CategoryId" IdField="Id" ColorField="Color"></ScheduleResource>
+                </ScheduleResources>
+                <ScheduleEventSettings DataSource="@DataSource" IgnoreWhitespace="true">
+                </ScheduleEventSettings>
+                <ScheduleViews>
+                    <ScheduleView Option="View.Day"></ScheduleView>
+                    <ScheduleView Option="View.Week"></ScheduleView>
+                    <ScheduleView Option="View.WorkWeek"></ScheduleView>
+                    <ScheduleView Option="View.Month"></ScheduleView>
+                    <ScheduleView Option="View.Agenda"></ScheduleView>
+                </ScheduleViews>
+            </SfSchedule>
+        </div>
+    </div>
+</div>
 
 @code{
 
     public static string getDateHeaderText(DateTime date)
     {
         return date.ToString("dd dddd", CultureInfo.CurrentCulture);
+    }
+
+    public void Add15Minutes() => InputDate = ViewDate.AddMinutes(15);
+    public void Sub15Minutes() => InputDate = ViewDate.AddMinutes(-15);
+    public void ResetTime()
+    {
+        InputDate = DateTime.Now;
+        TimeUpdated();
+    }
+    public void GoToView() => ViewDate = InputDate;
+    private void OnDateChange(ChangedEventArgs<DateTime> args)
+    {
+        InputDate = args.Value;
+        TimeUpdated();
+        StateHasChanged();
     }
 }

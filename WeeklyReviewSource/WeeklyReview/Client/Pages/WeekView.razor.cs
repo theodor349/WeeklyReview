@@ -11,14 +11,27 @@ namespace WeeklyReview.Client.Pages
         [Inject]
         public WeeklyReviewService WRService { get; set; }
 
-        public DateTime CurrentDate = DateTime.Now;
+        public DateTime InputDate = DateTime.Now;
+        public DateTime ViewDate = DateTime.Now;
         public List<ScheduleViewModel> DataSource { get; set; } = new List<ScheduleViewModel>();
         public List<CategoryViewModel> Categories { get; set; } = new List<CategoryViewModel>();
 
-        protected override void OnInitialized()
+        protected override void OnParametersSet()
         {
-            base.OnInitialized();
-            GenerateViewModels();
+            base.OnParametersSet();
+            if(DataSource.Count == 0 ) 
+            {
+                GenerateViewModels();
+                TimeUpdated();
+            }
+        }
+
+        public void TimeUpdated()
+        {
+            int minutes = ViewDate.Minute;
+            minutes /= 3;
+            minutes *= 15;
+            ViewDate.AddMinutes(minutes - ViewDate.Minute);
         }
 
         private void GenerateViewModels()

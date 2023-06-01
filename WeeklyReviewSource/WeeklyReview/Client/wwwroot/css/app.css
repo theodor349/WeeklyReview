@@ -99,3 +99,19 @@ a, .btn-link {
     .loading-progress-text:after {
         content: var(--blazor-load-percentage-text, "Loading");
     }
+
+.flex-container {
+    display: flex;
+    flex-direction: row;
+}
+.entry-container {
+    min-width: 315px;
+    margin-bottom: 10px;
+    margin-right: 10px;
+}
+/* Responsive layout - makes a one column layout instead of a two-column layout */
+@media (max-width: 800px) {
+    .flex-container {
+        flex-direction: column;
+    }
+}
