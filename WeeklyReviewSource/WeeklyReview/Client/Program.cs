@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using WeeklyReview.Client;
 using Syncfusion.Blazor;
+using WeeklyReview.Client.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -21,6 +22,6 @@ builder.Services.AddMsalAuthentication(options =>
 });
 
 builder.Services.AddSyncfusionBlazor();
-
+builder.Services.AddSingleton<WeeklyReviewService>();
 
 await builder.Build().RunAsync();
