@@ -53,6 +53,9 @@
             <div> @*Socials*@
                 <div class="row my-1 mt-2">
                     <h4 class="text-center">Socials</h4>
+                    <div class="my-1 d-flex justify-content-center">
+                        <SfSwitch @bind-Checked=@IsDiscord OnLabel="Discord" OffLabel="Social" CssClass="e-large"></SfSwitch>
+                    </div>
                     @for (int i = 0; i < InputSocials.Count(); i++)
                     {
                         var bIndex = i;
@@ -104,3 +107,10 @@
         StateHasChanged();
     }
 }
+
+<style>
+    .e-large {
+        width: 65px;
+        height: 25px
+    }
+</style>

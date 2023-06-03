@@ -37,6 +37,7 @@ namespace WeeklyReview.Client.Pages
         public List<CategoryViewModel> Categories { get; set; } = new List<CategoryViewModel>();
         public List<Activity> Activities => WRService.Activities;
         public List<Activity> Socials => WRService.Activities;
+        public bool IsDiscord { get; set; }
         public List<string> InputActivities { get; set; } = new List<string>();
         public List<string> InputSocials { get; set; } = new List<string>();
 
