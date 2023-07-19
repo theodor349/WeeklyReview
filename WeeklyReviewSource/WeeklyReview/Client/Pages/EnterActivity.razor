@@ -80,7 +80,7 @@
             <div> @*Submit buttons*@
                 <div class="row justify-content-center my-2">
                     <div class="col-6 col-md-6 d-flex justify-content-center">
-                        <SfButton CssClass="e-block" IsPrimary="true">Submit</SfButton>
+                        <SfButton CssClass="e-block" IsPrimary="true" OnClick="@(() => WRService.AddEntry(ViewDate))">Submit</SfButton>
                     </div>
                 </div>
             </div>

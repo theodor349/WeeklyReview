@@ -5,7 +5,7 @@ using WeeklyReview.Shared.Models;
 
 namespace WeeklyReview.Client.Services
 {
-    public class WeeklyReviewService
+    public class WeeklyReviewService : IWeeklyReviewService
     {
 
         public List<Entry> Entries { get; } = new List<Entry>();
@@ -21,7 +21,20 @@ namespace WeeklyReview.Client.Services
         {
             GenerateCategories();
             GenerateActivities();
-            GenerateEntries();
+            //GenerateEntries();
+        }
+
+        public void AddEntry(DateTime date)
+        {
+            var r = new Random();
+            var e = new Entry();
+            e.StarTime = date;
+            e.EndTime = date.AddHours(2);
+
+            int rNum = (int)r.Next();
+            int aIndex = rNum % Activities.Count();
+            e.Activities.Add(Activities[aIndex]);
+            Entries.Add(e);
         }
 
         private void GenerateEntries()

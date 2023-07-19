@@ -9,7 +9,7 @@ namespace WeeklyReview.Client.Pages
     public partial class WeekView
     {
         [Inject]
-        public WeeklyReviewService WRService { get; set; }
+        public IWeeklyReviewService WRService { get; set; }
 
         public DateTime InputDate = DateTime.Now;
         public DateTime ViewDate = DateTime.Now;

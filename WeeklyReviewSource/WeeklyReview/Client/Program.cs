@@ -14,6 +14,7 @@ builder.Services.AddHttpClient("WeeklyReview.ServerAPI", client => client.BaseAd
 
 // Supply HttpClient instances that include access tokens when making requests to the server project
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("WeeklyReview.ServerAPI"));
+builder.Services.AddSingleton<IWeeklyReviewService, WeeklyReviewService>();
 
 builder.Services.AddMsalAuthentication(options =>
 {

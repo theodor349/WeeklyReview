@@ -30,7 +30,7 @@ namespace WeeklyReview.Client.Pages
     public partial class EnterActivity
     {
         [Inject]
-        public WeeklyReviewService WRService { get; set; }
+        public IWeeklyReviewService WRService { get; set; }
 
         public DateTime ViewDate = DateTime.Now;
         public List<ScheduleViewModel> DataSource { get; set; } = new List<ScheduleViewModel>();
