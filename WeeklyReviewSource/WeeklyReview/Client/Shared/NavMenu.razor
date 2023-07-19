@@ -1,4 +1,44 @@
-﻿<nav class="flex-column">
+﻿<div class="dock">
+    <ul>
+        <li class="sidebar-item" id="toggle" @onclick="@Toggle">
+            <span class="e-icons expand"></span>
+            <span class="e-text" title="menu">Menu</span>
+        </li>
+        <li class="sidebar-item">
+            <span class="e-icons home"></span>
+            <span class="e-text" title="home">Home</span>
+        </li>
+        <li class="sidebar-item">
+            <span class="e-icons profile"></span>
+            <span class="e-text" title="profile">Profile</span>
+        </li>
+        <li class="sidebar-item">
+            <span class="e-icons info"></span>
+            <span class="e-text" title="info">Info</span>
+        </li>
+        <li class="sidebar-item">
+            <span class="e-icons settings"></span>
+            <span class="e-text" title="settings">Settings</span>
+        </li>
+    </ul>
+</div>
+
+@code {
+
+    [Parameter]
+    public SfSidebar SidebarInstance { get; set; }
+
+    public void Toggle()
+    {
+        if (SidebarInstance.IsOpen)
+            SidebarInstance.IsOpen = false;
+        else
+            SidebarInstance.IsOpen = true;
+
+    }
+}
+
+<nav class="flex-column">
     <div class="nav-item px-3">
         <NavLink class="nav-link" href="home" Match="NavLinkMatch.All">
             <span class="oi oi-home" aria-hidden="true"></span> Home
@@ -15,3 +55,32 @@
         </NavLink>
     </div>
 </nav>
+
+@*<main>
+    <SfMenu TValue="MenuItem" HamburgerMode="true" ShowItemOnClick="true" Title="Weekly Review">
+        <MenuItems>
+            <MenuItem Text="Home" IconCss="e-icons home" Url="home" />
+            <MenuItem Text="Enter Activity" IconCss="e-icons info" Url="enteractivity" />
+            <MenuItem Text="Week View" IconCss="e-icons info" Url="weekview" />
+            <AuthorizeView>
+                <Authorized>
+                    <MenuItem Text="Logout" IconCss="e-icons profile" @onclick="BeginLogOut" />
+                </Authorized>
+                <NotAuthorized>
+                    <MenuItem Text="Login" IconCss="e-icons profile" Url="authentication/login" />
+                </NotAuthorized>
+            </AuthorizeView>
+        </MenuItems>
+    </SfMenu>
+    <div>
+        <div style="width:100%; height:40px; background:rgb(100,100,100)">
+            <span style="float:right" class="m-2">
+                <LoginDisplay />
+            </span>
+        </div>
+
+        <div class="main-text-content">
+            @Body
+        </div>
+    </div>
+</main>*@

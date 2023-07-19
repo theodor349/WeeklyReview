@@ -1,36 +1,92 @@
-﻿@inherits LayoutComponentBase
+﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+@inherits LayoutComponentBase
+@inject NavigationManager Navigation
 
-<main>
-    <SfSidebar Width="260px" CloseOnDocumentClick="true" Position="SidebarPosition.Left" Type="SidebarType.Over" @bind-IsOpen="@showMenu">
-        <ChildContent>
-            <div style="text-align:center">
-                Sidebar
-            </div>
-            @*<SfButton @onclick="@ToggleNavMenu"></SfButton>*@
-            @*<NavMenu></NavMenu>*@
-        </ChildContent>
-    </SfSidebar>
-    <div>
-        <div style="width:100%; height:40px; background:rgb(100,100,100)">
-            <span style="float:left" class="m-1">
-                <SfButton IconCss="e-icons e-menu" @onclick="@ToggleNavMenu"></SfButton>
-            </span>
-            <span style="float:right" class="m-2">
-                <LoginDisplay />
-            </span>
-        </div>
+<SfAppBar ColorMode="AppBarColor.Dark">
+    <SfButton aria-label="menu" CssClass="e-inherit menu" IconCss="e-icons e-menu" OnClick=@(() => Navigate("home"))></SfButton>
+    <SfButton CssClass=@("e-inherit home e-appbar-menu e-dark") Content="Enter Activity" OnClick=@(() => Navigate("enteractivity"))></SfButton>
+    <SfButton CssClass=@("e-inherit home e-appbar-menu e-dark") Content="Week View" OnClick=@(() => Navigate("weekview"))></SfButton>
+    <AppBarSpacer></AppBarSpacer>
+    <AuthorizeView>
+        <Authorized>
+            Hello, @context.User.Identity?.Name!
+            <SfButton CssClass=@("e-inherit home e-appbar-menu e-dark") @onclick="BeginLogOut">Log out</SfButton>
+        </Authorized>
+        <NotAuthorized>
+            <SfButton CssClass=@("e-inherit login") Content="Login" OnClick=@(() => Navigate("authentication/login"))></SfButton>
+        </NotAuthorized>
+    </AuthorizeView>
+</SfAppBar>
 
-        <div class="main-text-content">
-            @Body
-        </div>
+<div class="main-text-content">
+    <div class="m-2">
+        @Body
     </div>
-</main>
+</div>
 
 @code {
-    private bool showMenu = true;
-
-    private void ToggleNavMenu()
+    public void BeginLogOut()
     {
-        showMenu = !showMenu;
+        Navigation.NavigateToLogout("authentication/logout");
+    }
+
+    public void Navigate(string destination)
+    {
+        Navigation.NavigateTo(destination);
     }
 }
+
+<style>
+    .appbar-control-section .e-dropdown-btn.e-inherit,
+    .appbar-control-section .e-btn.e-inherit.home {
+        margin: 0 5px;
+    }
+
+    .appbar-control-section .e-appbar .e-appbar-separator {
+        margin: 0 10px;
+    }
+
+    .appbar-control-section .e-appbar-icon-menu {
+        display: none;
+    }
+
+    @@media screen and (max-width: 480px) {
+        .appbar-control-section .e-appbar-icon-menu {
+            display: block;
+        }
+
+        .appbar-control-section .login,
+        .appbar-control-section .e-appbar-separator,
+        .appbar-control-section .e-dropdown-btn.e-inherit.e-appbar-menu,
+        .appbar-control-section .e-menu-container.e-inherit.e-appbar-menu,
+        .appbar-control-section .e-menu-container.e-inherit.e-appbar-icon-menu .e-menu .e-menu-item .e-caret,
+        .appbar-control-section .e-btn.e-inherit.e-appbar-menu {
+            display: none;
+        }
+
+        .appbar-control-section .e-menu-container.e-inherit.e-appbar-icon-menu ul .e-menu-item.e-menu-caret-icon {
+            padding: 0 8px;
+        }
+
+        .appbar-control-section .e-menu-container.e-inherit ul .e-menu-item .e-menu-icon {
+            margin-right: 0;
+        }
+
+        .appbar-control-section .e-menu-container.e-inherit {
+            margin: 0 10px;
+        }
+
+        .fabric .appbar-control-section .e-menu-container.e-inherit ul.e-menu:not(.e-vertical),
+        .fabric-dark .appbar-control-section .e-menu-container.e-inherit ul.e-menu:not(.e-vertical) {
+            padding: 0;
+        }
+
+        .appbar-control-section .e-input-group.e-control-wrapper.e-inherit {
+            margin-left: 10px;
+        }
+
+        .appbar-control-section .menu {
+            margin-bottom: 3px;
+        }
+    }
+</style>
