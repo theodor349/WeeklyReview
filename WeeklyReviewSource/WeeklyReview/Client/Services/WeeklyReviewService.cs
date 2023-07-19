@@ -1,21 +1,24 @@
-﻿using Syncfusion.Blazor.HeatMap.Internal;
+﻿using Microsoft.AspNetCore.Components;
+using Syncfusion.Blazor.HeatMap.Internal;
 using System.Drawing;
 using WeeklyReview.Client.ViewModels;
 using WeeklyReview.Shared.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using WeeklyReview.Shared.Services;
 
 namespace WeeklyReview.Client.Services
 {
     public class WeeklyReviewService : IWeeklyReviewService
     {
+        private IEntryParserService _entryParser { get; set; }
 
         public List<Entry> Entries { get; } = new List<Entry>();
         public List<Activity> Activities { get; } = new List<Activity>();
         public List<string> Socials { get; } = new List<string>();
         public List<Category> Categories { get; } = new List<Category>();
 
-        public WeeklyReviewService()
+        public WeeklyReviewService(IEntryParserService entryParser)
         {
+            _entryParser = entryParser;
             GenerateData();
         }
 
@@ -28,20 +31,33 @@ namespace WeeklyReview.Client.Services
 
         private void GenerateSocials()
         {
+            Socials.Clear();
             Socials.AddRange(Activities.Where(x => x.Category.Name == "Social").ToList().ConvertAll(x => x.Name.Substring(8)));
             Socials.AddRange(Activities.Where(x => x.Category.Name == "Discord").ToList().ConvertAll(x => x.Name.Substring(9)).Where(x => !Socials.Contains(x)));
         }
 
         public void AddEntry(DateTime date, List<string> activities)
         {
-            var r = new Random();
+            var res = _entryParser.ParseEntries(activities, Activities, Categories, Categories[0]);
+            Activities.AddRange(res.newActivities);
+            Categories.AddRange(res.newCategories);
+            GenerateSocials();
+
+            var endTime = date.AddDays(1);
+            var otherEntry = Entries.Where(x => x.StarTime <= date).MaxBy(x => x.StarTime);
+            if(otherEntry is not null)
+            {
+                endTime = otherEntry.EndTime;
+                otherEntry.EndTime = date;
+                if (otherEntry.StarTime == date)
+                    Entries.Remove(otherEntry);
+            }
+
             var e = new Entry();
             e.StarTime = date;
-            e.EndTime = date.AddHours(2);
-
-            int rNum = (int)r.Next();
-            int aIndex = rNum % Activities.Count();
-            e.Activities.Add(Activities[aIndex]);
+            e.EndTime = endTime;
+            e.Entered = DateTime.Now;
+            e.Activities.AddRange(res.usedActivities);
             Entries.Add(e);
         }
 
@@ -77,7 +93,7 @@ namespace WeeklyReview.Client.Services
             date = AddEntry(date, 60, "Series: Salvation");
             date = AddEntry(date, 30, "Administration: Planning");
             date = AddEntry(date, 105, "Movie: Captin America The First Avengers");
-            date = AddEntry(date, 60 * 9, "Sleep: Sleep");
+            date = AddEntry(date, 60 * 9, "Sleep");
 
             return date;
         }
@@ -95,7 +111,10 @@ namespace WeeklyReview.Client.Services
 
         private void GenerateCategoriesAndActivities()
         {
-            var cat = new Category("Exercise", 100, Color.DarkGreen);
+            var cat = new Category("", 0, Color.WhiteSmoke);
+            Categories.Add(cat);
+            
+            cat = new Category("Exercise", 100, Color.DarkGreen);
             Categories.Add(cat);
             Activities.Add(new Activity("Bike", cat));
             Activities.Add(new Activity("Run", cat));
@@ -110,7 +129,7 @@ namespace WeeklyReview.Client.Services
 
             cat = new Category("Sleep", 1000, Color.RebeccaPurple);
             Categories.Add(cat);
-            Activities.Add(new Activity("Sleep", cat));
+            Activities.Add(new Activity("Sleep", cat, false));
 
             cat = new Category("School", 100, Color.HotPink);
             Categories.Add(cat);

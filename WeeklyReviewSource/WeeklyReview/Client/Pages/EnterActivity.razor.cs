@@ -51,7 +51,7 @@ namespace WeeklyReview.Client.Pages
         public void SubmitEntry()
         {
             var submittedActivities = new List<string>();
-            submittedActivities.AddRange(InputActivities);
+            submittedActivities.AddRange(InputActivities.Where(x => !string.IsNullOrWhiteSpace(x)));
             submittedActivities.AddRange(InputSocials.Where(x => !string.IsNullOrWhiteSpace(x)).ToList().ConvertAll(x => IsDiscord ? "Discord: " + x : "Social: " + x));
 
             _WRService.AddEntry(ViewDate, submittedActivities);

@@ -10,12 +10,16 @@
 
         }
 
-        public Activity(string name, Category category)
+        public Activity(string name, Category category, bool includeCategory = true)
         {
             Id = _nextIndex;
-            Name = category.Name + ": " + name;
             Category = category;
             LastNameEdit = DateTime.Now;
+
+            if (includeCategory)
+                Name = category.Name + ": " + name;
+            else
+                Name = name;
         }
 
         public int Id { get; set; }
