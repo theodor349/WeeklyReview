@@ -1,86 +1,85 @@
-﻿<div class="dock">
-    <ul>
-        <li class="sidebar-item" id="toggle" @onclick="@Toggle">
-            <span class="e-icons expand"></span>
-            <span class="e-text" title="menu">Menu</span>
-        </li>
-        <li class="sidebar-item">
-            <span class="e-icons home"></span>
-            <span class="e-text" title="home">Home</span>
-        </li>
-        <li class="sidebar-item">
-            <span class="e-icons profile"></span>
-            <span class="e-text" title="profile">Profile</span>
-        </li>
-        <li class="sidebar-item">
-            <span class="e-icons info"></span>
-            <span class="e-text" title="info">Info</span>
-        </li>
-        <li class="sidebar-item">
-            <span class="e-icons settings"></span>
-            <span class="e-text" title="settings">Settings</span>
-        </li>
-    </ul>
-</div>
+﻿@using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+@inject NavigationManager Navigation
+
+<SfAppBar ColorMode="AppBarColor.Dark">
+    <SfButton aria-label="menu" CssClass="e-inherit menu" IconCss="e-icons e-menu" OnClick=@(() => Navigate("home"))></SfButton>
+    <SfButton CssClass=@("e-inherit home e-appbar-menu e-dark") Content="Enter Activity" OnClick=@(() => Navigate("enteractivity"))></SfButton>
+    <SfButton CssClass=@("e-inherit home e-appbar-menu e-dark") Content="Week View" OnClick=@(() => Navigate("weekview"))></SfButton>
+    <AppBarSpacer></AppBarSpacer>
+    <AuthorizeView>
+        <Authorized>
+            Hello, @context.User.Identity?.Name!
+            <SfButton CssClass=@("e-inherit home e-appbar-menu e-dark") @onclick="BeginLogOut">Log out</SfButton>
+        </Authorized>
+        <NotAuthorized>
+            <SfButton CssClass=@("e-inherit login") Content="Login" OnClick=@(() => Navigate("authentication/login"))></SfButton>
+        </NotAuthorized>
+    </AuthorizeView>
+</SfAppBar>
 
 @code {
-
-    [Parameter]
-    public SfSidebar SidebarInstance { get; set; }
-
-    public void Toggle()
+    public void BeginLogOut()
     {
-        if (SidebarInstance.IsOpen)
-            SidebarInstance.IsOpen = false;
-        else
-            SidebarInstance.IsOpen = true;
+        Navigation.NavigateToLogout("authentication/logout");
+    }
 
+    public void Navigate(string destination)
+    {
+        Navigation.NavigateTo(destination);
     }
 }
 
-<nav class="flex-column">
-    <div class="nav-item px-3">
-        <NavLink class="nav-link" href="home" Match="NavLinkMatch.All">
-            <span class="oi oi-home" aria-hidden="true"></span> Home
-        </NavLink>
-    </div>
-    <div class="nav-item px-3">
-        <NavLink class="nav-link" href="enteractivity">
-            <span class="oi oi-list-rich" aria-hidden="true"></span> Enter Activity
-        </NavLink>
-    </div>
-    <div class="nav-item px-3">
-        <NavLink class="nav-link" href="weekview">
-            <span class="oi oi-list-rich" aria-hidden="true"></span> Week View
-        </NavLink>
-    </div>
-</nav>
+<style>
+    .appbar-control-section .e-dropdown-btn.e-inherit,
+    .appbar-control-section .e-btn.e-inherit.home {
+        margin: 0 5px;
+    }
 
-@*<main>
-    <SfMenu TValue="MenuItem" HamburgerMode="true" ShowItemOnClick="true" Title="Weekly Review">
-        <MenuItems>
-            <MenuItem Text="Home" IconCss="e-icons home" Url="home" />
-            <MenuItem Text="Enter Activity" IconCss="e-icons info" Url="enteractivity" />
-            <MenuItem Text="Week View" IconCss="e-icons info" Url="weekview" />
-            <AuthorizeView>
-                <Authorized>
-                    <MenuItem Text="Logout" IconCss="e-icons profile" @onclick="BeginLogOut" />
-                </Authorized>
-                <NotAuthorized>
-                    <MenuItem Text="Login" IconCss="e-icons profile" Url="authentication/login" />
-                </NotAuthorized>
-            </AuthorizeView>
-        </MenuItems>
-    </SfMenu>
-    <div>
-        <div style="width:100%; height:40px; background:rgb(100,100,100)">
-            <span style="float:right" class="m-2">
-                <LoginDisplay />
-            </span>
-        </div>
+    .appbar-control-section .e-appbar .e-appbar-separator {
+        margin: 0 10px;
+    }
 
-        <div class="main-text-content">
-            @Body
-        </div>
-    </div>
-</main>*@
+    .appbar-control-section .e-appbar-icon-menu {
+        display: none;
+    }
+
+    @@media screen and (max-width: 480px) {
+        .appbar-control-section .e-appbar-icon-menu {
+            display: block;
+        }
+
+        .appbar-control-section .login,
+        .appbar-control-section .e-appbar-separator,
+        .appbar-control-section .e-dropdown-btn.e-inherit.e-appbar-menu,
+        .appbar-control-section .e-menu-container.e-inherit.e-appbar-menu,
+        .appbar-control-section .e-menu-container.e-inherit.e-appbar-icon-menu .e-menu .e-menu-item .e-caret,
+        .appbar-control-section .e-btn.e-inherit.e-appbar-menu {
+            display: none;
+        }
+
+        .appbar-control-section .e-menu-container.e-inherit.e-appbar-icon-menu ul .e-menu-item.e-menu-caret-icon {
+            padding: 0 8px;
+        }
+
+        .appbar-control-section .e-menu-container.e-inherit ul .e-menu-item .e-menu-icon {
+            margin-right: 0;
+        }
+
+        .appbar-control-section .e-menu-container.e-inherit {
+            margin: 0 10px;
+        }
+
+        .fabric .appbar-control-section .e-menu-container.e-inherit ul.e-menu:not(.e-vertical),
+        .fabric-dark .appbar-control-section .e-menu-container.e-inherit ul.e-menu:not(.e-vertical) {
+            padding: 0;
+        }
+
+        .appbar-control-section .e-input-group.e-control-wrapper.e-inherit {
+            margin-left: 10px;
+        }
+
+        .appbar-control-section .menu {
+            margin-bottom: 3px;
+        }
+    }
+</style>
