@@ -61,9 +61,9 @@
                     {
                         var bIndex = i;
                         <div class="my-1">
-                            <SfAutoComplete TValue="string" TItem="Activity" Placeholder="e.g. Theodor" DataSource="@Socials"
+                            <SfAutoComplete TValue="string" TItem="string" Placeholder="e.g. Theodor" DataSource="@Socials"
                                             EnableVirtualization="true" @bind-Value="@InputSocials[bIndex]">
-                                <AutoCompleteFieldSettings Value="Name"></AutoCompleteFieldSettings>
+                                <AutoCompleteFieldSettings></AutoCompleteFieldSettings>
                             </SfAutoComplete>
                         </div>
                     }
@@ -80,7 +80,7 @@
             <div> @*Submit buttons*@
                 <div class="row justify-content-center my-2">
                     <div class="col-6 col-md-6 d-flex justify-content-center">
-                        <SfButton CssClass="e-block" IsPrimary="true" OnClick="@(() => WRService.AddEntry(ViewDate))">Submit</SfButton>
+                        <SfButton CssClass="e-block" IsPrimary="true" OnClick="@(SubmitEntry)">Submit</SfButton>
                     </div>
                 </div>
             </div>

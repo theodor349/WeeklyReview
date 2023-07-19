@@ -2,6 +2,7 @@
 using System.Drawing;
 using WeeklyReview.Client.ViewModels;
 using WeeklyReview.Shared.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WeeklyReview.Client.Services
 {
@@ -10,6 +11,7 @@ namespace WeeklyReview.Client.Services
 
         public List<Entry> Entries { get; } = new List<Entry>();
         public List<Activity> Activities { get; } = new List<Activity>();
+        public List<string> Socials { get; } = new List<string>();
         public List<Category> Categories { get; } = new List<Category>();
 
         public WeeklyReviewService()
@@ -19,13 +21,24 @@ namespace WeeklyReview.Client.Services
 
         private void GenerateData()
         {
-            GenerateCategories();
-            GenerateActivities();
-            //GenerateEntries();
+            GenerateCategoriesAndActivities();
+            GenerateSocials();
+            GenerateEntriesV2();
         }
 
-        public void AddEntry(DateTime date)
+        private void GenerateSocials()
         {
+            Socials.AddRange(Activities.Where(x => x.Category.Name == "Social").ToList().ConvertAll(x => x.Name.Substring(8)));
+            Socials.AddRange(Activities.Where(x => x.Category.Name == "Discord").ToList().ConvertAll(x => x.Name.Substring(9)).Where(x => !Socials.Contains(x)));
+        }
+
+        public void AddEntry(DateTime date, List<string> activities)
+        {
+            if (activities is null)
+            {
+                throw new ArgumentNullException(nameof(activities));
+            }
+
             var r = new Random();
             var e = new Entry();
             e.StarTime = date;
@@ -37,63 +50,120 @@ namespace WeeklyReview.Client.Services
             Entries.Add(e);
         }
 
-        private void GenerateEntries()
+        private void GenerateEntriesV2()
         {
-            var date = DateTime.Now.AddDays(-(int)DateTime.Now.DayOfWeek + 1);
+            var date = DateTime.Now;
+            date = date.AddDays(-(int)date.DayOfWeek + 1);
             date = new DateTime(date.Year, date.Month, date.Day);
+            date = date.AddDays(-7);
+            date = date.AddHours(7).AddMinutes(30);
 
-            var random = new Random();
-            for (int i = 1; i <= 100; i++)
+            for (int i = 0; i < 7; i++)
             {
-                int minutesToAdd = 15 * random.Next(1, 4 * 2);
+                date = GenerateMonday(date);
+            }
 
-                var e = new Entry();
-                e.Id = i;
-                e.StarTime = date;
-                e.EndTime = date.AddMinutes(minutesToAdd);
-                e.Entered = DateTime.Now;
-                for (int a = 0; a < random.Next(1, 4); a++)
-                {
-                    var activityIndex = random.Next(Activities.Count());
-                    e.Activities.Add(Activities.ElementAt(activityIndex));
-                }
-                Entries.Add(e);
-
-                date = date.AddMinutes(minutesToAdd);
+            for (int i = 0; i < (DateTime.Now.DayOfWeek == DayOfWeek.Sunday ? 7 : (int)DateTime.Now.DayOfWeek); i++)
+            {
+                date = GenerateMonday(date);
             }
         }
 
-        private void GenerateActivities()
+        private DateTime GenerateMonday(DateTime date)
         {
-            for (int i = 1; i <= 10; i++)
-            {
-                var a = new Activity();
-                a.Id = i;
-                a.Name = "Activity " + i;
-                a.LastNameEdit = DateTime.Now;
-                a.Category = Categories.ElementAt(new Random().Next(Categories.Count()));
-                Activities.Add(a);
-            }
+            date = AddEntry(date, 30, "Food: Breakfast");
+            date = AddEntry(date, 15, "Exercise: Bike");
+            date = AddEntry(date, 60 * 7, "School: Classes");
+            date = AddEntry(date, 15, "Exercise: Bike");
+            date = AddEntry(date, 60, "School: Math");
+            date = AddEntry(date, 45, "Exercise: Run");
+            date = AddEntry(date, 75, "Social: Theodor Risager");
+            date = AddEntry(date, 45, "Food: Dinner");
+            date = AddEntry(date, 60, "Series: Salvation");
+            date = AddEntry(date, 30, "Administration: Planning");
+            date = AddEntry(date, 105, "Movie: Captin America The First Avengers");
+            date = AddEntry(date, 60 * 9, "Sleep: Sleep");
+
+            return date;
         }
 
-        private void GenerateCategories()
+        private DateTime AddEntry(DateTime start, int minutes, string activity)
         {
-            for (int i = 1; i <= 4; i++)
-            {
-                var c = new Category();
-                c.Id = i;
-                c.Name = "Category " + 1;
-                c.Priority = i;
-                c.Color = i switch
-                {
-                    1 => Color.Red,
-                    2 => Color.Green,
-                    3 => Color.Blue,
-                    4 => Color.Magenta,
-                    _ => throw new NotImplementedException(),
-                };
-                Categories.Add(c);
-            }
+            var entry = new Entry();
+            entry.StarTime = start;
+            entry.EndTime = start.AddMinutes(minutes);
+            entry.Activities.Add(Activities.First(x => x.Name == activity));
+
+            Entries.Add(entry);
+            return start.AddMinutes(minutes);
+        }
+
+        private void GenerateCategoriesAndActivities()
+        {
+            var cat = new Category("Exercise", 100, Color.DarkGreen);
+            Categories.Add(cat);
+            Activities.Add(new Activity("Bike", cat));
+            Activities.Add(new Activity("Run", cat));
+            Activities.Add(new Activity("Swimming", cat));
+
+            cat = new Category("Transportation", 10, Color.DeepSkyBlue);
+            Categories.Add(cat);
+            Activities.Add(new Activity("Car", cat));
+            Activities.Add(new Activity("Bus", cat));
+            Activities.Add(new Activity("Train", cat));
+            Activities.Add(new Activity("Airplane", cat));
+
+            cat = new Category("Sleep", 1000, Color.RebeccaPurple);
+            Categories.Add(cat);
+            Activities.Add(new Activity("Sleep", cat));
+
+            cat = new Category("School", 100, Color.HotPink);
+            Categories.Add(cat);
+            Activities.Add(new Activity("English", cat));
+            Activities.Add(new Activity("Math", cat));
+            Activities.Add(new Activity("Physics", cat));
+            Activities.Add(new Activity("Programming", cat));
+            Activities.Add(new Activity("Classes", cat));
+
+            cat = new Category("Food", 100, Color.YellowGreen);
+            Categories.Add(cat);
+            Activities.Add(new Activity("Breakfast", cat));
+            Activities.Add(new Activity("Lunch", cat));
+            Activities.Add(new Activity("Dinner", cat));
+            Activities.Add(new Activity("Snacking", cat));
+
+            cat = new Category("Movie", 100, Color.Orange);
+            Categories.Add(cat);
+            Activities.Add(new Activity("21 Jump Street", cat));
+            Activities.Add(new Activity("Captin America The First Avengers", cat));
+            Activities.Add(new Activity("Edge of Tomorrow", cat));
+
+            cat = new Category("Series", 100, Color.Orange);
+            Categories.Add(cat);
+            Activities.Add(new Activity("Black Sails", cat));
+            Activities.Add(new Activity("Designated Survivor", cat));
+            Activities.Add(new Activity("Salvation", cat));
+
+            cat = new Category("Administration", 100000, Color.Green);
+            Categories.Add(cat);
+            Activities.Add(new Activity("Planning", cat));
+            Activities.Add(new Activity("Reviewing Week", cat));
+            Activities.Add(new Activity("Todolist", cat));
+
+            cat = new Category("Social", 1000000, Color.Blue);
+            Categories.Add(cat);
+            Activities.Add(new Activity("Theodor Risager", cat));
+            Activities.Add(new Activity("Kim Larsen", cat));
+            Activities.Add(new Activity("Lene Sørensen", cat));
+            Activities.Add(new Activity("John Doe", cat));
+            Activities.Add(new Activity("Anders Andersen", cat));
+
+            cat = new Category("Discord", 1000000, Color.Blue);
+            Categories.Add(cat);
+            Activities.Add(new Activity("Theodor Risager", cat));
+            Activities.Add(new Activity("Lene Sørensen", cat));
+            Activities.Add(new Activity("Kim Nielsen", cat));
+            Activities.Add(new Activity("Kathrine Hansen", cat));
         }
     }
 }

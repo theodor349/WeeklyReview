@@ -30,13 +30,11 @@ namespace WeeklyReview.Client.Pages
     public partial class EnterActivity
     {
         [Inject]
-        public IWeeklyReviewService WRService { get; set; }
+        public IWeeklyReviewService _WRService { get; set; }
 
         public DateTime ViewDate = DateTime.Now;
-        public List<ScheduleViewModel> DataSource { get; set; } = new List<ScheduleViewModel>();
-        public List<CategoryViewModel> Categories { get; set; } = new List<CategoryViewModel>();
-        public List<Activity> Activities => WRService.Activities;
-        public List<Activity> Socials => WRService.Activities;
+        public List<Activity> Activities => _WRService.Activities;
+        public List<string> Socials => _WRService.Socials;
         public bool IsDiscord { get; set; }
         public List<string> InputActivities { get; set; } = new List<string>();
         public List<string> InputSocials { get; set; } = new List<string>();
@@ -44,14 +42,19 @@ namespace WeeklyReview.Client.Pages
         protected override void OnParametersSet()
         {
             base.OnParametersSet();
-            if (DataSource.Count == 0)
-            {
-                GenerateViewModels();
-                TimeUpdated();
-            }
+            TimeUpdated();
 
             AddInputActivity();
             AddInputSocial();
+        }
+
+        public void SubmitEntry()
+        {
+            var submittedActivities = new List<string>();
+            submittedActivities.AddRange(InputActivities);
+            submittedActivities.AddRange(InputSocials.ConvertAll(x => IsDiscord ? "Discord: " + x : "Social: " + x));
+
+            _WRService.AddEntry(ViewDate, submittedActivities);
         }
 
         private void AddInputActivity()
@@ -84,24 +87,6 @@ namespace WeeklyReview.Client.Pages
             minutes /= 15;
             minutes *= 15;
             ViewDate = ViewDate.AddMinutes(minutes - ViewDate.Minute);
-        }
-
-        private void GenerateViewModels()
-        {
-            foreach (var cat in WRService.Categories)
-            {
-                Categories.Add(new CategoryViewModel(cat));
-            }
-
-            foreach (var entry in WRService.Entries)
-            {
-                var s = new ScheduleViewModel();
-                s.Subject = entry.Activities.ConvertAll(x => x.Name).Aggregate((x, y) => x + " + " + y);
-                s.StartTime = entry.StarTime;
-                s.EndTime = entry.EndTime;
-                s.CategoryId = entry.Activities.ConvertAll(x => x.Category).MaxBy(x => x.Priority).Id;
-                DataSource.Add(s);
-            }
         }
     }
 }

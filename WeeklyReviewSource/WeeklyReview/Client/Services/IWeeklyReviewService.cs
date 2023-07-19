@@ -7,7 +7,8 @@ namespace WeeklyReview.Client.Services
         List<Activity> Activities { get; }
         List<Category> Categories { get; }
         List<Entry> Entries { get; }
+        List<string> Socials { get; }
 
-        void AddEntry(DateTime date);
+        void AddEntry(DateTime date, List<string> activities);
     }
 }
