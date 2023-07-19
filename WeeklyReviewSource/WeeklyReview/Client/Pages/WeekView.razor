@@ -17,6 +17,15 @@
             <ScheduleResource TItem="CategoryViewModel" TValue="int" DataSource="@Categories" Field="CategoryId" IdField="Id" ColorField="Color"></ScheduleResource>
         </ScheduleResources>
         <ScheduleEventSettings DataSource="@DataSource" IgnoreWhitespace="true">
+            <Template>
+                <div class="e-appointment-details">
+                    <div class="e-subject">@((context as ScheduleViewModel).Subject)</div>
+                    @if((context as ScheduleViewModel).Duration.TotalMinutes > 15)
+                    {
+                        <div class="e-time">@((context as ScheduleViewModel).StartTime.ToString("HH:mm")) - @((context as ScheduleViewModel).EndTime.ToString("HH:mm"))</div>
+                    }
+                </div>
+            </Template>
         </ScheduleEventSettings>
         <ScheduleViews>
             <ScheduleView Option="View.Day"></ScheduleView>

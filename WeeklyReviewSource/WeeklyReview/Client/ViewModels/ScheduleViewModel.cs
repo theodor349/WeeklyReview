@@ -1,4 +1,6 @@
-﻿namespace WeeklyReview.Client.ViewModels
+﻿using Syncfusion.PdfExport;
+
+namespace WeeklyReview.Client.ViewModels
 {
     public class ScheduleViewModel
     {
@@ -6,5 +8,7 @@
         public int CategoryId { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
+
+        public TimeSpan Duration => EndTime - StartTime;
     }
 }
