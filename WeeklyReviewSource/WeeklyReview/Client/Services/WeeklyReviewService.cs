@@ -34,11 +34,6 @@ namespace WeeklyReview.Client.Services
 
         public void AddEntry(DateTime date, List<string> activities)
         {
-            if (activities is null)
-            {
-                throw new ArgumentNullException(nameof(activities));
-            }
-
             var r = new Random();
             var e = new Entry();
             e.StarTime = date;
