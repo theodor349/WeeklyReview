@@ -3,36 +3,29 @@
 
 <PageTitle>Week View</PageTitle>
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-xl-3 col-xxl-2">
-            <EnterActivity></EnterActivity>
-        </div>
-        <div class="col-xl-9 col-xxl-10">
-            <SfSchedule TValue="ScheduleViewModel" Width="100%" Height="calc(100vh - 4.6rem)" @bind-SelectedDate="@ViewDate"
-                        EnableAutoRowHeight="true"
-                        AllowMultiCellSelection="false" AllowMultiRowSelection="false" AllowDragAndDrop="false" AllowResizing="false"
-                        DateFormat="yyyy-MM-dd" TimeFormat="HH:mm" StartHour="06:00" FirstDayOfWeek="1" ShowWeekNumber="true">
-                <ScheduleTimeScale Interval="60" SlotCount="4"></ScheduleTimeScale>
-                <ScheduleTemplates>
-                    <DateHeaderTemplate>
-                        <div class="date-text">@(getDateHeaderText((context as TemplateContext).Date))</div>
-                    </DateHeaderTemplate>
-                </ScheduleTemplates>
-                <ScheduleResources>
-                    <ScheduleResource TItem="CategoryViewModel" TValue="int" DataSource="@Categories" Field="CategoryId" IdField="Id" ColorField="Color"></ScheduleResource>
-                </ScheduleResources>
-                <ScheduleEventSettings DataSource="@DataSource" IgnoreWhitespace="true">
-                </ScheduleEventSettings>
-                <ScheduleViews>
-                    <ScheduleView Option="View.Day"></ScheduleView>
-                    <ScheduleView Option="View.Week"></ScheduleView>
-                    <ScheduleView Option="View.WorkWeek"></ScheduleView>
-                    <ScheduleView Option="View.Month"></ScheduleView>
-                    <ScheduleView Option="View.Agenda"></ScheduleView>
-                </ScheduleViews>
-            </SfSchedule>
-        </div>
-    </div>
+    <SfSchedule TValue="ScheduleViewModel" Width="100%" Height="calc(100vh - 4.6rem)" @bind-SelectedDate="@ViewDate"
+                EnableAutoRowHeight="true"
+                AllowMultiCellSelection="false" AllowMultiRowSelection="false" AllowDragAndDrop="false" AllowResizing="false"
+                DateFormat="yyyy-MM-dd" TimeFormat="HH:mm" StartHour="06:00" FirstDayOfWeek="1" ShowWeekNumber="true">
+        <ScheduleTimeScale Interval="60" SlotCount="4"></ScheduleTimeScale>
+        <ScheduleTemplates>
+            <DateHeaderTemplate>
+                <div class="date-text">@(getDateHeaderText((context as TemplateContext).Date))</div>
+            </DateHeaderTemplate>
+        </ScheduleTemplates>
+        <ScheduleResources>
+            <ScheduleResource TItem="CategoryViewModel" TValue="int" DataSource="@Categories" Field="CategoryId" IdField="Id" ColorField="Color"></ScheduleResource>
+        </ScheduleResources>
+        <ScheduleEventSettings DataSource="@DataSource" IgnoreWhitespace="true">
+        </ScheduleEventSettings>
+        <ScheduleViews>
+            <ScheduleView Option="View.Day"></ScheduleView>
+            <ScheduleView Option="View.Week"></ScheduleView>
+            <ScheduleView Option="View.WorkWeek"></ScheduleView>
+            <ScheduleView Option="View.Month"></ScheduleView>
+            <ScheduleView Option="View.Agenda"></ScheduleView>
+        </ScheduleViews>
+    </SfSchedule>
 </div>
 
 @code{
