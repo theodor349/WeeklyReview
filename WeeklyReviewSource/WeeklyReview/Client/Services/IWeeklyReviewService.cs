@@ -9,6 +9,6 @@ namespace WeeklyReview.Client.Services
         List<Entry> Entries { get; }
         List<string> Socials { get; }
 
-        void AddEntry(DateTime date, List<string> activities);
+        Task AddEntry(DateTime date, List<string> activities);
     }
 }

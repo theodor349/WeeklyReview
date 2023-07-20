@@ -3,27 +3,37 @@ using System.Drawing;
 using WeeklyReview.Client.Services;
 using WeeklyReview.Client.ViewModels;
 using WeeklyReview.Shared.Models;
+using WeeklyReview.Shared.Services;
 
 namespace WeeklyReview.Client.Pages
 {
     public partial class WeekView
     {
         [Inject]
-        public IWeeklyReviewService WRService { get; set; }
+        public IDataService _dataService { get; set; }
 
         public DateTime InputDate = DateTime.Now;
         public DateTime ViewDate = DateTime.Now;
         public List<ScheduleViewModel> DataSource { get; set; } = new List<ScheduleViewModel>();
         public List<CategoryViewModel> Categories { get; set; } = new List<CategoryViewModel>();
-        public List<Activity> Activities => WRService.Activities;
+        public List<Activity> Activities
+        {
+            get
+            {
+                var task = _dataService.GetActivities();
+                task.Wait();
+                return task.Result.ToList();
+            }
+        }
         public string EnteredActivity { get; set; }
 
-        protected override void OnParametersSet()
+        protected override async Task OnParametersSetAsync()
         {
-            base.OnParametersSet();
-            if(DataSource.Count == 0 ) 
+            await base.OnParametersSetAsync();
+         
+            if (DataSource.Count == 0 ) 
             {
-                GenerateViewModels();
+                await GenerateViewModels();
                 TimeUpdated();
             }
         }
@@ -36,14 +46,14 @@ namespace WeeklyReview.Client.Pages
             ViewDate.AddMinutes(minutes - ViewDate.Minute);
         }
 
-        private void GenerateViewModels()
+        private async Task GenerateViewModels()
         {
-            foreach (var cat in WRService.Categories)
+            foreach (var cat in await _dataService.GetCategories())
             {
                 Categories.Add(new CategoryViewModel(cat));
             }
 
-            foreach (var entry in WRService.Entries)
+            foreach (var entry in await _dataService.GetEntries())
             {
                 var s = new ScheduleViewModel();
                 s.Subject = entry.Activities.ConvertAll(x => x.Name).Aggregate((x, y) => x + " + " + y);

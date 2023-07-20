@@ -14,7 +14,7 @@ namespace WeeklyReview.Shared.Services
     public class EntryParserService : IEntryParserService
     {
         public (List<Activity> usedActivities, List<Category> usedCategories, List<Activity> newActivities, List<Category> newCategories)
-            ParseEntries(List<string> entries, List<Activity> activities, List<Category> categories, Category defaultCategory)
+            ParseEntries(IEnumerable<string> entries, IEnumerable<Activity> activities, IEnumerable<Category> categories, Category defaultCategory)
         {
             RegexOptions options = RegexOptions.None;
             Regex regex = new Regex("[ ]{2,}", options);

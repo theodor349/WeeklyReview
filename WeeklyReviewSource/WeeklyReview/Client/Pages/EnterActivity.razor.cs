@@ -24,20 +24,41 @@ using Syncfusion.Blazor.DropDowns;
 using WeeklyReview.Client.ViewModels;
 using WeeklyReview.Shared.Models;
 using WeeklyReview.Client.Services;
+using WeeklyReview.Shared.Services;
 
 namespace WeeklyReview.Client.Pages
 {
     public partial class EnterActivity
     {
         [Inject]
-        public IWeeklyReviewService _WRService { get; set; }
+        public IDataService DataService { get; set; }
+        [Inject]
+        public IEntryAdderService EntryAdderService { get; set; }
 
         public DateTime ViewDate = DateTime.Now;
-        public List<Activity> Activities => _WRService.Activities;
-        public List<string> Socials => _WRService.Socials;
         public bool IsDiscord { get; set; }
         public List<string> InputActivities { get; set; } = new List<string>();
         public List<string> InputSocials { get; set; } = new List<string>();
+
+        public List<Activity> Activities
+        {
+            get
+            {
+                var task = DataService.GetActivities();
+                task.Wait();
+                return task.Result.ToList();
+            }
+        }
+
+        public List<string> Socials
+        {
+            get
+            {
+                var task = DataService.GetSocials();
+                task.Wait();
+                return task.Result.ToList();
+            }
+        }
 
         protected override void OnParametersSet()
         {
@@ -48,13 +69,18 @@ namespace WeeklyReview.Client.Pages
             AddInputSocial();
         }
 
-        public void SubmitEntry()
+        public async Task SubmitEntry()
         {
             var submittedActivities = new List<string>();
             submittedActivities.AddRange(InputActivities.Where(x => !string.IsNullOrWhiteSpace(x)));
             submittedActivities.AddRange(InputSocials.Where(x => !string.IsNullOrWhiteSpace(x)).ToList().ConvertAll(x => IsDiscord ? "Discord: " + x : "Social: " + x));
 
-            _WRService.AddEntry(ViewDate, submittedActivities);
+            await EntryAdderService.AddEntry(ViewDate, submittedActivities);
+
+            for (int i = 0; i < InputActivities.Count(); i++)
+                RemoveInputActivity();
+            for (int i = 0; i < InputSocials.Count(); i++)
+                RemoveInputSocial();
         }
 
         private void AddInputActivity()

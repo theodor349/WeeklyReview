@@ -9,20 +9,35 @@ using WeeklyReview.Shared.Services;
 
 namespace WeeklyReview.Client.Services
 {
-    public class WeeklyReviewService : IWeeklyReviewService
+    public class DataService : IDataService
     {
-        private IEntryParserService _entryParser { get; set; }
-
         public List<Entry> Entries { get; } = new List<Entry>();
         public List<Activity> Activities { get; } = new List<Activity>();
         public List<string> Socials { get; } = new List<string>();
         public List<Category> Categories { get; } = new List<Category>();
 
-        public WeeklyReviewService(IEntryParserService entryParser)
+        public DataService()
         {
-            _entryParser = entryParser;
             GenerateData();
         }
+
+        public Task<IEnumerable<Activity>> GetActivities() => Task.FromResult((IEnumerable<Activity>)Activities);
+        public Task<IEnumerable<Category>> GetCategories() => Task.FromResult((IEnumerable<Category>)Categories);
+        public Task AddActivities(IEnumerable<Activity> activities) => Task.Run(() => 
+        {
+            Activities.AddRange(activities);
+            GenerateSocials();
+        });
+        public Task AddCategories(IEnumerable<Category> categories) => Task.Run(() => Categories.AddRange(categories));
+        public Task<Category> GetDefaultCategory() => Task.FromResult(Categories.First());
+        public Task<Entry?> GetBeforeEntry(DateTime date) => Task.FromResult(Entries.Where(x => x.StarTime < date).MaxBy(x => x.StarTime));
+        public Task<Entry?> GetAfterEntry(DateTime date) => Task.FromResult(Entries.Where(x => x.StarTime > date).MinBy(x => x.StarTime));
+        public Task<Entry?> GetEqualEntry(DateTime date) => Task.FromResult(Entries.FirstOrDefault(x => x.StarTime == date));
+        public Task<Entry?> GetBeforeOrEqualEntry(DateTime date) => Task.FromResult(Entries.Where(x => x.StarTime <= date).MaxBy(x => x.StarTime));
+        public Task AddEntry(Entry entry) => Task.Run(() => Entries.Add(entry));
+        public Task RemoveEntry(Entry entry) => Task.Run(() => Entries.RemoveAll(x => x.Id == entry.Id));
+        public Task<IEnumerable<Entry>> GetEntries() => Task.FromResult((IEnumerable<Entry>)Entries);
+        public Task<IEnumerable<string>> GetSocials() => Task.FromResult((IEnumerable<string>)Socials);
 
         private void GenerateData()
         {
@@ -36,57 +51,6 @@ namespace WeeklyReview.Client.Services
             Socials.Clear();
             Socials.AddRange(Activities.Where(x => x.Category.Name == "Social").ToList().ConvertAll(x => x.Name.Substring(8)));
             Socials.AddRange(Activities.Where(x => x.Category.Name == "Discord").ToList().ConvertAll(x => x.Name.Substring(9)).Where(x => !Socials.Contains(x)));
-        }
-
-        public void AddEntry(DateTime date, List<string> activities)
-        {
-            var res = _entryParser.ParseEntries(activities, Activities, Categories, Categories[0]);
-            bool isEmpty = res.usedActivities.Count() == 0;
-
-            if (isEmpty)
-                HandleEmpty(date);
-            else
-                HandleNewEntry(date, res);
-        }
-
-        private void HandleNewEntry(DateTime date, (List<Activity> usedActivities, List<Category> usedCategories, List<Activity> newActivities, List<Category> newCategories) res)
-        {
-            Activities.AddRange(res.newActivities);
-            Categories.AddRange(res.newCategories);
-            GenerateSocials();
-
-            var endTime = date.AddDays(1);
-            var otherEntry = Entries.Where(x => x.StarTime <= date).MaxBy(x => x.StarTime);
-            if (otherEntry is not null)
-            {
-                endTime = otherEntry.EndTime;
-                otherEntry.EndTime = date;
-                if (otherEntry.StarTime == date)
-                    Entries.RemoveAll(x => x.Id == otherEntry.Id);
-            }
-
-            var e = new Entry();
-            e.StarTime = date;
-            e.EndTime = endTime;
-            e.Entered = DateTime.Now;
-            e.Activities.AddRange(res.usedActivities);
-            Entries.Add(e);
-        }
-
-        private void HandleEmpty(DateTime date)
-        {
-            var overriddenEntry = Entries.FirstOrDefault(x => x.StarTime == date);
-            if (overriddenEntry is null)
-                return;
-            
-            Entries.RemoveAll(x => x.Id == overriddenEntry.Id);
-
-            var beforeEntry = Entries.Where(x => x.StarTime < date).MaxBy(x => x.StarTime);
-            var afterEntry = Entries.Where(x => x.StarTime > date).MinBy(x => x.StarTime);
-            if(beforeEntry is null || afterEntry is null) 
-                return;
-
-            beforeEntry.EndTime = afterEntry.StarTime;
         }
 
         private void GenerateEntriesV2()
@@ -107,7 +71,7 @@ namespace WeeklyReview.Client.Services
                 date = GenerateMonday(date);
             }
         }
-
+        
         private DateTime GenerateMonday(DateTime date)
         {
             date = AddEntry(date, 30, "Food: Breakfast");
@@ -141,7 +105,7 @@ namespace WeeklyReview.Client.Services
         {
             var cat = new Category("", 0, Color.WhiteSmoke);
             Categories.Add(cat);
-            
+
             cat = new Category("Exercise", 100, Color.DarkGreen);
             Categories.Add(cat);
             Activities.Add(new Activity("Bike", cat));
