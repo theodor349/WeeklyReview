@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Syncfusion.Blazor.Charts.Internal;
+using Syncfusion.Blazor.Grids;
 using Syncfusion.Blazor.HeatMap.Internal;
 using System.Drawing;
 using WeeklyReview.Client.ViewModels;
@@ -39,18 +41,28 @@ namespace WeeklyReview.Client.Services
         public void AddEntry(DateTime date, List<string> activities)
         {
             var res = _entryParser.ParseEntries(activities, Activities, Categories, Categories[0]);
+            bool isEmpty = res.usedActivities.Count() == 0;
+
+            if (isEmpty)
+                HandleEmpty(date);
+            else
+                HandleNewEntry(date, res);
+        }
+
+        private void HandleNewEntry(DateTime date, (List<Activity> usedActivities, List<Category> usedCategories, List<Activity> newActivities, List<Category> newCategories) res)
+        {
             Activities.AddRange(res.newActivities);
             Categories.AddRange(res.newCategories);
             GenerateSocials();
 
             var endTime = date.AddDays(1);
             var otherEntry = Entries.Where(x => x.StarTime <= date).MaxBy(x => x.StarTime);
-            if(otherEntry is not null)
+            if (otherEntry is not null)
             {
                 endTime = otherEntry.EndTime;
                 otherEntry.EndTime = date;
                 if (otherEntry.StarTime == date)
-                    Entries.Remove(otherEntry);
+                    Entries.RemoveAll(x => x.Id == otherEntry.Id);
             }
 
             var e = new Entry();
@@ -59,6 +71,22 @@ namespace WeeklyReview.Client.Services
             e.Entered = DateTime.Now;
             e.Activities.AddRange(res.usedActivities);
             Entries.Add(e);
+        }
+
+        private void HandleEmpty(DateTime date)
+        {
+            var overriddenEntry = Entries.FirstOrDefault(x => x.StarTime == date);
+            if (overriddenEntry is null)
+                return;
+            
+            Entries.RemoveAll(x => x.Id == overriddenEntry.Id);
+
+            var beforeEntry = Entries.Where(x => x.StarTime < date).MaxBy(x => x.StarTime);
+            var afterEntry = Entries.Where(x => x.StarTime > date).MinBy(x => x.StarTime);
+            if(beforeEntry is null || afterEntry is null) 
+                return;
+
+            beforeEntry.EndTime = afterEntry.StarTime;
         }
 
         private void GenerateEntriesV2()

@@ -83,6 +83,7 @@ namespace WeeklyReview.Client.Pages
 
         public void TimeUpdated()
         {
+            ViewDate = new DateTime(ViewDate.Year, ViewDate.Month, ViewDate.Day, ViewDate.Hour, ViewDate.Minute, 0);
             int minutes = ViewDate.Minute;
             minutes /= 15;
             minutes *= 15;

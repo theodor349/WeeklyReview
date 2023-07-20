@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -30,20 +31,20 @@ namespace WeeklyReview.Shared.Services
                 var activity = trimmedEntry;
                 var category = splits.Length > 1 ? splits[0] : "";
 
-                var a = activities.FirstOrDefault(x => x.Name == activity);
-                if (a is null)
-                {
-                    a = new Activity(activity, defaultCategory, false);
-                    newActivities.Add(a);
-                }
-                usedActivities.Add(a);
-
-                var c = categories.FirstOrDefault(x => x.Name == category);
+                var c = category.Length == 0 ? defaultCategory : categories.FirstOrDefault(x => x.Name == category);
                 if (c is null)
                 {
                     c = new Category(splits[0], 0, Color.White);
                     newCategories.Add(c);
                 }
+
+                var a = activities.FirstOrDefault(x => x.Name == activity);
+                if (a is null)
+                {
+                    a = new Activity(activity, c, false);
+                    newActivities.Add(a);
+                }
+                usedActivities.Add(a);
                 usedCategories.Add(c);
             }
 
