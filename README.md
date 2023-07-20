@@ -10,10 +10,10 @@ Functionality includes
  - Show what the user has been doing over a given period
 
 # Techstack
- - API: Azure Functions
  - Authentication: Azure Active Directory 
  - Database: MS SQL
  - Frontend: Blazor PWA
+ - Backend: .Net API
 
 # Documentation
  - [Azure Setup](https://github.com/theodor349/WeeklyReview/blob/main/Documentation/AzureSetup.md)
