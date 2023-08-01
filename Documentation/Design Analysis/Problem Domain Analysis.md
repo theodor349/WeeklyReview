@@ -109,7 +109,7 @@ Furthermore it must give correct numbers with regard to how much time and how ma
 ```mermaid
 classDiagram
   Entry "*" *-- "*" Activity 
-  Activity "2" *-- "*" ActivityChange 
+  ActivityChange "*" *-- "2" Activity 
   Category "1" *-- "*" Activity
   Query "*" *-- "*" Activity
   Query "*" *-- "*" Category
