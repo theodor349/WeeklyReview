@@ -177,7 +177,7 @@ stateDiagram-v2
     Activity --> [*]: Activity Deleted
     Activity --> [*]: Activity Converted to another
     Activity --> [*]: Activity Changed Name
-    [*] --> Activity: Activity Change Rolled Back
+    [*] --> Activity: Activity Conversion Rolled Back
 ```
 
 ### Category
