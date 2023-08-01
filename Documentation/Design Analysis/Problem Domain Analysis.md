@@ -32,6 +32,7 @@ Furthermore it must give correct numbers with regard to how much time and how ma
 - Entry
   - Contains time information and what Activity is started
   - If overwritten, then it should not be deleted, rather it should be flagged as deleted
+  - When a new one is created and there are no entry after it, set the `EndTime` to to `StarTime.AddDays(1)` 
   - E.g. At 10:15 I was on call with the doctor, while out walking
 - Activity
   - Is a label used to uniquely identify an Activity 
@@ -89,7 +90,7 @@ Furthermore it must give correct numbers with regard to how much time and how ma
 | --------------                         | :-:   | :-:      | :-:          | :-:      | :-:   |
 | Activity Logged                        | +     | *        |              |          |       |
 | Activity Deleted by User               |       | +        |              | *        | *     |
-| Activity Converted to a new Activity   |       | *        | *            |          |       |
+| Activity Converted to another Activity |       | *        | *            |          |       |
 | Activity Conversion Rolled Back        |       | *        | *            |          |       |
 | Category Created                       |       |          |              | +        |       |
 | Category Changed Name                  |       |          |              | *        |       |
@@ -115,6 +116,7 @@ classDiagram
   Query "*" *-- "*" Category
 
   class Entry {
+    + int Id
     + DateTime Start
     + DateTime End
     + DateTime Entered
@@ -128,6 +130,7 @@ classDiagram
     + void ConvertToAnother()
   }
   class ActivityChange{
+    + int Id
     + int From
     + int To
     + DateTime ChangeDate
@@ -175,9 +178,18 @@ And it will come back to existance if the conversion is rolled back.
 stateDiagram-v2
     [*] --> Activity: Activity Logged
     Activity --> [*]: Activity Deleted
-    Activity --> [*]: Activity Converted to another
+    Activity --> [*]: Activity Converted to Another
     Activity --> [*]: Activity Changed Name
     [*] --> Activity: Activity Conversion Rolled Back
+```
+
+### ActivityChange
+An ActivityChange is created when an Activity is converted/renamed to another.
+It is deleted when it is rolled back.
+```mermaid
+stateDiagram-v2
+    [*] --> ActivityChange: Activity Converted to Another
+    ActivityChange --> [*]: Activity Conversion Rolled Back
 ```
 
 ### Category

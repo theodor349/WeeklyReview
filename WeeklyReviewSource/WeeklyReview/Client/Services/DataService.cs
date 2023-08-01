@@ -4,39 +4,39 @@ using Syncfusion.Blazor.Grids;
 using Syncfusion.Blazor.HeatMap.Internal;
 using System.Drawing;
 using WeeklyReview.Client.ViewModels;
-using WeeklyReview.Shared.Models;
+using WeeklyReview.Shared.Models.DTOs;
 using WeeklyReview.Shared.Services;
 
 namespace WeeklyReview.Client.Services
 {
     public class DataService : IDataService
     {
-        public List<Entry> Entries { get; } = new List<Entry>();
-        public List<Activity> Activities { get; } = new List<Activity>();
+        public List<EntryDto> Entries { get; } = new List<EntryDto>();
+        public List<ActivityDto> Activities { get; } = new List<ActivityDto>();
         public List<string> Socials { get; } = new List<string>();
-        public List<Category> Categories { get; } = new List<Category>();
+        public List<CategoryDto> Categories { get; } = new List<CategoryDto>();
 
         public DataService()
         {
             GenerateData();
         }
 
-        public Task<IEnumerable<Activity>> GetActivities() => Task.FromResult((IEnumerable<Activity>)Activities);
-        public Task<IEnumerable<Category>> GetCategories() => Task.FromResult((IEnumerable<Category>)Categories);
-        public Task AddActivities(IEnumerable<Activity> activities) => Task.Run(() => 
+        public Task<IEnumerable<ActivityDto>> GetActivities() => Task.FromResult((IEnumerable<ActivityDto>)Activities);
+        public Task<IEnumerable<CategoryDto>> GetCategories() => Task.FromResult((IEnumerable<CategoryDto>)Categories);
+        public Task AddActivities(IEnumerable<ActivityDto> activities) => Task.Run(() => 
         {
             Activities.AddRange(activities);
             GenerateSocials();
         });
-        public Task AddCategories(IEnumerable<Category> categories) => Task.Run(() => Categories.AddRange(categories));
-        public Task<Category> GetDefaultCategory() => Task.FromResult(Categories.First());
-        public Task<Entry?> GetBeforeEntry(DateTime date) => Task.FromResult(Entries.Where(x => x.StarTime < date).MaxBy(x => x.StarTime));
-        public Task<Entry?> GetAfterEntry(DateTime date) => Task.FromResult(Entries.Where(x => x.StarTime > date).MinBy(x => x.StarTime));
-        public Task<Entry?> GetEqualEntry(DateTime date) => Task.FromResult(Entries.FirstOrDefault(x => x.StarTime == date));
-        public Task<Entry?> GetBeforeOrEqualEntry(DateTime date) => Task.FromResult(Entries.Where(x => x.StarTime <= date).MaxBy(x => x.StarTime));
-        public Task AddEntry(Entry entry) => Task.Run(() => Entries.Add(entry));
-        public Task RemoveEntry(Entry entry) => Task.Run(() => Entries.RemoveAll(x => x.Id == entry.Id));
-        public Task<IEnumerable<Entry>> GetEntries() => Task.FromResult((IEnumerable<Entry>)Entries);
+        public Task AddCategories(IEnumerable<CategoryDto> categories) => Task.Run(() => Categories.AddRange(categories));
+        public Task<CategoryDto> GetDefaultCategory() => Task.FromResult(Categories.First());
+        public Task<EntryDto?> GetBeforeEntry(DateTime date) => Task.FromResult(Entries.Where(x => x.StarTime < date).MaxBy(x => x.StarTime));
+        public Task<EntryDto?> GetAfterEntry(DateTime date) => Task.FromResult(Entries.Where(x => x.StarTime > date).MinBy(x => x.StarTime));
+        public Task<EntryDto?> GetEqualEntry(DateTime date) => Task.FromResult(Entries.FirstOrDefault(x => x.StarTime == date));
+        public Task<EntryDto?> GetBeforeOrEqualEntry(DateTime date) => Task.FromResult(Entries.Where(x => x.StarTime <= date).MaxBy(x => x.StarTime));
+        public Task AddEntry(EntryDto entry) => Task.Run(() => Entries.Add(entry));
+        public Task RemoveEntry(EntryDto entry) => Task.Run(() => Entries.RemoveAll(x => x.Id == entry.Id));
+        public Task<IEnumerable<EntryDto>> GetEntries() => Task.FromResult((IEnumerable<EntryDto>)Entries);
         public Task<IEnumerable<string>> GetSocials() => Task.FromResult((IEnumerable<string>)Socials);
 
         private void GenerateData()
@@ -92,7 +92,7 @@ namespace WeeklyReview.Client.Services
 
         private DateTime AddEntry(DateTime start, int minutes, string activity)
         {
-            var entry = new Entry();
+            var entry = new EntryDto();
             entry.StarTime = start;
             entry.EndTime = start.AddMinutes(minutes);
             entry.Activities.Add(Activities.First(x => x.Name == activity));
@@ -103,73 +103,73 @@ namespace WeeklyReview.Client.Services
 
         private void GenerateCategoriesAndActivities()
         {
-            var cat = new Category("", 0, Color.WhiteSmoke);
+            var cat = new CategoryDto("", 0, Color.WhiteSmoke);
             Categories.Add(cat);
 
-            cat = new Category("Exercise", 100, Color.DarkGreen);
+            cat = new CategoryDto("Exercise", 100, Color.DarkGreen);
             Categories.Add(cat);
-            Activities.Add(new Activity("Bike", cat));
-            Activities.Add(new Activity("Run", cat));
-            Activities.Add(new Activity("Swimming", cat));
+            Activities.Add(new ActivityDto("Bike", cat));
+            Activities.Add(new ActivityDto("Run", cat));
+            Activities.Add(new ActivityDto("Swimming", cat));
 
-            cat = new Category("Transportation", 10, Color.DeepSkyBlue);
+            cat = new CategoryDto("Transportation", 10, Color.DeepSkyBlue);
             Categories.Add(cat);
-            Activities.Add(new Activity("Car", cat));
-            Activities.Add(new Activity("Bus", cat));
-            Activities.Add(new Activity("Train", cat));
-            Activities.Add(new Activity("Airplane", cat));
+            Activities.Add(new ActivityDto("Car", cat));
+            Activities.Add(new ActivityDto("Bus", cat));
+            Activities.Add(new ActivityDto("Train", cat));
+            Activities.Add(new ActivityDto("Airplane", cat));
 
-            cat = new Category("Sleep", 1000, Color.RebeccaPurple);
+            cat = new CategoryDto("Sleep", 1000, Color.RebeccaPurple);
             Categories.Add(cat);
-            Activities.Add(new Activity("Sleep", cat, false));
+            Activities.Add(new ActivityDto("Sleep", cat, false));
 
-            cat = new Category("School", 100, Color.HotPink);
+            cat = new CategoryDto("School", 100, Color.HotPink);
             Categories.Add(cat);
-            Activities.Add(new Activity("English", cat));
-            Activities.Add(new Activity("Math", cat));
-            Activities.Add(new Activity("Physics", cat));
-            Activities.Add(new Activity("Programming", cat));
-            Activities.Add(new Activity("Classes", cat));
+            Activities.Add(new ActivityDto("English", cat));
+            Activities.Add(new ActivityDto("Math", cat));
+            Activities.Add(new ActivityDto("Physics", cat));
+            Activities.Add(new ActivityDto("Programming", cat));
+            Activities.Add(new ActivityDto("Classes", cat));
 
-            cat = new Category("Food", 100, Color.YellowGreen);
+            cat = new CategoryDto("Food", 100, Color.YellowGreen);
             Categories.Add(cat);
-            Activities.Add(new Activity("Breakfast", cat));
-            Activities.Add(new Activity("Lunch", cat));
-            Activities.Add(new Activity("Dinner", cat));
-            Activities.Add(new Activity("Snacking", cat));
+            Activities.Add(new ActivityDto("Breakfast", cat));
+            Activities.Add(new ActivityDto("Lunch", cat));
+            Activities.Add(new ActivityDto("Dinner", cat));
+            Activities.Add(new ActivityDto("Snacking", cat));
 
-            cat = new Category("Movie", 100, Color.Orange);
+            cat = new CategoryDto("Movie", 100, Color.Orange);
             Categories.Add(cat);
-            Activities.Add(new Activity("21 Jump Street", cat));
-            Activities.Add(new Activity("Captin America The First Avengers", cat));
-            Activities.Add(new Activity("Edge of Tomorrow", cat));
+            Activities.Add(new ActivityDto("21 Jump Street", cat));
+            Activities.Add(new ActivityDto("Captin America The First Avengers", cat));
+            Activities.Add(new ActivityDto("Edge of Tomorrow", cat));
 
-            cat = new Category("Series", 100, Color.Orange);
+            cat = new CategoryDto("Series", 100, Color.Orange);
             Categories.Add(cat);
-            Activities.Add(new Activity("Black Sails", cat));
-            Activities.Add(new Activity("Designated Survivor", cat));
-            Activities.Add(new Activity("Salvation", cat));
+            Activities.Add(new ActivityDto("Black Sails", cat));
+            Activities.Add(new ActivityDto("Designated Survivor", cat));
+            Activities.Add(new ActivityDto("Salvation", cat));
 
-            cat = new Category("Administration", 100000, Color.Green);
+            cat = new CategoryDto("Administration", 100000, Color.Green);
             Categories.Add(cat);
-            Activities.Add(new Activity("Planning", cat));
-            Activities.Add(new Activity("Reviewing Week", cat));
-            Activities.Add(new Activity("Todolist", cat));
+            Activities.Add(new ActivityDto("Planning", cat));
+            Activities.Add(new ActivityDto("Reviewing Week", cat));
+            Activities.Add(new ActivityDto("Todolist", cat));
 
-            cat = new Category("Social", 1000000, Color.Blue);
+            cat = new CategoryDto("Social", 1000000, Color.Blue);
             Categories.Add(cat);
-            Activities.Add(new Activity("Theodor Risager", cat));
-            Activities.Add(new Activity("Kim Larsen", cat));
-            Activities.Add(new Activity("Lene Sørensen", cat));
-            Activities.Add(new Activity("John Doe", cat));
-            Activities.Add(new Activity("Anders Andersen", cat));
+            Activities.Add(new ActivityDto("Theodor Risager", cat));
+            Activities.Add(new ActivityDto("Kim Larsen", cat));
+            Activities.Add(new ActivityDto("Lene Sørensen", cat));
+            Activities.Add(new ActivityDto("John Doe", cat));
+            Activities.Add(new ActivityDto("Anders Andersen", cat));
 
-            cat = new Category("Discord", 1000000, Color.Blue);
+            cat = new CategoryDto("Discord", 1000000, Color.Blue);
             Categories.Add(cat);
-            Activities.Add(new Activity("Theodor Risager", cat));
-            Activities.Add(new Activity("Lene Sørensen", cat));
-            Activities.Add(new Activity("Kim Nielsen", cat));
-            Activities.Add(new Activity("Kathrine Hansen", cat));
+            Activities.Add(new ActivityDto("Theodor Risager", cat));
+            Activities.Add(new ActivityDto("Lene Sørensen", cat));
+            Activities.Add(new ActivityDto("Kim Nielsen", cat));
+            Activities.Add(new ActivityDto("Kathrine Hansen", cat));
         }
     }
 }

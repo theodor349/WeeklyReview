@@ -22,9 +22,9 @@ using Syncfusion.Blazor.Buttons;
 using Syncfusion.Blazor.SplitButtons;
 using Syncfusion.Blazor.DropDowns;
 using WeeklyReview.Client.ViewModels;
-using WeeklyReview.Shared.Models;
 using WeeklyReview.Client.Services;
 using WeeklyReview.Shared.Services;
+using WeeklyReview.Shared.Models.DTOs;
 
 namespace WeeklyReview.Client.Pages
 {
@@ -40,7 +40,7 @@ namespace WeeklyReview.Client.Pages
         public List<string> InputActivities { get; set; } = new List<string>();
         public List<string> InputSocials { get; set; } = new List<string>();
 
-        public List<Activity> Activities
+        public List<ActivityDto> Activities
         {
             get
             {

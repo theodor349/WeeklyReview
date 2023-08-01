@@ -1,13 +1,13 @@
 ﻿using WeeklyReview.Shared.Extensions;
-using WeeklyReview.Shared.Models;
+using WeeklyReview.Shared.Models.DTOs;
 
 namespace WeeklyReview.Client.ViewModels
 {
     public class CategoryViewModel
     {
-        private Category _category;
+        private CategoryDto _category;
 
-        public CategoryViewModel(Category category)
+        public CategoryViewModel(CategoryDto category)
         {
             _category = category;
         }

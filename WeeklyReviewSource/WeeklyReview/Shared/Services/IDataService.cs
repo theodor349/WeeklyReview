@@ -3,27 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WeeklyReview.Shared.Models;
+using WeeklyReview.Shared.Models.DTOs;
 
 namespace WeeklyReview.Shared.Services
 {
     public interface IDataService
     {
-        public Task AddActivities(IEnumerable<Activity> activities);
-        public Task AddCategories(IEnumerable<Category> categories);
+        public Task AddActivities(IEnumerable<ActivityDto> activities);
+        public Task AddCategories(IEnumerable<CategoryDto> categories);
 
-        public Task<IEnumerable<Entry>> GetEntries();
+        public Task<IEnumerable<EntryDto>> GetEntries();
         public Task<IEnumerable<string>> GetSocials();
-        public Task<IEnumerable<Activity>> GetActivities();
-        public Task<IEnumerable<Category>> GetCategories();
-        public Task<Category> GetDefaultCategory();
+        public Task<IEnumerable<ActivityDto>> GetActivities();
+        public Task<IEnumerable<CategoryDto>> GetCategories();
+        public Task<CategoryDto> GetDefaultCategory();
 
-        public Task<Entry?> GetBeforeEntry(DateTime date);
-        public Task<Entry?> GetAfterEntry(DateTime date);
-        public Task<Entry?> GetEqualEntry(DateTime date);
-        public Task<Entry?> GetBeforeOrEqualEntry(DateTime date);
+        public Task<EntryDto?> GetBeforeEntry(DateTime date);
+        public Task<EntryDto?> GetAfterEntry(DateTime date);
+        public Task<EntryDto?> GetEqualEntry(DateTime date);
+        public Task<EntryDto?> GetBeforeOrEqualEntry(DateTime date);
 
-        public Task AddEntry(Entry entry);
-        public Task RemoveEntry(Entry entry);
+        public Task AddEntry(EntryDto entry);
+        public Task RemoveEntry(EntryDto entry);
     }
 }
