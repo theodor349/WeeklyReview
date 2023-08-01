@@ -130,6 +130,7 @@ classDiagram
     + int From
     + int To
     + DateTime ChangeDate
+    + void RollBack()
   }
   class Category {
     + int Id
