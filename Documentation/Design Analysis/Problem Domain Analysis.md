@@ -31,10 +31,17 @@ Furthermore it must give correct numbers with regard to how much time and how ma
 ## Classes
 - Entry
   - Contains time information and what Activity is started
+  - If overwritten, then it should not be deleted, rather it should be flagged as deleted
   - E.g. At 10:15 I was on call with the doctor, while out walking
 - Activity
   - Is a label used to uniquely identify an Activity 
   - E.g. Calling the doctor or walking 
+- AcitivityChange
+  - Is used to keep track of what Activities have changed name 
+  - E.g. Fixing a spelling mistake 'Diner' -> 'Dinner
+  - E.g. Change 'Series' -> 'Movie' 
+  - Note, this is used when a rollback is needed. See `RollbackAcitivtyNameChange.cs` for the algorithm
+  - E.g You change 'Dinner' -> 'Lunch' by mistake and would like to rollback that change
 - Category
   - Is a collection of Activities
   - It is used to color the Activity, e.g. sports are green and watching Netflix might be orange
@@ -59,7 +66,8 @@ Furthermore it must give correct numbers with regard to how much time and how ma
     - It start a new Entry and ends another 
   - Deleted
     - Only possible if no entries reference this Activity 
-  - Converted to a new Activity
+  - Converted to a new Activity (or Rename)
+  - Rollback a name conversion
 - Category
   - Created
   - Changed Name
@@ -76,30 +84,32 @@ Furthermore it must give correct numbers with regard to how much time and how ma
   - Executed 
   - Deleted
 
-## Event Table
-| Event \ Object                         | Entry | Activity | Category | Query |
-| --------------                         | :-:   | :-:      | :-:      | :-:   |
-| Activity Logged                        | +     | *        |          |       |
-| Activity Deleted by User               |       | +        | *        | *     |
-| Activity Converted to a new Activity   |       | *        | *        | *     |
-| Category Created                       |       |          | +        |       |
-| Category Changed Name                  |       |          | *        |       |
-| Category Changed Color                 |       |          | *        |       |
-| Category Changed Priority              |       |          | *        |       |
-| Category Changed Activates             |       |          | *        | *     |
-| Category Deleted                       |       |          | +        | *     |
-| Query Created                          |       |          |          | +     |
-| Query Changed Name                     |       |          |          | *     |
-| Query Changed Activities               |       |          |          | *     |
-| Query Changed Categories               |       |          |          | *     |
-| Query Changed to Pulbic                |       |          |          | *     |
-| Query Executed                         |       |          |          | *     |
-| Query Deleted                          |       |          |          | +     |
+## Event Table|
+| Event \ Object                         | Entry | Activity |ActivityChange| Category | Query |
+| --------------                         | :-:   | :-:      | :-:          | :-:      | :-:   |
+| Activity Logged                        | +     | *        |              |          |       |
+| Activity Deleted by User               |       | +        |              | *        | *     |
+| Activity Converted to a new Activity   |       | *        | *            |          |       |
+| Activity Conversion Rolled Back        |       | *        | *            |          |       |
+| Category Created                       |       |          |              | +        |       |
+| Category Changed Name                  |       |          |              | *        |       |
+| Category Changed Color                 |       |          |              | *        |       |
+| Category Changed Priority              |       |          |              | *        |       |
+| Category Changed Activates             |       |          |              | *        | *     |
+| Category Deleted                       |       |          |              | +        | *     |
+| Query Created                          |       |          |              |          | +     |
+| Query Changed Name                     |       |          |              |          | *     |
+| Query Changed Activities               |       |          |              |          | *     |
+| Query Changed Categories               |       |          |              |          | *     |
+| Query Changed to Pulbic                |       |          |              |          | *     |
+| Query Executed                         |       |          |              |          | *     |
+| Query Deleted                          |       |          |              |          | +     |
 
 ## Class Diagram
 ```mermaid
 classDiagram
   Entry "*" *-- "*" Activity 
+  Activity "2" *-- "*" ActivityChange 
   Category "1" *-- "*" Activity
   Query "*" *-- "*" Activity
   Query "*" *-- "*" Category
@@ -108,13 +118,18 @@ classDiagram
     + DateTime Start
     + DateTime End
     + DateTime Entered
+    + bool Deleted
     + TimeSpan GetDuration()
   }
   class Activity {
     + int Id
     + string Name
-    + DateTime LastNameEdit
     + void ConvertToAnother()
+  }
+  class ActivityChange{
+    + int From
+    + int To
+    + DateTime ChangeDate
   }
   class Category {
     + int Id
