@@ -124,6 +124,7 @@ classDiagram
   class Activity {
     + int Id
     + string Name
+    + bool Deleted
     + void ConvertToAnother()
   }
   class ActivityChange{
@@ -168,13 +169,15 @@ stateDiagram-v2
 
 ### Activity
 An Activity is created when an unknown Activity is logged.
-It can be deleted by the user iff there are no entries that refernce it, or if it is converted to another Activity.
+It can be deleted by the user iff there are no entries that refernce it, or if it is converted/renamed to another Activity.
+And it will come back to existance if the conversion is rolled back.
 ```mermaid
 stateDiagram-v2
     [*] --> Activity: Activity Logged
     Activity --> [*]: Activity Deleted
     Activity --> [*]: Activity Converted to another
-    Activity --> Activity: Activity Changed Name
+    Activity --> [*]: Activity Changed Name
+    [*] --> Activity: Activity Change Rolled Back
 ```
 
 ### Category
