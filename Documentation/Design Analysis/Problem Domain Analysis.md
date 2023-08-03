@@ -128,8 +128,6 @@ classDiagram
     + void ConvertToAnother()
   }
   class ActivityChange{
-    + int From
-    + int To
     + DateTime ChangeDate
     + void RollBack()
   }
