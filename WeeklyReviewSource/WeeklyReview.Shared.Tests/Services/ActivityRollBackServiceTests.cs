@@ -22,7 +22,8 @@ namespace WeeklyReview.Shared.Tests.Services
 
         public ActivityRollBackServiceTests()
         {
-            _sut = new ActivityRollBackService();
+            IDataService dataservice = null;
+            _sut = new ActivityRollBackService(dataservice);
 
             _categories = new SortedDictionary<int, CategoryModel>()
             {
