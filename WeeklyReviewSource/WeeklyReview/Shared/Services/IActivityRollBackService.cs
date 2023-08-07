@@ -1,4 +1,4 @@
-﻿using WeeklyReview.Shared.Models;
+﻿using WeeklyReview.Database.Models;
 
 namespace WeeklyReview.Shared.Services
 {

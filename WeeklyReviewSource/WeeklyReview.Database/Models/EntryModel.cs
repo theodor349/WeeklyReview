@@ -1,4 +1,4 @@
-﻿namespace WeeklyReview.Shared.Models
+﻿namespace WeeklyReview.Database.Models
 {
     public class EntryModel
     {

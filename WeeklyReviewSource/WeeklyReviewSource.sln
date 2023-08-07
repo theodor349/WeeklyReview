@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeeklyReview.Client", "Week
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeeklyReview.Shared", "WeeklyReview\Shared\WeeklyReview.Shared.csproj", "{195C74BA-DDCA-44C2-BF65-4A02DFDAC649}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeeklyReview.Shared.Tests", "WeeklyReview.Shared.Tests\WeeklyReview.Shared.Tests.csproj", "{0D30DB01-2710-4845-8355-4387C15F681E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeeklyReview.Shared.Tests", "WeeklyReview.Shared.Tests\WeeklyReview.Shared.Tests.csproj", "{0D30DB01-2710-4845-8355-4387C15F681E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeeklyReview.Database", "WeeklyReview.Database\WeeklyReview.Database.csproj", "{D54934E3-25B1-47CD-8495-37EDEC981EC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{0D30DB01-2710-4845-8355-4387C15F681E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D30DB01-2710-4845-8355-4387C15F681E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D30DB01-2710-4845-8355-4387C15F681E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D54934E3-25B1-47CD-8495-37EDEC981EC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D54934E3-25B1-47CD-8495-37EDEC981EC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D54934E3-25B1-47CD-8495-37EDEC981EC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D54934E3-25B1-47CD-8495-37EDEC981EC9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

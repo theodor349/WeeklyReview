@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WeeklyReview.Shared.Models;
+using WeeklyReview.Database.Models;
 
 namespace WeeklyReview.Shared.Services
 {

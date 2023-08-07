@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WeeklyReview.Shared.Models;
+using WeeklyReview.Database.Models;
 using WeeklyReview.Shared.Services;
 using Xunit;
 
