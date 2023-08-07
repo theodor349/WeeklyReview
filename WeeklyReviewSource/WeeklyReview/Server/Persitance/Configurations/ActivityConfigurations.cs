@@ -9,6 +9,7 @@ namespace WeeklyReview.Server.Persitance.Configurations
         public void Configure(EntityTypeBuilder<ActivityModel> builder)
         {
             builder.HasKey(x => x.Id);
+            builder.Property(x => x.Id).UseIdentityColumn();
 
             builder.Property(x => x.Name)
                 .HasMaxLength(64);

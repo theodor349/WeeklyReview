@@ -70,24 +70,17 @@ namespace WeeklyReview.Server.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SourceId = table.Column<int>(type: "int", nullable: false),
-                    DestinationId = table.Column<int>(type: "int", nullable: false),
                     ChangeDate = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ActivityChange", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ActivityChange_Activity_DestinationId",
-                        column: x => x.DestinationId,
-                        principalTable: "Activity",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
-                    table.ForeignKey(
                         name: "FK_ActivityChange_Activity_SourceId",
                         column: x => x.SourceId,
                         principalTable: "Activity",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -120,11 +113,6 @@ namespace WeeklyReview.Server.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ActivityChange_DestinationId",
-                table: "ActivityChange",
-                column: "DestinationId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_ActivityChange_SourceId",
                 table: "ActivityChange",
                 column: "SourceId");
@@ -133,22 +121,33 @@ namespace WeeklyReview.Server.Migrations
                 name: "IX_ActivityModelEntryModel_EntryModelId",
                 table: "ActivityModelEntryModel",
                 column: "EntryModelId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Activity_ActivityChange_Id",
+                table: "Activity",
+                column: "Id",
+                principalTable: "ActivityChange",
+                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "ActivityChange");
+            migrationBuilder.DropForeignKey(
+                name: "FK_Activity_ActivityChange_Id",
+                table: "Activity");
 
             migrationBuilder.DropTable(
                 name: "ActivityModelEntryModel");
 
             migrationBuilder.DropTable(
-                name: "Activity");
+                name: "Entry");
 
             migrationBuilder.DropTable(
-                name: "Entry");
+                name: "ActivityChange");
+
+            migrationBuilder.DropTable(
+                name: "Activity");
 
             migrationBuilder.DropTable(
                 name: "Category");

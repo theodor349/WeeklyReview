@@ -4,14 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WeeklyReview.Database.Models;
+using WeeklyReview.Database.Persitance;
 
 namespace WeeklyReview.Shared.Services
 {
     internal class ActivityRollBackService : IActivityRollBackService
     {
-        private readonly IDataService _dataService;
+        private readonly WeeklyReviewDbContext _dataService;
 
-        public ActivityRollBackService(IDataService dataService)
+        public ActivityRollBackService(WeeklyReviewDbContext dataService)
         {
             _dataService = dataService;
         }

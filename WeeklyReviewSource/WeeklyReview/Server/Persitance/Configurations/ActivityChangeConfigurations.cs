@@ -9,12 +9,13 @@ namespace WeeklyReview.Server.Persitance.Configurations
         public void Configure(EntityTypeBuilder<ActivityChangeModel> builder)
         {
             builder.HasKey(x => x.Id);
+            builder.Property(x => x.Id).UseIdentityColumn();
 
             builder.Property(x => x.ChangeDate);
 
-            builder.HasOne(x => x.Source);
+            builder.HasOne(x => x.Source).WithMany().OnDelete(DeleteBehavior.NoAction);
 
-            builder.HasOne(x => x.Destination);
+            builder.HasOne(x => x.Destination).WithMany().OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

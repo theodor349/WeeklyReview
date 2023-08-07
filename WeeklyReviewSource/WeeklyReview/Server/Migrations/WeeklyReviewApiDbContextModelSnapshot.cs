@@ -48,15 +48,10 @@ namespace WeeklyReview.Server.Migrations
                     b.Property<DateTime>("ChangeDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DestinationId")
-                        .HasColumnType("int");
-
                     b.Property<int>("SourceId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("DestinationId");
 
                     b.HasIndex("SourceId");
 
@@ -162,19 +157,11 @@ namespace WeeklyReview.Server.Migrations
 
             modelBuilder.Entity("WeeklyReview.Database.Models.ActivityChangeModel", b =>
                 {
-                    b.HasOne("WeeklyReview.Database.Models.ActivityModel", "Destination")
-                        .WithMany()
-                        .HasForeignKey("DestinationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("WeeklyReview.Database.Models.ActivityModel", "Source")
                         .WithMany()
                         .HasForeignKey("SourceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Destination");
 
                     b.Navigation("Source");
                 });
@@ -185,7 +172,19 @@ namespace WeeklyReview.Server.Migrations
                         .WithMany()
                         .HasForeignKey("CategoryId");
 
+                    b.HasOne("WeeklyReview.Database.Models.ActivityChangeModel", null)
+                        .WithOne("Destination")
+                        .HasForeignKey("WeeklyReview.Database.Models.ActivityModel", "Id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("WeeklyReview.Database.Models.ActivityChangeModel", b =>
+                {
+                    b.Navigation("Destination")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
