@@ -3,15 +3,20 @@
     public class ActivityChangeModel
     {
         public int Id { get; set; }
-        public int FromId { get; set; }
-        public int ToId { get; set; }
+        public ActivityModel Source { get; set; }
+        public ActivityModel Destination { get; set; }
         public DateTime ChangeDate { get; set; }
 
-        public ActivityChangeModel(int id, int fromId, int toId, DateTime changeDate)
+        private ActivityChangeModel()
+        {
+            
+        }
+
+        public ActivityChangeModel(int id, ActivityModel source, ActivityModel destination, DateTime changeDate)
         {
             Id = id;
-            FromId = fromId;
-            ToId = toId;
+            Source = source;
+            Destination = destination;
             ChangeDate = changeDate;
         }
     }

@@ -15,6 +15,11 @@ namespace WeeklyReview.Database.Models
         public bool Deleted { get; set; }
         public CategoryModel? Category { get; set; }
 
+        private ActivityModel()
+        {
+            
+        }
+
         public ActivityModel(int id, string name, bool deleted, CategoryModel? category)
         {
             Id = id;

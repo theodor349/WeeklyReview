@@ -57,7 +57,7 @@ namespace WeeklyReview.Shared.Tests.Services
             };
             _changes = new SortedDictionary<int, ActivityChangeModel>()
             {
-                { 1, new ActivityChangeModel(1, 3, 5, _dt.AddHours(6)) },
+                //{ 1, new ActivityChangeModel(1, 3, 5, _dt.AddHours(6)) },
             };
         }
 

@@ -10,6 +10,11 @@ namespace WeeklyReview.Database.Models
         public int Priority { get; set; }
         public Color Color { get; set; }
 
+        private CategoryModel()
+        {
+            
+        }
+
         public CategoryModel(int id, string name, int priority, Color color)
         {
             Id = id;

@@ -9,6 +9,11 @@
         public List<ActivityModel> Activities { get; set; }
         public bool Deleted { get; set; }
 
+        private EntryModel()
+        {
+            
+        }
+
         public EntryModel(int id, DateTime startTime, DateTime endTime, List<ActivityModel> activities, bool deleted)
         {
             Id = id;
