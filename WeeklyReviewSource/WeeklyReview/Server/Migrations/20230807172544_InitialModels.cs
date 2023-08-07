@@ -81,13 +81,13 @@ namespace WeeklyReview.Server.Migrations
                         column: x => x.DestinationId,
                         principalTable: "Activity",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_ActivityChange_Activity_SourceId",
                         column: x => x.SourceId,
                         principalTable: "Activity",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
