@@ -4,6 +4,6 @@ namespace WeeklyReview.Shared.Services
 {
     public interface IActivityRollBackService
     {
-        Task RollBackActivityChange(ActivityChangeModel activityChange);
+        void RollBackActivityChange(ActivityChangeModel activityChange);
     }
 }

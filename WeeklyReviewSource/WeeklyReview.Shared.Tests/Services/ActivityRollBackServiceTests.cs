@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -11,6 +12,12 @@ using Xunit;
 
 namespace WeeklyReview.Shared.Tests.Services
 {
+    /// <summary> Notes
+    /// Should we delete the Destination activity?
+    ///     - No, because we might not have changed all entries that reference the Destination activity
+    ///     - Therefore deletion should be another service which also checks that no enties references it
+    /// </summary>
+
     public class ActivityRollBackServiceTests : IClassFixture<WeeklyReviewApiDbFixture>
     {
         public WeeklyReviewApiDbFixture DbFixture { get; }
@@ -31,11 +38,17 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new ActivityRollBackService(context);
+            var model = context.ActivityChange
+                .Include(x => x.Source)
+                .Include(x => x.Destination)
+                .Single(x => x.Id == 1);
+            sut.RollBackActivityChange(model);
             context.ChangeTracker.Clear();
 
             // Assert
-            var newEntry = context.Entry.Single(x => x.Id == 9);
-            Assert.False(context.Activity.Single(x => x.Id == 3).Deleted);
+            var newEntry = context.Entry
+                .Include(x => x.Activities)
+                .Single(x => x.StartTime == _dt.AddHours(2) && x.Deleted == false);
             Assert.True(context.Entry.Single(x => x.Id == 6).Deleted);
             Assert.Equal(_dt.AddHours(2), newEntry.StartTime);
             Assert.Equal(_dt.AddHours(3), newEntry.EndTime);
@@ -54,7 +67,7 @@ namespace WeeklyReview.Shared.Tests.Services
             var _dt = DbFixture.Dt;
             context.Database.BeginTransaction();
 
-            context.Entry.Single(x => x.Id == 7).Deleted = true;
+            context.Entry.Single(x => x.Id == 9).Deleted = true;
             context.Entry.Add(new EntryModel(0, _dt.AddHours(3), _dt.AddHours(4), new List<ActivityModel>() 
             { 
                 context.Activity.Single(x => x.Id == 5), context.Activity.Single(x => x.Id == 2) 
@@ -63,11 +76,17 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new ActivityRollBackService(context);
+            var model = context.ActivityChange
+                .Include(x => x.Source)
+                .Include(x => x.Destination)
+                .Single(x => x.Id == 1);
+            sut.RollBackActivityChange(model);
             context.ChangeTracker.Clear();
 
             // Assert
-            var newEntry = context.Entry.Single(x => x.Id == 10);
-            Assert.False(context.Activity.Single(x => x.Id == 3).Deleted);
+            var newEntry = context.Entry
+                .Include(x => x.Activities)
+                .Single(x => x.StartTime == _dt.AddHours(3) && x.Deleted == false);
             Assert.True(context.Entry.Single(x => x.Id == 9).Deleted);
             Assert.Equal(_dt.AddHours(3), newEntry.StartTime);
             Assert.Equal(_dt.AddHours(4), newEntry.EndTime);
@@ -88,10 +107,14 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new ActivityRollBackService(context);
+            var model = context.ActivityChange
+                .Include(x => x.Source)
+                .Include(x => x.Destination)
+                .Single(x => x.Id == 1);
+            sut.RollBackActivityChange(model);
             context.ChangeTracker.Clear();
 
             // Assert
-            Assert.False(context.Activity.Single(x => x.Id == 3).Deleted);
             Assert.False(context.Entry.Single(x => x.Id == 8).Deleted);
             Assert.Equal(9, context.Entry.Count());
             Assert.Equal(0, context.ActivityChange.Count());
@@ -114,10 +137,14 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new ActivityRollBackService(context);
+            var model = context.ActivityChange
+                .Include(x => x.Source)
+                .Include(x => x.Destination)
+                .Single(x => x.Id == 1);
+            sut.RollBackActivityChange(model);
             context.ChangeTracker.Clear();
 
             // Assert
-            Assert.False(context.Activity.Single(x => x.Id == 3).Deleted);
             Assert.False(context.Entry.Single(x => x.Id == 11).Deleted);
             Assert.Equal(11, context.Entry.Count());
             Assert.Equal(0, context.ActivityChange.Count());
