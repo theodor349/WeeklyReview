@@ -126,6 +126,7 @@ classDiagram
   class Activity {
     + int Id
     + string Name
+    + string NormalizedName
     + bool Deleted
     + void ConvertToAnother()
   }
