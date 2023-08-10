@@ -1,12 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WeeklyReview.Database.Models;
+using WeeklyReview.Database.Persitance;
 using WeeklyReview.Shared.Services;
 using WeeklyReview.Shared.Tests.DataContexts;
 using Xunit;
@@ -33,7 +35,31 @@ namespace WeeklyReview.Shared.Tests.Services
 
         // TODO: Implemente Tests
         //  - Old activity is not turned off
-	    //  - The enty's duration/endtime has changed
+        //  - The enty's duration/endtime has changed
+
+        #region Helpers
+        private static void CheckEntryHaveBeenMarkedDeleted(int eOldId, WeeklyReviewDbContext context)
+        {
+            Assert.True(context.Entry.Single(x => x.Id == eOldId).Deleted);
+        }
+
+        private void CheckActivityChangeHaveBeenRemoved(WeeklyReviewDbContext context, int changeId)
+        {
+            Assert.False(context.ActivityChange.Any(x => x.Id == changeId));
+        }
+
+        private static EntryModel CheckEntryIsEnabledWithCorrectActivities(WeeklyReviewDbContext context, DateTime startTime, DateTime endTime, List<int> activityIds)
+        {
+            var entry = context.Entry
+                .Include(x => x.Activities)
+                .Single(x => x.StartTime == startTime && x.Deleted == false);
+            Assert.Equal(endTime, entry.EndTime);
+            Assert.Equal(activityIds.Count(), entry.Activities.Count());
+            foreach (var aId in activityIds)
+                Assert.Contains(entry.Activities, x => x.Id == aId);
+            return entry;
+        }
+        #endregion
 
         [Fact]
         public void Rolback_NoNewEntry_Override_CaseMovies()
@@ -59,17 +85,10 @@ namespace WeeklyReview.Shared.Tests.Services
             context.ChangeTracker.Clear();
 
             // Assert
-            var newEntry = context.Entry
-                .Include(x => x.Activities)
-                .Single(x => x.StartTime == startTime && x.Deleted == false);
-            Assert.True(context.Entry.Single(x => x.Id == eOldId).Deleted);
-            Assert.False(newEntry.Deleted);
-            Assert.Equal(startTime, newEntry.StartTime);
-            Assert.Equal(endTime, newEntry.EndTime);
+            var newEntry = CheckEntryIsEnabledWithCorrectActivities(context, startTime, endTime, new() { aMovie });
             Assert.Equal(TimeService.Current, newEntry.RecordedTime);
-            Assert.Single(newEntry.Activities);
-            Assert.Contains(newEntry.Activities, x => x.Id == aMovie);
-            Assert.False(context.ActivityChange.Any(x => x.Id == changeId));
+            CheckEntryHaveBeenMarkedDeleted(eOldId, context);
+            CheckActivityChangeHaveBeenRemoved(context, changeId);
         }
 
         [Fact]
@@ -97,18 +116,11 @@ namespace WeeklyReview.Shared.Tests.Services
             context.ChangeTracker.Clear();
 
             // Assert
-            var newEntry = context.Entry
-                .Include(x => x.Activities)
-                .Single(x => x.StartTime == startTime && x.Deleted == false);
-            Assert.True(context.Entry.Single(x => x.Id == eOldId).Deleted);
-            Assert.False(newEntry.Deleted);
-            Assert.Equal(startTime, newEntry.StartTime);
-            Assert.Equal(endTime, newEntry.EndTime);
+
+            var newEntry = CheckEntryIsEnabledWithCorrectActivities(context, startTime, endTime, new() { aBike, aRun });
             Assert.Equal(TimeService.Current, newEntry.RecordedTime);
-            Assert.Equal(2, newEntry.Activities.Count());
-            Assert.Contains(newEntry.Activities, x => x.Id == aBike);
-            Assert.Contains(newEntry.Activities, x => x.Id == aRun);
-            Assert.False(context.ActivityChange.Any(x => x.Id == changeId));
+            CheckEntryHaveBeenMarkedDeleted(eOldId, context); 
+            CheckActivityChangeHaveBeenRemoved(context, changeId);
         }
 
         [Fact]
@@ -136,12 +148,8 @@ namespace WeeklyReview.Shared.Tests.Services
             context.ChangeTracker.Clear();
 
             // Assert
-            var oldEntry = context.Entry
-                .Include(x => x.Activities)
-                .Single(x => x.StartTime == startTime && x.Deleted == false);
-            Assert.Contains(oldEntry.Activities, x => x.Id == aDinner);
-            Assert.Contains(oldEntry.Activities, x => x.Id == aSnack);
-            Assert.False(context.ActivityChange.Any(x => x.Id == changeId));
+            CheckEntryIsEnabledWithCorrectActivities(context, startTime, endTime, new() { aDinner, aSnack });
+            CheckActivityChangeHaveBeenRemoved(context, changeId);
             Assert.Equal(expectedEntryCount, context.Entry.Count());
         }
 
@@ -169,12 +177,8 @@ namespace WeeklyReview.Shared.Tests.Services
             context.ChangeTracker.Clear();
 
             // Assert
-            var oldEntry = context.Entry
-                .Include(x => x.Activities)
-                .Single(x => x.StartTime == startTime && x.Deleted == false);
-            Assert.Single(oldEntry.Activities);
-            Assert.Contains(oldEntry.Activities, x => x.Id == aEnglish);
-            Assert.False(context.ActivityChange.Any(x => x.Id == changeId));
+            CheckEntryIsEnabledWithCorrectActivities(context, startTime, endTime, new() { aEnglish });
+            CheckActivityChangeHaveBeenRemoved(context, changeId);
             Assert.Equal(expectedEntryCount, context.Entry.Count());
         }
     }
