@@ -12,10 +12,12 @@ namespace WeeklyReview.Shared.Services
     internal class ActivityRollBackService : IActivityRollBackService
     {
         private readonly WeeklyReviewDbContext _db;
+        private readonly ITimeService _timeService;
 
-        public ActivityRollBackService(WeeklyReviewDbContext dataService)
+        public ActivityRollBackService(WeeklyReviewDbContext dataService, ITimeService timeService)
         {
             _db = dataService;
+            _timeService = timeService;
         }
 
         public void RollBackActivityChange(ActivityChangeModel activityChange)
@@ -33,6 +35,10 @@ namespace WeeklyReview.Shared.Services
 
         private void RollBackEntry(ActivityModel originalAct, ActivityModel overrideAct, EntryModel oldEntry)
         {
+            //var newerEntries = _db.Entry
+            //    .Include(x => x.Activities)
+            //    .Where(x => x.)
+
             var newestEntry = _db.Entry
                 .Include(x => x.Activities)
                 .Where(x => x.StartTime == oldEntry.StartTime)
@@ -42,7 +48,7 @@ namespace WeeklyReview.Shared.Services
 
             var activities = newestEntry.Activities.Where(x => x.Id != overrideAct.Id).ToList();
             activities.Add(originalAct);
-            _db.Add(new EntryModel(newestEntry.StartTime, newestEntry.EndTime, activities, false));
+            _db.Add(new EntryModel(newestEntry.StartTime, newestEntry.EndTime, _timeService.Current, activities, false));
         }
     }
 }

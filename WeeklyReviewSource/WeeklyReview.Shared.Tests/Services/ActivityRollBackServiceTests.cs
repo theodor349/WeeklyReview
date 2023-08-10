@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NSubstitute;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -21,10 +22,13 @@ namespace WeeklyReview.Shared.Tests.Services
     public class ActivityRollBackServiceTests : IClassFixture<WeeklyReviewApiDbFixture>
     {
         public WeeklyReviewApiDbFixture DbFixture { get; }
+        public ITimeService TimeService { get; }
         
         public ActivityRollBackServiceTests(WeeklyReviewApiDbFixture dbFixture)
         {
             DbFixture = dbFixture;
+            TimeService = Substitute.For<ITimeService>();
+            TimeService.Current.Returns(dbFixture.MaxTime);
         }
 
         // TODO: Implemente Tests
@@ -46,7 +50,7 @@ namespace WeeklyReview.Shared.Tests.Services
             context.Database.BeginTransaction();
 
             // Act
-            var sut = new ActivityRollBackService(context);
+            var sut = new ActivityRollBackService(context, TimeService);
             var model = context.ActivityChange
                 .Include(x => x.Source)
                 .Include(x => x.Destination)
@@ -62,6 +66,7 @@ namespace WeeklyReview.Shared.Tests.Services
             Assert.False(newEntry.Deleted);
             Assert.Equal(startTime, newEntry.StartTime);
             Assert.Equal(endTime, newEntry.EndTime);
+            Assert.Equal(TimeService.Current, newEntry.RecordedTime);
             Assert.Single(newEntry.Activities);
             Assert.Contains(newEntry.Activities, x => x.Id == aMovie);
             Assert.False(context.ActivityChange.Any(x => x.Id == changeId));
@@ -83,7 +88,7 @@ namespace WeeklyReview.Shared.Tests.Services
             context.Database.BeginTransaction();
 
             // Act
-            var sut = new ActivityRollBackService(context);
+            var sut = new ActivityRollBackService(context, TimeService);
             var model = context.ActivityChange
                 .Include(x => x.Source)
                 .Include(x => x.Destination)
@@ -99,6 +104,7 @@ namespace WeeklyReview.Shared.Tests.Services
             Assert.False(newEntry.Deleted);
             Assert.Equal(startTime, newEntry.StartTime);
             Assert.Equal(endTime, newEntry.EndTime);
+            Assert.Equal(TimeService.Current, newEntry.RecordedTime);
             Assert.Equal(2, newEntry.Activities.Count());
             Assert.Contains(newEntry.Activities, x => x.Id == aBike);
             Assert.Contains(newEntry.Activities, x => x.Id == aRun);
@@ -121,7 +127,7 @@ namespace WeeklyReview.Shared.Tests.Services
             var expectedEntryCount = context.Entry.Count();
 
             // Act
-            var sut = new ActivityRollBackService(context);
+            var sut = new ActivityRollBackService(context, TimeService);
             var model = context.ActivityChange
                 .Include(x => x.Source)
                 .Include(x => x.Destination)
@@ -154,7 +160,7 @@ namespace WeeklyReview.Shared.Tests.Services
             var expectedEntryCount = context.Entry.Count();
 
             // Act
-            var sut = new ActivityRollBackService(context);
+            var sut = new ActivityRollBackService(context, TimeService);
             var model = context.ActivityChange
                 .Include(x => x.Source)
                 .Include(x => x.Destination)

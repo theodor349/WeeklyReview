@@ -24,6 +24,8 @@ namespace WeeklyReview.Shared.Tests.DataContexts
         private DateTime _dt;
         public DateTime Dt => _dt;
 
+        public DateTime MaxTime => _dt.AddHours(10);
+
         public WeeklyReviewDbContext CreateContext()
             => new WeeklyReviewApiDbContext(
             new DbContextOptionsBuilder<WeeklyReviewApiDbContext>()
@@ -68,10 +70,10 @@ namespace WeeklyReview.Shared.Tests.DataContexts
             var aArts = new ActivityModel("Arts", false, cSchool);
             var aSpanish = new ActivityModel("Spanish", false, cSchool);
             var change = new ActivityChangeModel(aMath, aEnglish, endTime.AddHours(1));
-            var e1 = new EntryModel(startTime, endTime, aMath, true);
-            var e2 = new EntryModel(startTime, endTime, aEnglish, true);
-            var e3 = new EntryModel(startTime, endTime, new List<ActivityModel>() { aArts, aSpanish }, true);
-            var e4 = new EntryModel(startTime, endTime, aEnglish, false);
+            var e1 = new EntryModel(startTime, endTime, startTime.AddMinutes(1), aMath, true);
+            var e2 = new EntryModel(startTime, endTime, startTime.AddMinutes(2), aEnglish, true);
+            var e3 = new EntryModel(startTime, endTime, startTime.AddMinutes(3), new List<ActivityModel>() { aArts, aSpanish }, true);
+            var e4 = new EntryModel(startTime, endTime, startTime.AddMinutes(4), aEnglish, false);
 
             context.Category.Add(cSchool);
             context.Activity.AddRange(aMath, aEnglish, aArts, aSpanish);
@@ -90,9 +92,9 @@ namespace WeeklyReview.Shared.Tests.DataContexts
             var aDinner = new ActivityModel("Dinner", false, cFood);
             var aSnack = new ActivityModel("Snack", false, cFood);
             var change = new ActivityChangeModel(aBreakfast, aLunch, endTime.AddHours(1));
-            var e1 = new EntryModel(startTime, endTime, aBreakfast, true);
-            var e2 = new EntryModel(startTime, endTime, aLunch, true);
-            var e3 = new EntryModel(startTime, endTime, new List<ActivityModel>() { aDinner, aSnack }, false);
+            var e1 = new EntryModel(startTime, endTime, startTime.AddMinutes(1), aBreakfast, true);
+            var e2 = new EntryModel(startTime, endTime, startTime.AddMinutes(2), aLunch, true);
+            var e3 = new EntryModel(startTime, endTime, startTime.AddMinutes(3), new List<ActivityModel>() { aDinner, aSnack }, false);
 
             context.Category.Add(cFood);
             context.Activity.AddRange(aBreakfast, aLunch, aDinner, aSnack);
@@ -110,9 +112,9 @@ namespace WeeklyReview.Shared.Tests.DataContexts
             var aSwim = new ActivityModel("Swim", false, cSports);
             var aRun = new ActivityModel("Run", false, cSports);
             var change = new ActivityChangeModel(aBike, aSwim, endTime.AddHours(1));
-            var e1 = new EntryModel(startTime, endTime, aBike, true);
-            var e2 = new EntryModel(startTime, endTime, aSwim, true);
-            var e3 = new EntryModel(startTime, endTime, new List<ActivityModel>() { aSwim, aRun }, false);
+            var e1 = new EntryModel(startTime, endTime, startTime.AddMinutes(1), aBike, true);
+            var e2 = new EntryModel(startTime, endTime, startTime.AddMinutes(2), aSwim, true);
+            var e3 = new EntryModel(startTime, endTime, startTime.AddMinutes(3), new List<ActivityModel>() { aSwim, aRun }, false);
 
             context.Category.Add(cSports);
             context.Activity.AddRange(aBike, aSwim, aRun);
@@ -129,8 +131,8 @@ namespace WeeklyReview.Shared.Tests.DataContexts
             var aMovie = new ActivityModel("Movie", false, cWatching);
             var aSeries = new ActivityModel("Series", false, cWatching);
             var change = new ActivityChangeModel(aMovie, aSeries, endTime.AddHours(1));
-            var e1 = new EntryModel(startTime, endTime, aMovie, true);
-            var e2 = new EntryModel(startTime, endTime, aSeries, false);
+            var e1 = new EntryModel(startTime, endTime, startTime.AddMinutes(1), aMovie, true);
+            var e2 = new EntryModel(startTime, endTime, startTime.AddMinutes(2), aSeries, false);
 
             context.Category.Add(cWatching);
             context.Activity.AddRange(aMovie, aSeries);
