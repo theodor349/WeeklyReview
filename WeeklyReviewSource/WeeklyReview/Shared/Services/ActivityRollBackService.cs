@@ -35,14 +35,22 @@ namespace WeeklyReview.Shared.Services
 
         private void RollBackEntry(ActivityModel originalAct, ActivityModel overrideAct, EntryModel oldEntry)
         {
-            //var newerEntries = _db.Entry
-            //    .Include(x => x.Activities)
-            //    .Where(x => x.)
-
-            var newestEntry = _db.Entry
+            var newerEntries = _db.Entry
                 .Include(x => x.Activities)
-                .Where(x => x.StartTime == oldEntry.StartTime)
-                .Single(x => x.Deleted == false);
+                .Where(x => x.StartTime == oldEntry.StartTime && x.RecordedTime > oldEntry.RecordedTime);
+
+            foreach (var entry in newerEntries)
+            {
+                if (!entry.Activities.Contains(overrideAct))
+                    return;
+            }
+
+            OverrideEntry(originalAct, overrideAct, newerEntries);
+        }
+
+        private void OverrideEntry(ActivityModel originalAct, ActivityModel overrideAct, IQueryable<EntryModel> newerEntries)
+        {
+            var newestEntry = newerEntries.Single(x => x.Deleted == false);
             newestEntry.Deleted = true;
             _db.Entry.Update(newestEntry);
 
