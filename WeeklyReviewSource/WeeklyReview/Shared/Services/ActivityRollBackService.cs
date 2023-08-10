@@ -42,7 +42,7 @@ namespace WeeklyReview.Shared.Services
 
             var activities = newestEntry.Activities.Where(x => x.Id != overrideAct.Id).ToList();
             activities.Add(originalAct);
-            _db.Add(new EntryModel(0, newestEntry.StartTime, newestEntry.EndTime, activities, false));
+            _db.Add(new EntryModel(newestEntry.StartTime, newestEntry.EndTime, activities, false));
         }
     }
 }

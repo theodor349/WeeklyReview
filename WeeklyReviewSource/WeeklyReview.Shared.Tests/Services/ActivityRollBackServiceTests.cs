@@ -27,10 +27,19 @@ namespace WeeklyReview.Shared.Tests.Services
             DbFixture = dbFixture;
         }
 
-        // Case: No new Entry has been added after the change
+        // TODO: Implemente Tests
+        //  - Old activity is not turned off
+	    //  - The enty's duration/endtime has changed
+
         [Fact]
-        public void Rolback_NoNewEntry_AddOldEntry()
+        public void Rolback_NoNewEntry_Override_CaseMovies()
         {
+            int changeId = 1;
+            int eOldId = 2;
+            int aMovie = 1;
+            var startTime = DbFixture.Dt.AddHours(0);
+            var endTime = startTime.AddHours(1);
+
             // Arrange
             using var context = DbFixture.CreateContext();
             var _dt = DbFixture.Dt;
@@ -41,113 +50,126 @@ namespace WeeklyReview.Shared.Tests.Services
             var model = context.ActivityChange
                 .Include(x => x.Source)
                 .Include(x => x.Destination)
-                .Single(x => x.Id == 1);
+                .Single(x => x.Id == changeId);
             sut.RollBackActivityChange(model);
             context.ChangeTracker.Clear();
 
             // Assert
             var newEntry = context.Entry
                 .Include(x => x.Activities)
-                .Single(x => x.StartTime == _dt.AddHours(2) && x.Deleted == false);
-            Assert.True(context.Entry.Single(x => x.Id == 6).Deleted);
-            Assert.Equal(_dt.AddHours(2), newEntry.StartTime);
-            Assert.Equal(_dt.AddHours(3), newEntry.EndTime);
-            Assert.Equal(2, newEntry.Activities.Count());
-            Assert.Contains(newEntry.Activities, x => x.Id == 3);
-            Assert.Contains(newEntry.Activities, x => x.Id == 4);
-            Assert.Equal(0, context.ActivityChange.Count());
+                .Single(x => x.StartTime == startTime && x.Deleted == false);
+            Assert.True(context.Entry.Single(x => x.Id == eOldId).Deleted);
+            Assert.False(newEntry.Deleted);
+            Assert.Equal(startTime, newEntry.StartTime);
+            Assert.Equal(endTime, newEntry.EndTime);
+            Assert.Single(newEntry.Activities);
+            Assert.Contains(newEntry.Activities, x => x.Id == aMovie);
+            Assert.False(context.ActivityChange.Any(x => x.Id == changeId));
         }
 
-        // Case: A new Entry has been added, but where the changed activity is used again
         [Fact]
-        public void Rolback_NewEntryWithSameOldActivity_AddOldEntry()
+        public void Rolback_NewEntryWithSameActivityAndAnother_Override_CaseSports()
         {
+            int changeId = 2;
+            int eOldId = 5;
+            int aBike = 3;
+            int aRun = 5;
+            var startTime = DbFixture.Dt.AddHours(2);
+            var endTime = startTime.AddHours(1);
+
             // Arrange
             using var context = DbFixture.CreateContext();
             var _dt = DbFixture.Dt;
             context.Database.BeginTransaction();
-
-            context.Entry.Single(x => x.Id == 9).Deleted = true;
-            context.Entry.Add(new EntryModel(0, _dt.AddHours(3), _dt.AddHours(4), new List<ActivityModel>() 
-            { 
-                context.Activity.Single(x => x.Id == 5), context.Activity.Single(x => x.Id == 2) 
-            }, false));
-            context.SaveChanges();
 
             // Act
             var sut = new ActivityRollBackService(context);
             var model = context.ActivityChange
                 .Include(x => x.Source)
                 .Include(x => x.Destination)
-                .Single(x => x.Id == 1);
+                .Single(x => x.Id == changeId);
             sut.RollBackActivityChange(model);
             context.ChangeTracker.Clear();
 
             // Assert
             var newEntry = context.Entry
                 .Include(x => x.Activities)
-                .Single(x => x.StartTime == _dt.AddHours(3) && x.Deleted == false);
-            Assert.True(context.Entry.Single(x => x.Id == 9).Deleted);
-            Assert.Equal(_dt.AddHours(3), newEntry.StartTime);
-            Assert.Equal(_dt.AddHours(4), newEntry.EndTime);
+                .Single(x => x.StartTime == startTime && x.Deleted == false);
+            Assert.True(context.Entry.Single(x => x.Id == eOldId).Deleted);
+            Assert.False(newEntry.Deleted);
+            Assert.Equal(startTime, newEntry.StartTime);
+            Assert.Equal(endTime, newEntry.EndTime);
             Assert.Equal(2, newEntry.Activities.Count());
-            Assert.Contains(newEntry.Activities, x => x.Id == 3);
-            Assert.Contains(newEntry.Activities, x => x.Id == 2);
-            Assert.Equal(0, context.ActivityChange.Count());
+            Assert.Contains(newEntry.Activities, x => x.Id == aBike);
+            Assert.Contains(newEntry.Activities, x => x.Id == aRun);
+            Assert.False(context.ActivityChange.Any(x => x.Id == changeId));
         }
 
-        // Case: A new Entry has been added, but where the changed activity is not used again
         [Fact]
-        public void Rolback_NewEntryWithoutSameOldActivity_DoNotAddNewEntry()
+        public void Rolback_NewEntryWithoutSameActivityAndAnother_DoNotOverride_CaseFoods()
         {
+            int changeId = 3;
+            int aDinner = 8;
+            int aSnack = 9;
+            var startTime = DbFixture.Dt.AddHours(4);
+            var endTime = startTime.AddHours(1);
+
             // Arrange
             using var context = DbFixture.CreateContext();
             var _dt = DbFixture.Dt;
             context.Database.BeginTransaction();
+            var expectedEntryCount = context.Entry.Count();
 
             // Act
             var sut = new ActivityRollBackService(context);
             var model = context.ActivityChange
                 .Include(x => x.Source)
                 .Include(x => x.Destination)
-                .Single(x => x.Id == 1);
+                .Single(x => x.Id == changeId);
             sut.RollBackActivityChange(model);
             context.ChangeTracker.Clear();
 
             // Assert
-            Assert.False(context.Entry.Single(x => x.Id == 8).Deleted);
-            Assert.Equal(9, context.Entry.Count());
-            Assert.Equal(0, context.ActivityChange.Count());
+            var oldEntry = context.Entry
+                .Include(x => x.Activities)
+                .Single(x => x.StartTime == startTime && x.Deleted == false);
+            Assert.Contains(oldEntry.Activities, x => x.Id == aDinner);
+            Assert.Contains(oldEntry.Activities, x => x.Id == aSnack);
+            Assert.False(context.ActivityChange.Any(x => x.Id == changeId));
+            Assert.Equal(expectedEntryCount, context.Entry.Count());
         }
 
-        // Case: A new Entry has been added, but where the changed activity is not used again
         [Fact]
-        public void Rolback_NewEntryWithAndWithoutSameOldActivity_DoNotAddNewEntry()
+        public void Rolback_NewEntryWithoutSameActivityAndNewEntryWithSameActivity_DoNotOverride_CaseSchool()
         {
+            int changeId = 4;
+            int aEnglish = 11;
+            var startTime = DbFixture.Dt.AddHours(6);
+            var endTime = startTime.AddHours(1);
+
             // Arrange
             using var context = DbFixture.CreateContext();
             var _dt = DbFixture.Dt;
             context.Database.BeginTransaction();
-
-            context.Entry.Single(x => x.Id == 7).Deleted = true;
-            context.Entry.Add(new EntryModel(0, _dt.AddHours(3), _dt.AddHours(4), new List<ActivityModel>() { context.Activity.Single(x => x.Id == 5), context.Activity.Single(x => x.Id == 2) }, true));
-            context.Entry.Add(new EntryModel(0, _dt.AddHours(3), _dt.AddHours(4), new List<ActivityModel>() { context.Activity.Single(x => x.Id == 1) }, true));
-            context.Entry.Add(new EntryModel(0, _dt.AddHours(3), _dt.AddHours(4), new List<ActivityModel>() { context.Activity.Single(x => x.Id == 5) }, false));
-            context.SaveChanges();
+            var expectedEntryCount = context.Entry.Count();
 
             // Act
             var sut = new ActivityRollBackService(context);
             var model = context.ActivityChange
                 .Include(x => x.Source)
                 .Include(x => x.Destination)
-                .Single(x => x.Id == 1);
+                .Single(x => x.Id == changeId);
             sut.RollBackActivityChange(model);
             context.ChangeTracker.Clear();
 
             // Assert
-            Assert.False(context.Entry.Single(x => x.Id == 11).Deleted);
-            Assert.Equal(11, context.Entry.Count());
-            Assert.Equal(0, context.ActivityChange.Count());
+            var oldEntry = context.Entry
+                .Include(x => x.Activities)
+                .Single(x => x.StartTime == startTime && x.Deleted == false);
+            Assert.Single(oldEntry.Activities);
+            Assert.Contains(oldEntry.Activities, x => x.Id == aEnglish);
+            Assert.False(context.ActivityChange.Any(x => x.Id == changeId));
+            Assert.Equal(expectedEntryCount, context.Entry.Count());
         }
     }
 }

@@ -1,6 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.CodeCoverage;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Drawing;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -33,10 +36,6 @@ namespace WeeklyReview.Shared.Tests.DataContexts
             {
                 if (!_databaseInitialized)
                 {
-                    var cats = GenerateCategories();
-                    var acts = GenerateActivities(cats);
-                    var ents = GenerateEntries(acts);
-                    var accs = GenerateActivityChanges(acts);
                     using (var context = CreateContext())
                     {
                         context.Database.EnsureDeleted();
@@ -44,10 +43,10 @@ namespace WeeklyReview.Shared.Tests.DataContexts
 
                         using (var transaction = context.Database.BeginTransaction())
                         {
-                            context.Category.AddRange(cats.ToList().ConvertAll(x => x.Value));
-                            context.Activity.AddRange(acts.ToList().ConvertAll(x => x.Value));
-                            context.Entry.AddRange(ents.ToList().ConvertAll(x => x.Value));
-                            context.ActivityChange.Add(accs.ToList().ConvertAll(x => x.Value).First());
+                            AddCaseMovies(context);
+                            AddCaseSports(context);
+                            AddCaseFoods(context);
+                            AddCaseSchool(context);
                             context.SaveChanges();
                             transaction.Commit();
                         }
@@ -58,72 +57,86 @@ namespace WeeklyReview.Shared.Tests.DataContexts
             }
         }
 
-        public void EnableIdentityInsertAll(WeeklyReviewDbContext context, bool enable)
+        private void AddCaseSchool(WeeklyReviewDbContext context)
         {
-            SetIdentityInsertAsync<CategoryModel>(context, enable);
-            SetIdentityInsertAsync<ActivityModel>(context, enable);
-            SetIdentityInsertAsync<EntryModel>(context, enable);
-            SetIdentityInsertAsync<ActivityChangeModel>(context, enable);
+            var startTime = _dt.AddHours(6);
+            var endTime = startTime.AddHours(1);
+
+            var cSchool = new CategoryModel("School", 1, Color.Purple);
+            var aMath = new ActivityModel("Math", false, cSchool);
+            var aEnglish = new ActivityModel("English", false, cSchool);
+            var aArts = new ActivityModel("Arts", false, cSchool);
+            var aSpanish = new ActivityModel("Spanish", false, cSchool);
+            var change = new ActivityChangeModel(aMath, aEnglish, endTime.AddHours(1));
+            var e1 = new EntryModel(startTime, endTime, aMath, true);
+            var e2 = new EntryModel(startTime, endTime, aEnglish, true);
+            var e3 = new EntryModel(startTime, endTime, new List<ActivityModel>() { aArts, aSpanish }, true);
+            var e4 = new EntryModel(startTime, endTime, aEnglish, false);
+
+            context.Category.Add(cSchool);
+            context.Activity.AddRange(aMath, aEnglish, aArts, aSpanish);
+            context.ActivityChange.Add(change);
+            context.Entry.AddRange(e1, e2, e3, e4);
         }
 
-        // https://stackoverflow.com/questions/40896047/how-to-turn-on-identity-insert-in-net-core#:~:text=Improved%20solution%20based%20on%20NinjaCross%27%20answer
-        public void SetIdentityInsertAsync<TEnt>(WeeklyReviewDbContext context, bool enable)
+        private void AddCaseFoods(WeeklyReviewDbContext context)
         {
-            var entityType = context.Model.FindEntityType(typeof(TEnt));
-            var value = enable ? "ON" : "OFF";
-            //string query = $"SET IDENTITY_INSERT {entityType.GetSchema()}.{entityType.GetTableName()} {value}";
-            string query = $"SET IDENTITY_INSERT {entityType.GetTableName()} {value}";
-            context.Database.ExecuteSqlRaw(query);
+            var startTime = _dt.AddHours(4);
+            var endTime = startTime.AddHours(1);
+
+            var cFood = new CategoryModel("Food", 1, Color.Yellow);
+            var aBreakfast = new ActivityModel("Breakfast", false, cFood);
+            var aLunch = new ActivityModel("Lunch", false, cFood);
+            var aDinner = new ActivityModel("Dinner", false, cFood);
+            var aSnack = new ActivityModel("Snack", false, cFood);
+            var change = new ActivityChangeModel(aBreakfast, aLunch, endTime.AddHours(1));
+            var e1 = new EntryModel(startTime, endTime, aBreakfast, true);
+            var e2 = new EntryModel(startTime, endTime, aLunch, true);
+            var e3 = new EntryModel(startTime, endTime, new List<ActivityModel>() { aDinner, aSnack }, false);
+
+            context.Category.Add(cFood);
+            context.Activity.AddRange(aBreakfast, aLunch, aDinner, aSnack);
+            context.ActivityChange.Add(change);
+            context.Entry.AddRange(e1, e2, e3);
         }
 
-        private SortedDictionary<int, ActivityChangeModel> GenerateActivityChanges(SortedDictionary<int, ActivityModel> acts)
+        private void AddCaseSports(WeeklyReviewDbContext context)
         {
-            return new SortedDictionary<int, ActivityChangeModel>()
-            {
-                { 1, new ActivityChangeModel(0, acts[3], acts[5], _dt.AddHours(6)) },
-            };
+            var startTime = _dt.AddHours(2);
+            var endTime = startTime.AddHours(1);
+
+            var cSports = new CategoryModel("Sport", 1, Color.DarkGreen);
+            var aBike = new ActivityModel("Bike", false, cSports);
+            var aSwim = new ActivityModel("Swim", false, cSports);
+            var aRun = new ActivityModel("Run", false, cSports);
+            var change = new ActivityChangeModel(aBike, aSwim, endTime.AddHours(1));
+            var e1 = new EntryModel(startTime, endTime, aBike, true);
+            var e2 = new EntryModel(startTime, endTime, aSwim, true);
+            var e3 = new EntryModel(startTime, endTime, new List<ActivityModel>() { aSwim, aRun }, false);
+
+            context.Category.Add(cSports);
+            context.Activity.AddRange(aBike, aSwim, aRun);
+            context.ActivityChange.Add(change);
+            context.Entry.AddRange(e1, e2, e3);
         }
 
-        private SortedDictionary<int, EntryModel> GenerateEntries(SortedDictionary<int, ActivityModel> acts)
+        private void AddCaseMovies(WeeklyReviewDbContext context)
         {
-            _dt = new DateTime(2023, 8, 1, 10, 0, 0);
-            return new SortedDictionary<int, EntryModel>()
-            {
-                { 1, new EntryModel(0, _dt, _dt.AddHours(1), new List<ActivityModel>() { acts[1], acts[6] }, false) },
-                { 2, new EntryModel(0, _dt.AddHours(1), _dt.AddHours(2), new List<ActivityModel>() { acts[2] }, false) },
-                { 3, new EntryModel(0, _dt.AddHours(2), _dt.AddHours(3), new List<ActivityModel>() { acts[3], acts[4] }, true) },
-                { 4, new EntryModel(0, _dt.AddHours(3), _dt.AddHours(4), new List<ActivityModel>() { acts[3] }, true) },
-                { 5, new EntryModel(0, _dt.AddHours(4), _dt.AddHours(5), new List<ActivityModel>() { acts[5], acts[7] }, false) },
-                { 6, new EntryModel(0, _dt.AddHours(2), _dt.AddHours(3), new List<ActivityModel>() { acts[5], acts[4] }, true) },
-                { 7, new EntryModel(0, _dt.AddHours(3), _dt.AddHours(4), new List<ActivityModel>() { acts[5] }, true) },
-                { 8, new EntryModel(0, _dt.AddHours(2), _dt.AddHours(3), new List<ActivityModel>() { acts[1], acts[4] }, false) },
-                { 9, new EntryModel(0, _dt.AddHours(3), _dt.AddHours(4), new List<ActivityModel>() { acts[5], acts[2] }, false) },
-            };
+            var startTime = _dt;
+            var endTime = startTime.AddHours(1);
+
+            var cWatching = new CategoryModel("Watching", 1, Color.Orange);
+            var aMovie = new ActivityModel("Movie", false, cWatching);
+            var aSeries = new ActivityModel("Series", false, cWatching);
+            var change = new ActivityChangeModel(aMovie, aSeries, endTime.AddHours(1));
+            var e1 = new EntryModel(startTime, endTime, aMovie, true);
+            var e2 = new EntryModel(startTime, endTime, aSeries, false);
+
+            context.Category.Add(cWatching);
+            context.Activity.AddRange(aMovie, aSeries);
+            context.ActivityChange.Add(change);
+            context.Entry.AddRange(e1, e2);
         }
 
-        private SortedDictionary<int, ActivityModel> GenerateActivities(SortedDictionary<int, CategoryModel> cats)
-        {
-            return new SortedDictionary<int, ActivityModel>()
-            {
-                { 1, new ActivityModel(0, "Dinner", false, cats[1]) },
-                { 2, new ActivityModel(0, "Lunch", false, cats[1]) },
-                { 3, new ActivityModel(0, "Bike", true, cats[2]) },
-                { 4, new ActivityModel(0, "Shopping", false, cats[3]) },
-                { 5, new ActivityModel(0, "Swim", false, cats[2]) },
-                { 6, new ActivityModel(0, "Youtube", false, cats[4]) },
-                { 7, new ActivityModel(0, "TV", false, cats[4]) },
-            };
-        }
-
-        private SortedDictionary<int, CategoryModel> GenerateCategories()
-        {
-            return new SortedDictionary<int, CategoryModel>()
-            {
-                { 1, new CategoryModel(0, "Food", 1, Color.Yellow) },
-                { 2, new CategoryModel(0, "Sports", 2, Color.Green) },
-                { 3, new CategoryModel(0, "Shopping", 2, Color.Blue) },
-                { 4, new CategoryModel(0, "Television", 2, Color.Red) },
-            };
-        }
     }
 }

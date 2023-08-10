@@ -15,9 +15,8 @@ namespace WeeklyReview.Database.Models
             
         }
 
-        public CategoryModel(int id, string name, int priority, Color color)
+        public CategoryModel(string name, int priority, Color color)
         {
-            Id = id;
             Name = name;
             Priority = priority;
             Color = color;

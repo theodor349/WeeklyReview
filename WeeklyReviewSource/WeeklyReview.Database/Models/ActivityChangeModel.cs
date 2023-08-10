@@ -12,9 +12,8 @@
             
         }
 
-        public ActivityChangeModel(int id, ActivityModel source, ActivityModel destination, DateTime changeDate)
+        public ActivityChangeModel(ActivityModel source, ActivityModel destination, DateTime changeDate)
         {
-            Id = id;
             Source = source;
             Destination = destination;
             ChangeDate = changeDate;

@@ -14,12 +14,19 @@
             
         }
 
-        public EntryModel(int id, DateTime startTime, DateTime endTime, List<ActivityModel> activities, bool deleted)
+        public EntryModel(DateTime startTime, DateTime endTime, List<ActivityModel> activities, bool deleted)
         {
-            Id = id;
             StartTime = startTime;
             EndTime = endTime;
             Activities = activities;
+            Deleted = deleted;
+        }
+
+        public EntryModel(DateTime startTime, DateTime endTime, ActivityModel activity, bool deleted)
+        {
+            StartTime = startTime;
+            EndTime = endTime;
+            Activities = new() { activity };
             Deleted = deleted;
         }
     }

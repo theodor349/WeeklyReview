@@ -20,9 +20,8 @@ namespace WeeklyReview.Database.Models
             
         }
 
-        public ActivityModel(int id, string name, bool deleted, CategoryModel? category)
+        public ActivityModel(string name, bool deleted, CategoryModel? category)
         {
-            Id = id;
             Name = name;
             Deleted = deleted;
             Category = category;
