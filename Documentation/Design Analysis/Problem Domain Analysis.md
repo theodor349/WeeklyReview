@@ -132,8 +132,6 @@ classDiagram
   }
   class ActivityChange{
     + int Id
-    + int From
-    + int To
     + DateTime ChangeDate
     + void RollBack()
   }
