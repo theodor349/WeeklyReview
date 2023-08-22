@@ -48,12 +48,13 @@ namespace WeeklyReview.Shared.Tests.Services
             Assert.False(context.ActivityChange.Any(x => x.Id == changeId));
         }
 
-        private static EntryModel CheckEntryIsEnabledWithCorrectActivities(WeeklyReviewDbContext context, DateTime startTime, DateTime endTime, List<int> activityIds)
+        private static EntryModel CheckEntryIsEnabledWithCorrectActivities(WeeklyReviewDbContext context, DateTime startTime, DateTime endTime, List<int> activityIds, Guid userGuid)
         {
             var entry = context.Entry
                 .Include(x => x.Activities)
                 .Single(x => x.StartTime == startTime && x.Deleted == false);
             Assert.Equal(endTime, entry.EndTime);
+            Assert.Equal(userGuid, entry.UserGuid);
             Assert.Equal(activityIds.Count(), entry.Activities.Count());
             foreach (var aId in activityIds)
                 Assert.Contains(entry.Activities, x => x.Id == aId);
@@ -69,6 +70,7 @@ namespace WeeklyReview.Shared.Tests.Services
             int aMovie = 1;
             var startTime = DbFixture.Dt.AddHours(0);
             var endTime = startTime.AddHours(1);
+            var userGuid = DbFixture.User1;
 
             // Arrange
             using var context = DbFixture.CreateContext();
@@ -85,7 +87,7 @@ namespace WeeklyReview.Shared.Tests.Services
             context.ChangeTracker.Clear();
 
             // Assert
-            var newEntry = CheckEntryIsEnabledWithCorrectActivities(context, startTime, endTime, new() { aMovie });
+            var newEntry = CheckEntryIsEnabledWithCorrectActivities(context, startTime, endTime, new() { aMovie }, userGuid);
             Assert.Equal(TimeService.Current, newEntry.RecordedTime);
             CheckEntryHaveBeenMarkedDeleted(eOldId, context);
             CheckActivityChangeHaveBeenRemoved(context, changeId);
@@ -100,6 +102,7 @@ namespace WeeklyReview.Shared.Tests.Services
             int aRun = 5;
             var startTime = DbFixture.Dt.AddHours(2);
             var endTime = startTime.AddHours(1);
+            var userGuid = DbFixture.User1;
 
             // Arrange
             using var context = DbFixture.CreateContext();
@@ -117,7 +120,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Assert
 
-            var newEntry = CheckEntryIsEnabledWithCorrectActivities(context, startTime, endTime, new() { aBike, aRun });
+            var newEntry = CheckEntryIsEnabledWithCorrectActivities(context, startTime, endTime, new() { aBike, aRun }, userGuid);
             Assert.Equal(TimeService.Current, newEntry.RecordedTime);
             CheckEntryHaveBeenMarkedDeleted(eOldId, context); 
             CheckActivityChangeHaveBeenRemoved(context, changeId);
@@ -131,6 +134,7 @@ namespace WeeklyReview.Shared.Tests.Services
             int aSnack = 9;
             var startTime = DbFixture.Dt.AddHours(4);
             var endTime = startTime.AddHours(1);
+            var userGuid = DbFixture.User1;
 
             // Arrange
             using var context = DbFixture.CreateContext();
@@ -148,7 +152,7 @@ namespace WeeklyReview.Shared.Tests.Services
             context.ChangeTracker.Clear();
 
             // Assert
-            CheckEntryIsEnabledWithCorrectActivities(context, startTime, endTime, new() { aDinner, aSnack });
+            CheckEntryIsEnabledWithCorrectActivities(context, startTime, endTime, new() { aDinner, aSnack }, userGuid);
             CheckActivityChangeHaveBeenRemoved(context, changeId);
             Assert.Equal(expectedEntryCount, context.Entry.Count());
         }
@@ -160,6 +164,7 @@ namespace WeeklyReview.Shared.Tests.Services
             int aEnglish = 11;
             var startTime = DbFixture.Dt.AddHours(6);
             var endTime = startTime.AddHours(1);
+            var userGuid = DbFixture.User1;
 
             // Arrange
             using var context = DbFixture.CreateContext();
@@ -177,7 +182,7 @@ namespace WeeklyReview.Shared.Tests.Services
             context.ChangeTracker.Clear();
 
             // Assert
-            CheckEntryIsEnabledWithCorrectActivities(context, startTime, endTime, new() { aEnglish });
+            CheckEntryIsEnabledWithCorrectActivities(context, startTime, endTime, new() { aEnglish }, userGuid);
             CheckActivityChangeHaveBeenRemoved(context, changeId);
             Assert.Equal(expectedEntryCount, context.Entry.Count());
         }

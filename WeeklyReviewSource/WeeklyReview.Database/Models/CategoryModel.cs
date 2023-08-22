@@ -9,18 +9,20 @@ namespace WeeklyReview.Database.Models
         public string NormalizedName { get; set; }
         public int Priority { get; set; }
         public Color Color { get; set; }
+        public Guid UserGuid { get; set; }
 
         private CategoryModel()
         {
             
         }
 
-        public CategoryModel(string name, int priority, Color color)
+        public CategoryModel(string name, int priority, Color color, Guid userGuid)
         {
             Name = name;
             Priority = priority;
             Color = color;
             NormalizedName = name.ToLower();
+            UserGuid = userGuid;
         }
     }
 }

@@ -13,6 +13,8 @@ namespace WeeklyReview.Server.Persitance.Configurations
 
             builder.Property(x => x.ChangeDate);
 
+            builder.Property(x => x.UserGuid);
+
             builder.HasOne(x => x.Source).WithMany().OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(x => x.Destination).WithMany().OnDelete(DeleteBehavior.NoAction);

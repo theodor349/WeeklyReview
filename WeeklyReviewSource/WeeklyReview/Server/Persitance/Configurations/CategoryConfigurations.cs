@@ -19,6 +19,8 @@ namespace WeeklyReview.Server.Persitance.Configurations
 
             builder.Property(x => x.Priority);
 
+            builder.Property(x => x.UserGuid);
+
             builder.Property(x => x.Color)
                 .HasConversion(
                 v => v.ToArgb(),

@@ -17,6 +17,8 @@ namespace WeeklyReview.Server.Persitance.Configurations
             builder.Property(x => x.NormalizedName)
                 .HasMaxLength(64);
 
+            builder.Property(x => x.UserGuid);
+
             builder.Property(x => x.Deleted);
 
             builder.HasOne(x => x.Category);

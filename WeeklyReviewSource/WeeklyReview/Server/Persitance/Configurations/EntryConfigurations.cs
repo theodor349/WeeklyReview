@@ -21,6 +21,8 @@ namespace WeeklyReview.Server.Persitance.Configurations
 
             builder.Property(x => x.Deleted);
 
+            builder.Property(x => x.UserGuid);
+
             builder.HasMany(x => x.Activities)
                 .WithMany();
         }
