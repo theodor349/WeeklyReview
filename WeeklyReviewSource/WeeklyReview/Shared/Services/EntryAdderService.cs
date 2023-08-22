@@ -4,11 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WeeklyReview.Shared.Models;
+using WeeklyReview.Shared.Models.DTOs;
 
 namespace WeeklyReview.Shared.Services
 {
     public class EntryAdderService : IEntryAdderService
     {
+        // TODO: If an entry changes endtime, then all entries including deleted ones should be updated.
         private readonly IEntryParserService _entryParser;
         private readonly IDataService _dataService;
 
@@ -33,7 +35,7 @@ namespace WeeklyReview.Shared.Services
                 await HandleNewEntry(date, res);
         }
 
-        private async Task HandleNewEntry(DateTime date, (List<Activity> usedActivities, List<Category> usedCategories, List<Activity> newActivities, List<Category> newCategories) res)
+        private async Task HandleNewEntry(DateTime date, (List<ActivityDto> usedActivities, List<CategoryDto> usedCategories, List<ActivityDto> newActivities, List<CategoryDto> newCategories) res)
         {
             await _dataService.AddActivities(res.newActivities);
             await _dataService.AddCategories(res.newCategories);
@@ -48,7 +50,7 @@ namespace WeeklyReview.Shared.Services
                     await _dataService.RemoveEntry(otherEntry);
             }
 
-            var e = new Entry();
+            var e = new EntryDto();
             e.StarTime = date;
             e.EndTime = endTime;
             e.Entered = DateTime.Now;

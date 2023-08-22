@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 using System.Drawing;
 using WeeklyReview.Client.Services;
 using WeeklyReview.Client.ViewModels;
-using WeeklyReview.Shared.Models;
+using WeeklyReview.Shared.Models.DTOs;
 using WeeklyReview.Shared.Services;
 
 namespace WeeklyReview.Client.Pages
@@ -16,7 +16,7 @@ namespace WeeklyReview.Client.Pages
         public DateTime ViewDate = DateTime.Now;
         public List<ScheduleViewModel> DataSource { get; set; } = new List<ScheduleViewModel>();
         public List<CategoryViewModel> Categories { get; set; } = new List<CategoryViewModel>();
-        public List<Activity> Activities
+        public List<ActivityDto> Activities
         {
             get
             {

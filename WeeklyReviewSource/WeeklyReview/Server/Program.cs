@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
+using WeeklyReview.Server.Persitance;
 
 var allowedOrigins = "_allowOrigins";
 
@@ -19,6 +19,11 @@ builder.Services.AddCors(options => options
     .AllowAnyHeader()
     .AllowAnyMethod();
 }));
+
+builder.Services.AddDbContext<WeeklyReviewApiDbContext>(options =>
+{
+    options.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=weeklyReviewLocal;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
+});
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();

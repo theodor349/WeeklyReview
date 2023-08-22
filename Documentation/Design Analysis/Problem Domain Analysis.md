@@ -32,6 +32,7 @@ Furthermore it must give correct numbers with regard to how much time and how ma
 - Entry
   - Contains time information and what Activity is started
   - If overwritten, then it should not be deleted, rather it should be flagged as deleted
+  - When a new one is created and there are no entry after it, set the `EndTime` to to `StarTime.AddDays(1)` 
   - E.g. At 10:15 I was on call with the doctor, while out walking
 - Activity
   - Is a label used to uniquely identify an Activity 
@@ -89,7 +90,7 @@ Furthermore it must give correct numbers with regard to how much time and how ma
 | --------------                         | :-:   | :-:      | :-:          | :-:      | :-:   |
 | Activity Logged                        | +     | *        |              |          |       |
 | Activity Deleted by User               |       | +        |              | *        | *     |
-| Activity Converted to a new Activity   |       | *        | *            |          |       |
+| Activity Converted to another Activity |       | *        | *            |          |       |
 | Activity Conversion Rolled Back        |       | *        | *            |          |       |
 | Category Created                       |       |          |              | +        |       |
 | Category Changed Name                  |       |          |              | *        |       |
@@ -115,6 +116,7 @@ classDiagram
   Query "*" *-- "*" Category
 
   class Entry {
+    + int Id
     + DateTime Start
     + DateTime End
     + DateTime Entered
@@ -124,10 +126,12 @@ classDiagram
   class Activity {
     + int Id
     + string Name
+    + string NormalizedName
     + bool Deleted
     + void ConvertToAnother()
   }
   class ActivityChange{
+    + int Id
     + DateTime ChangeDate
     + void RollBack()
   }
@@ -167,15 +171,25 @@ stateDiagram-v2
 
 ### Activity
 An Activity is created when an unknown Activity is logged.
-It can be deleted by the user iff there are no entries that refernce it, or if it is converted/renamed to another Activity.
+It can be marked as deleted by the user iff there are no entries that refernce it, or if it is converted/renamed to another Activity.
 And it will come back to existance if the conversion is rolled back.
+Again if the user enters a new entry with the same name as a deleted activity, then the deleted activity will not be revived, but a new one with the same name will come back. (If the old activity is then revieved then we have two with the same name //TODO: fix this at some point)
 ```mermaid
 stateDiagram-v2
     [*] --> Activity: Activity Logged
     Activity --> [*]: Activity Deleted
-    Activity --> [*]: Activity Converted to another
+    Activity --> [*]: Activity Converted to Another
     Activity --> [*]: Activity Changed Name
     [*] --> Activity: Activity Conversion Rolled Back
+```
+
+### ActivityChange
+An ActivityChange is created when an Activity is converted/renamed to another.
+It is deleted when it is rolled back.
+```mermaid
+stateDiagram-v2
+    [*] --> ActivityChange: Activity Converted to Another
+    ActivityChange --> [*]: Activity Conversion Rolled Back
 ```
 
 ### Category

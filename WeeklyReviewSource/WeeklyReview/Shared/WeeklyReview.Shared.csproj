@@ -9,4 +9,12 @@
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="WeeklyReview.Shared.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\WeeklyReview.Database\WeeklyReview.Database.csproj" />
+  </ItemGroup>
 </Project>

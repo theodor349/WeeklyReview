@@ -1,6 +1,6 @@
-﻿namespace WeeklyReview.Shared.Models
+﻿namespace WeeklyReview.Shared.Models.DTOs
 {
-    public class Entry : IComparable<Entry>
+    public class EntryDto : IComparable<EntryDto>
     {
         private static int _entryIndex = 1;
         private static int _nextIndex => _entryIndex++;
@@ -9,14 +9,14 @@
         public DateTime StarTime { get; set; }
         public DateTime EndTime { get; set; }
         public DateTime Entered { get; set; }
-        public List<Activity> Activities { get; set; } = new List<Activity>();
+        public List<ActivityDto> Activities { get; set; } = new List<ActivityDto>();
 
-        public Entry()
+        public EntryDto()
         {
             Id = _nextIndex;
         }
 
-        public int CompareTo(Entry? other)
+        public int CompareTo(EntryDto? other)
         {
             return StarTime.CompareTo(other.StarTime);
         }
