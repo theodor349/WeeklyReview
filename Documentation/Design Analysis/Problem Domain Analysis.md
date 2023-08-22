@@ -173,8 +173,9 @@ stateDiagram-v2
 
 ### Activity
 An Activity is created when an unknown Activity is logged.
-It can be deleted by the user iff there are no entries that refernce it, or if it is converted/renamed to another Activity.
+It can be marked as deleted by the user iff there are no entries that refernce it, or if it is converted/renamed to another Activity.
 And it will come back to existance if the conversion is rolled back.
+Again if the user enters a new entry with the same name as a deleted activity, then the deleted activity will not be revived, but a new one with the same name will come back. (If the old activity is then revieved then we have two with the same name //TODO: fix this at some point)
 ```mermaid
 stateDiagram-v2
     [*] --> Activity: Activity Logged
