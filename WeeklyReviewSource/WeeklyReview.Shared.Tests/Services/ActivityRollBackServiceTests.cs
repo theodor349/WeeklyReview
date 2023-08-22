@@ -21,12 +21,12 @@ namespace WeeklyReview.Shared.Tests.Services
     ///     - Therefore deletion should be another service which also checks that no enties references it
     /// </summary>
 
-    public class ActivityRollBackServiceTests : IClassFixture<WeeklyReviewApiDbFixture>
+    public class ActivityRollBackServiceTests : IClassFixture<WeeklyReviewApiDbFixtureForActivityRollbackService>
     {
-        public WeeklyReviewApiDbFixture DbFixture { get; }
+        public WeeklyReviewApiDbFixtureForActivityRollbackService DbFixture { get; }
         public ITimeService TimeService { get; }
         
-        public ActivityRollBackServiceTests(WeeklyReviewApiDbFixture dbFixture)
+        public ActivityRollBackServiceTests(WeeklyReviewApiDbFixtureForActivityRollbackService dbFixture)
         {
             DbFixture = dbFixture;
             TimeService = Substitute.For<ITimeService>();
