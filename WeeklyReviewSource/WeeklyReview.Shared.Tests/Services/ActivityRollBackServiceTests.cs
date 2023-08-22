@@ -62,12 +62,6 @@ namespace WeeklyReview.Shared.Tests.Services
         }
         #endregion
 
-
-
-        // TODO: Implemente Tests
-        //  - Old activity is not turned off
-        //  - The entry's duration/endtime has changed // Done by the add entry service
-
         [Fact]
         public void Rolback_NoNewEntry_Override_CaseMovies()
         {
