@@ -23,6 +23,8 @@ namespace WeeklyReview.Shared.Services
 
         public void RollBackActivityChange(ActivityChangeModel activityChange)
         {
+            var oldActivity = _db.Activity.Single(x => x.Id == activityChange.Source.Id);
+            oldActivity.Deleted = false;
             var oldEntries = _db.Entry
                 .Where(x => x.Activities.Any(x => x.Id == activityChange.Source.Id)).ToList();
             foreach (var entry in oldEntries)

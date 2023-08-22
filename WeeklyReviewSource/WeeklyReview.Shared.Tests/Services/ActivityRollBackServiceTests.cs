@@ -33,10 +33,6 @@ namespace WeeklyReview.Shared.Tests.Services
             TimeService.Current.Returns(dbFixture.MaxTime);
         }
 
-        // TODO: Implemente Tests
-        //  - Old activity is not turned off
-        //  - The enty's duration/endtime has changed
-
         #region Helpers
         private static void CheckEntryHaveBeenMarkedDeleted(int eOldId, WeeklyReviewDbContext context)
         {
@@ -60,7 +56,17 @@ namespace WeeklyReview.Shared.Tests.Services
                 Assert.Contains(entry.Activities, x => x.Id == aId);
             return entry;
         }
+
+        private void CheckThatActivityIsEnabled()
+        {
+        }
         #endregion
+
+
+
+        // TODO: Implemente Tests
+        //  - Old activity is not turned off
+        //  - The entry's duration/endtime has changed // Done by the add entry service
 
         [Fact]
         public void Rolback_NoNewEntry_Override_CaseMovies()
@@ -89,6 +95,7 @@ namespace WeeklyReview.Shared.Tests.Services
             // Assert
             var newEntry = CheckEntryIsEnabledWithCorrectActivities(context, startTime, endTime, new() { aMovie }, userGuid);
             Assert.Equal(TimeService.Current, newEntry.RecordedTime);
+            Assert.False(context.Activity.Single(x => x.Id == aMovie).Deleted);
             CheckEntryHaveBeenMarkedDeleted(eOldId, context);
             CheckActivityChangeHaveBeenRemoved(context, changeId);
         }

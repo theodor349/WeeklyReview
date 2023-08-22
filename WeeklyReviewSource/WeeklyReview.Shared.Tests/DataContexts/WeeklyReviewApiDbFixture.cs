@@ -130,7 +130,7 @@ namespace WeeklyReview.Shared.Tests.DataContexts
             var endTime = startTime.AddHours(1);
 
             var cWatching = new CategoryModel("Watching", 1, Color.Orange, User1);
-            var aMovie = new ActivityModel("Movie", false, cWatching, User1);
+            var aMovie = new ActivityModel("Movie", true, cWatching, User1);
             var aSeries = new ActivityModel("Series", false, cWatching, User1);
             var change = new ActivityChangeModel(aMovie, aSeries, endTime.AddHours(1), User1);
             var e1 = new EntryModel(startTime, endTime, startTime.AddMinutes(1), aMovie, true, User1);
