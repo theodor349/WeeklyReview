@@ -4,9 +4,9 @@
     {
         public int Id { get; set; }
         public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public DateTime? EndTime { get; set; }
         public DateTime RecordedTime{ get; set; }
-        public TimeSpan Duration => EndTime - StartTime;
+        public TimeSpan Duration => EndTime.HasValue ? EndTime.Value - StartTime : TimeSpan.Zero;
         public List<ActivityModel> Activities { get; set; }
         public bool Deleted { get; set; }
         public Guid UserGuid { get; set; }
@@ -16,7 +16,7 @@
             
         }
 
-        public EntryModel(DateTime startTime, DateTime endTime, DateTime recordedTime, List<ActivityModel> activities, bool deleted, Guid userGuid)
+        public EntryModel(DateTime startTime, DateTime? endTime, DateTime recordedTime, List<ActivityModel> activities, bool deleted, Guid userGuid)
         {
             StartTime = startTime;
             EndTime = endTime;
@@ -26,7 +26,7 @@
             UserGuid = userGuid;
         }
 
-        public EntryModel(DateTime startTime, DateTime endTime, DateTime recordedTime, ActivityModel activity, bool deleted, Guid userGuid)
+        public EntryModel(DateTime startTime, DateTime? endTime, DateTime recordedTime, ActivityModel activity, bool deleted, Guid userGuid)
         {
             StartTime = startTime;
             EndTime = endTime;

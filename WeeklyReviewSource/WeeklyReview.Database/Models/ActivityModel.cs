@@ -29,5 +29,13 @@ namespace WeeklyReview.Database.Models
             NormalizedName = name.ToLower();
             UserGuid = userGuid;
         }
+
+        public ActivityModel(string name, bool deleted, Guid userGuid)
+        {
+            Name = name;
+            Deleted = deleted;
+            NormalizedName = name.ToLower();
+            UserGuid = userGuid;
+        }
     }
 }

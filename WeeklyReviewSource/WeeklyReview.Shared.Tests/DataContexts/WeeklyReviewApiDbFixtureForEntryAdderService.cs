@@ -17,14 +17,20 @@ namespace WeeklyReview.Shared.Tests.DataContexts
         private static readonly object _lock = new();
         private static bool _databaseInitialized;
 
-        private Guid user1 = Guid.NewGuid();
-        private Guid user2 = Guid.NewGuid();
-        public Guid User1 => user1;
-        public Guid User2 => user2;
+        private List<Guid> users = new()
+        {
+            Guid.NewGuid(), // 0 (Not Used)
+            Guid.NewGuid(), // 1
+            Guid.NewGuid(), // 2
+            Guid.NewGuid(), // 3
+            Guid.NewGuid(), // 4
+            Guid.NewGuid(), // 5
+        };
+        public List<Guid> Users => users;
 
         private DateTime _dt;
         public DateTime Dt => _dt;
-        public DateTime MaxTime => _dt.AddHours(10);
+        public DateTime MaxTime => _dt.AddHours(6);
 
         public WeeklyReviewDbContext CreateContext()
             => new WeeklyReviewApiDbContext(
@@ -46,6 +52,10 @@ namespace WeeklyReview.Shared.Tests.DataContexts
                         using (var transaction = context.Database.BeginTransaction())
                         {
                             AddCaseMovies(context);
+                            AddCaseFoods(context);
+                            AddCaseSports(context);
+                            AddCaseVisit(context);
+                            AddCaseSchool(context);
                             context.SaveChanges();
                             transaction.Commit();
                         }
@@ -58,19 +68,76 @@ namespace WeeklyReview.Shared.Tests.DataContexts
 
         private void AddCaseMovies(WeeklyReviewDbContext context)
         {
-            var startTime = _dt;
-            var endTime = startTime.AddHours(1);
+            var user = users[1];
 
-            var cWatching = new CategoryModel("Watching", 1, Color.Orange, User1);
-            var aMovie = new ActivityModel("Movie", true, cWatching, User1);
-            var aSeries = new ActivityModel("Series", false, cWatching, User1);
-            var change = new ActivityChangeModel(aMovie, aSeries, endTime.AddHours(1), User1);
-            var e1 = new EntryModel(startTime, endTime, startTime.AddMinutes(1), aMovie, true, User1);
-            var e2 = new EntryModel(startTime, endTime, startTime.AddMinutes(2), aSeries, false, User1);
+            var aMovie = new ActivityModel("Movie", false, user);
+            var aSeries = new ActivityModel("Series", false, user);
 
-            context.Category.Add(cWatching);
             context.Activity.AddRange(aMovie, aSeries);
-            context.ActivityChange.Add(change);
+        }
+
+        private void AddCaseFoods(WeeklyReviewDbContext context)
+        {
+            var user = users[2];
+            var startTime = _dt;
+            var endTime = startTime.AddHours(4);
+
+            var aBreakfast = new ActivityModel("Breakfast", false, user);
+            var aLunch = new ActivityModel("Lunch", false, user);
+            var aDinner = new ActivityModel("Dinner", false, user);
+            var e1 = new EntryModel(startTime, endTime, startTime, aLunch, true, user);
+            var e2 = new EntryModel(startTime, endTime, startTime, aBreakfast, false, user);
+            var e3 = new EntryModel(startTime.AddHours(4), null, startTime, aLunch, false, user);
+
+            context.Activity.AddRange(aBreakfast, aLunch, aDinner);
+            context.Entry.AddRange(e1, e2, e3);
+        }
+
+        private void AddCaseSports(WeeklyReviewDbContext context)
+        {
+            var user = users[3];
+            var startTime = _dt;
+            var endTime = startTime.AddHours(4);
+
+            var aRun = new ActivityModel("Run", false, user);
+            var aBike = new ActivityModel("Bike", false, user);
+            var aSwim = new ActivityModel("Swim", false, user);
+            var e1 = new EntryModel(startTime, endTime, startTime, aRun, false, user);
+            var e2 = new EntryModel(endTime, endTime.AddHours(2), startTime, aBike, false, user);
+
+            context.Activity.AddRange(aRun, aBike, aSwim);
+            context.Entry.AddRange(e1, e2);
+        }
+
+        private void AddCaseVisit(WeeklyReviewDbContext context)
+        {
+            var user = users[4];
+            var startTime = _dt;
+            var endTime = startTime.AddHours(4);
+
+            var aParents = new ActivityModel("Parents", false, user);
+            var aBrother = new ActivityModel("Brother", false, user);
+            var aSister = new ActivityModel("Sister", false, user);
+            var e1 = new EntryModel(startTime, endTime, startTime, aParents, false, user);
+            var e2 = new EntryModel(endTime, endTime.AddHours(2), startTime, new List<ActivityModel>() { aBrother, aSister }, false, user);
+
+            context.Activity.AddRange(aParents, aBrother, aSister);
+            context.Entry.AddRange(e1, e2);
+        }
+
+        private void AddCaseSchool(WeeklyReviewDbContext context)
+        {
+            var user = users[5];
+            var startTime = _dt;
+            var endTime = startTime.AddHours(4);
+
+            var aEnglish = new ActivityModel("English", false, user);
+            var aDanish = new ActivityModel("Danish", false, user);
+            var aMath = new ActivityModel("Math", false, user);
+            var e1 = new EntryModel(startTime, endTime, startTime, aEnglish, false, user);
+            var e2 = new EntryModel(endTime, endTime.AddHours(2), startTime, aDanish, false, user);
+
+            context.Activity.AddRange(aEnglish, aDanish, aMath);
             context.Entry.AddRange(e1, e2);
         }
 
