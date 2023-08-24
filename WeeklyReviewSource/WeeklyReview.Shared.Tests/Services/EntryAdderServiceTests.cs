@@ -24,7 +24,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void Entry_OnlyEntry_AddEntry()
+        public void Entry_OnlyEntry_AddEntry_CaseMovies()
         {
             int aSeries = 1;
             int aMovies = 2;
@@ -60,7 +60,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void Entry_EntrieArround_AddEntryAndUpdateTimes()
+        public void Entry_EntrieArround_AddEntryAndUpdateTimes_CaseFoods()
         {
             int aDinner = 5;
             var startTime = DbFixture.Dt.AddHours(2);
@@ -97,6 +97,44 @@ namespace WeeklyReview.Shared.Tests.Services
             var beforeActive = context.Entry.Single(x => x.StartTime == startTime.AddHours(-2) && x.Deleted == false && x.UserGuid == user);
             Assert.Equal(endTime, beforeDeleted.EndTime);
             Assert.Equal(startTime, beforeActive.EndTime);
+        }
+
+        [Fact]
+        public void Entry_EntryAtAndAfter_OverrideEntry_CaseSports()
+        {
+            int aSwim = 8;
+            var startTime = DbFixture.Dt.AddHours(0);
+            var endTime = startTime.AddHours(4);
+            var entryDate = startTime.AddHours(1);
+            var user = DbFixture.Users[3];
+
+            // Arrange 
+            using var context = DbFixture.CreateContext();
+            var _dt = DbFixture.Dt;
+            context.Database.BeginTransaction();
+            TimeService.Current.Returns(entryDate);
+
+            // Act
+            var sut = new NewEntryAdderService(context, TimeService);
+            var activities = context.Activity.Where(x => x.Id == aSwim).ToList();
+            var res = sut.AddEntry(startTime, activities, user);
+            context.ChangeTracker.Clear();
+
+            // Assert
+            var entry = context.Entry
+                .Include(x => x.Activities)
+                .Single(x =>
+                    x.StartTime == startTime &&
+                    x.UserGuid == user &&
+                    x.Deleted == false);
+            Assert.Equivalent(entry, res);
+            Assert.Equal(endTime, entry.EndTime);
+            Assert.Equal(entryDate, entry.RecordedTime);
+            Assert.Single(entry.Activities);
+            Assert.Contains(entry.Activities, x => x.Id == aSwim);
+
+            var beforeDeleted = context.Entry.Single(x => x.StartTime == startTime && x.Deleted == true && x.UserGuid == user);
+            Assert.True(beforeDeleted.Deleted);
         }
 
     }

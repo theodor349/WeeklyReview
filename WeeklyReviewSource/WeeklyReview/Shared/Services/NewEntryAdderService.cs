@@ -21,13 +21,25 @@ namespace WeeklyReview.Shared.Services
 
         public EntryModel AddEntry(DateTime date, List<ActivityModel> activities, Guid userGuid)
         {
+            DeleteEntryAt(date, userGuid);
             UpdateBefore(date, userGuid);
             var endTime = GetEndTime(date, userGuid);
+            return AddNewEntry(date, activities, userGuid, endTime);
+        }
 
+        private EntryModel AddNewEntry(DateTime date, List<ActivityModel> activities, Guid userGuid, DateTime? endTime)
+        {
             var entry = new EntryModel(date, endTime, _timeService.Current, activities, false, userGuid);
             _db.Entry.Add(entry);
             _db.SaveChanges();
             return entry;
+        }
+
+        private void DeleteEntryAt(DateTime date, Guid userGuid)
+        {
+            var entry = _db.Entry.FirstOrDefault(x => x.StartTime == date && x.UserGuid == userGuid && x.Deleted == false);
+            if (entry is not null)
+                entry.Deleted = true;
         }
 
         private DateTime? GetEndTime(DateTime date, Guid userGuid)
