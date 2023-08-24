@@ -62,8 +62,6 @@ namespace WeeklyReview.Shared.Tests.Services
         }
         #endregion
 
-        // TODO: Implemente Case Trip
-
         [Fact]
         public void Rolback_NoNewEntry_Override_CaseMovies()
         {
@@ -186,6 +184,39 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Assert
             CheckEntryIsEnabledWithCorrectActivities(context, startTime, endTime, new() { aEnglish }, userGuid);
+            CheckActivityChangeHaveBeenRemoved(context, changeId);
+            Assert.Equal(expectedEntryCount, context.Entry.Count());
+        }
+
+        [Fact]
+        public void Rolback_NewEntryHaveBeenDeleted_DoNothing_CaseTrip()
+        {
+            int changeId = 5;
+            int aSpain = 12;
+            var startTime = DbFixture.Dt.AddHours(8);
+            var endTime = startTime.AddHours(1);
+            var userGuid = DbFixture.User1;
+
+            // Arrange
+            using var context = DbFixture.CreateContext();
+            var _dt = DbFixture.Dt;
+            context.Database.BeginTransaction();
+            var expectedEntryCount = context.Entry.Count();
+
+            // Act
+            var sut = new ActivityRollBackService(context, TimeService);
+            var model = context.ActivityChange
+                .Include(x => x.Source)
+                .Include(x => x.Destination)
+                .Single(x => x.Id == changeId);
+            sut.RollBackActivityChange(model);
+            context.ChangeTracker.Clear();
+
+            // Assert
+            var entry = context.Entry.SingleOrDefault(x => x.StartTime == startTime && x.UserGuid == userGuid && x.Deleted == false);
+            Assert.Null(entry);
+            var activity = context.Activity.Single(x => x.Id == aSpain);
+            Assert.False(activity.Deleted);
             CheckActivityChangeHaveBeenRemoved(context, changeId);
             Assert.Equal(expectedEntryCount, context.Entry.Count());
         }

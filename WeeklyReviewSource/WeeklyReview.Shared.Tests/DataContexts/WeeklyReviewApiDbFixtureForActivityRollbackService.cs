@@ -51,6 +51,7 @@ namespace WeeklyReview.Shared.Tests.DataContexts
                             AddCaseSports(context);
                             AddCaseFoods(context);
                             AddCaseSchool(context);
+                            AddCaseTrip(context);
                             context.SaveChanges();
                             transaction.Commit();
                         }
@@ -59,6 +60,22 @@ namespace WeeklyReview.Shared.Tests.DataContexts
                     _databaseInitialized = true;
                 }
             }
+        }
+
+        private void AddCaseTrip(WeeklyReviewDbContext context)
+        {
+            var startTime = _dt.AddHours(8);
+            var endTime = startTime.AddHours(1);
+
+            var aSpain = new ActivityModel("Spain", false, User1);
+            var aFrance = new ActivityModel("France", false, User1);
+            var change = new ActivityChangeModel(aSpain, aFrance, endTime.AddHours(1), User1);
+            var e1 = new EntryModel(startTime, endTime, startTime.AddMinutes(1), aSpain, true, User1);
+            var e2 = new EntryModel(startTime, endTime, startTime.AddMinutes(2), aFrance, true, User1);
+
+            context.Activity.AddRange(aSpain, aFrance);
+            context.ActivityChange.Add(change);
+            context.Entry.AddRange(e1, e2);
         }
 
         private void AddCaseSchool(WeeklyReviewDbContext context)
@@ -141,6 +158,5 @@ namespace WeeklyReview.Shared.Tests.DataContexts
             context.ActivityChange.Add(change);
             context.Entry.AddRange(e1, e2);
         }
-
     }
 }
