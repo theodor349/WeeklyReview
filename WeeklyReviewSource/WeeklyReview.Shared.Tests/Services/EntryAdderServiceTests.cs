@@ -11,7 +11,7 @@ using Xunit;
 
 namespace WeeklyReview.Shared.Tests.Services
 {
-    public class EntryAdderServiceTests
+    public class EntryAdderServiceTests : IClassFixture<WeeklyReviewApiDbFixtureForEntryAdderService>
     {
         public WeeklyReviewApiDbFixtureForEntryAdderService DbFixture { get; }
         public ITimeService TimeService { get; }
@@ -30,17 +30,19 @@ namespace WeeklyReview.Shared.Tests.Services
             int aSeries = 1;
             int aMovies = 2;
             var date = DbFixture.Dt.AddHours(0);
+            var entryDate = date.AddHours(1);
             var user = DbFixture.Users[1];
 
             // Arrange 
             using var context = DbFixture.CreateContext();
             var _dt = DbFixture.Dt;
             context.Database.BeginTransaction();
+            TimeService.Current.Returns(entryDate);
 
             // Act
             var sut = new NewEntryAdderService(context, TimeService);
             var activities = context.Activity.Where(x => x.Id == aSeries || x.Id == aMovies).ToList();
-            sut.AddEntry(date, activities, user);
+            var res = sut.AddEntry(date, activities, user);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -50,10 +52,12 @@ namespace WeeklyReview.Shared.Tests.Services
                     x.StartTime == date && 
                     x.UserGuid == user && 
                     x.Deleted == false);
+            Assert.Equivalent(entry, res);
             Assert.Null(entry.EndTime);
+            Assert.Equal(entryDate, entry.RecordedTime);
             Assert.Equal(2, entry.Activities.Count);
-            Assert.Contains(activities[0], entry.Activities);
-            Assert.Contains(activities[1], entry.Activities);
+            Assert.Contains(entry.Activities, x => x.Id == aSeries);
+            Assert.Contains(entry.Activities, x => x.Id == aMovies);
         }
 
     }

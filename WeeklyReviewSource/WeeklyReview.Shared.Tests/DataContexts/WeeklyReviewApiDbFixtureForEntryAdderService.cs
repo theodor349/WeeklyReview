@@ -70,8 +70,8 @@ namespace WeeklyReview.Shared.Tests.DataContexts
         {
             var user = users[1];
 
-            var aMovie = new ActivityModel("Movie", false, user);
             var aSeries = new ActivityModel("Series", false, user);
+            var aMovie = new ActivityModel("Movie", false, user);
 
             context.Activity.AddRange(aMovie, aSeries);
         }

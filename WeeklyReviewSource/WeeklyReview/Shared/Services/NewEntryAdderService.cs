@@ -19,9 +19,12 @@ namespace WeeklyReview.Shared.Services
             _timeService = timeService;
         }
 
-        public Task AddEntry(DateTime date, List<ActivityModel> activities, Guid userGuid)
+        public EntryModel AddEntry(DateTime date, List<ActivityModel> activities, Guid userGuid)
         {
-            throw new NotImplementedException();
+            var entry = new EntryModel(date, null, _timeService.Current, activities, false, userGuid);
+            _db.Entry.Add(entry);
+            _db.SaveChanges();
+            return entry;
         }
     }
 }
