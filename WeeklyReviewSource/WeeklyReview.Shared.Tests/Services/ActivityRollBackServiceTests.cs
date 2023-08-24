@@ -62,6 +62,8 @@ namespace WeeklyReview.Shared.Tests.Services
         }
         #endregion
 
+        // TODO: Implemente Case Trip
+
         [Fact]
         public void Rolback_NoNewEntry_Override_CaseMovies()
         {
