@@ -24,8 +24,6 @@ namespace WeeklyReview.Shared.Tests.DataContexts
             Guid.NewGuid(), // 2
             Guid.NewGuid(), // 3
             Guid.NewGuid(), // 4
-            Guid.NewGuid(), // 5
-            Guid.NewGuid(), // 6
         };
         public List<Guid> Users => users;
 
@@ -55,8 +53,6 @@ namespace WeeklyReview.Shared.Tests.DataContexts
                             AddCaseMovies(context);
                             AddCaseFoods(context);
                             AddCaseSports(context);
-                            AddCaseVisit(context);
-                            AddCaseSchool(context);
                             AddCaseTrip(context);
                             context.SaveChanges();
                             transaction.Commit();
@@ -111,41 +107,9 @@ namespace WeeklyReview.Shared.Tests.DataContexts
             context.Entry.AddRange(e1, e2);
         }
 
-        private void AddCaseVisit(WeeklyReviewDbContext context)
-        {
-            var user = users[4];
-            var startTime = _dt;
-            var endTime = startTime.AddHours(4);
-
-            var aParents = new ActivityModel("Parents", false, user);
-            var aBrother = new ActivityModel("Brother", false, user);
-            var aSister = new ActivityModel("Sister", false, user);
-            var e1 = new EntryModel(startTime, endTime, startTime, aParents, false, user);
-            var e2 = new EntryModel(endTime, endTime.AddHours(2), startTime, new List<ActivityModel>() { aBrother, aSister }, false, user);
-
-            context.Activity.AddRange(aParents, aBrother, aSister);
-            context.Entry.AddRange(e1, e2);
-        }
-
-        private void AddCaseSchool(WeeklyReviewDbContext context)
-        {
-            var user = users[5];
-            var startTime = _dt;
-            var endTime = startTime.AddHours(4);
-
-            var aEnglish = new ActivityModel("English", false, user);
-            var aDanish = new ActivityModel("Danish", false, user);
-            var aMath = new ActivityModel("Math", false, user);
-            var e1 = new EntryModel(startTime, endTime, startTime, aEnglish, false, user);
-            var e2 = new EntryModel(endTime, endTime.AddHours(2), startTime, aDanish, false, user);
-
-            context.Activity.AddRange(aEnglish, aDanish, aMath);
-            context.Entry.AddRange(e1, e2);
-        }
-
         private void AddCaseTrip(WeeklyReviewDbContext context)
         {
-            var user = users[6];
+            var user = users[4];
             var startTime = _dt;
             var endTime = startTime.AddHours(2);
 

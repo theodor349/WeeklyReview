@@ -136,6 +136,5 @@ namespace WeeklyReview.Shared.Tests.Services
             var beforeDeleted = context.Entry.Single(x => x.StartTime == startTime && x.Deleted == true && x.UserGuid == user);
             Assert.True(beforeDeleted.Deleted);
         }
-
     }
 }
