@@ -19,27 +19,39 @@ namespace WeeklyReview.Shared.Services
             _timeService = timeService;
         }
 
-        public EntryModel AddEntry(DateTime date, List<ActivityModel> activities, Guid userGuid)
+        public EntryModel? AddEntry(DateTime date, List<ActivityModel> activities, Guid userGuid)
         {
-            DeleteEntryAt(date, userGuid);
-            UpdateBefore(date, userGuid);
-            var endTime = GetEndTime(date, userGuid);
-            return AddNewEntry(date, activities, userGuid, endTime);
+            EntryModel? res = null;
+            if(activities.Count == 0)
+            {
+                DeleteEntryAt(date, userGuid);
+                var endTime = GetEndTime(date, userGuid);
+                UpdateBefore(date, endTime, userGuid);
+            }
+            else
+            {
+                DeleteEntryAt(date, userGuid);
+                var endTime = GetEndTime(date, userGuid);
+                UpdateBefore(date, date, userGuid);
+                res = AddNewEntry(date, activities, userGuid, endTime);
+            }
+            _db.SaveChanges();
+            return res;
         }
 
         private EntryModel AddNewEntry(DateTime date, List<ActivityModel> activities, Guid userGuid, DateTime? endTime)
         {
             var entry = new EntryModel(date, endTime, _timeService.Current, activities, false, userGuid);
             _db.Entry.Add(entry);
-            _db.SaveChanges();
             return entry;
         }
 
-        private void DeleteEntryAt(DateTime date, Guid userGuid)
+        private EntryModel? DeleteEntryAt(DateTime date, Guid userGuid)
         {
             var entry = _db.Entry.FirstOrDefault(x => x.StartTime == date && x.UserGuid == userGuid && x.Deleted == false);
             if (entry is not null)
                 entry.Deleted = true;
+            return entry;
         }
 
         private DateTime? GetEndTime(DateTime date, Guid userGuid)
@@ -53,7 +65,7 @@ namespace WeeklyReview.Shared.Services
                 return res;
         }
 
-        private void UpdateBefore(DateTime date, Guid userGuid)
+        private void UpdateBefore(DateTime date, DateTime? endTime, Guid userGuid)
         {
             var entry = _db.Entry
                 .Where(x => x.StartTime < date && x.Deleted == false && x.UserGuid == userGuid)
@@ -61,7 +73,7 @@ namespace WeeklyReview.Shared.Services
                 .MaxBy(x => x.StartTime);
 
             if(entry is not null)
-                entry.EndTime = date;
+                entry.EndTime = endTime;
         }
     }
 }
