@@ -140,6 +140,7 @@ classDiagram
     + string Name
     + int Priority
     + Color Color
+    + bool Deleted
     + void ChangeName()
     + void ChangeColor()
     + void AddActivity()
