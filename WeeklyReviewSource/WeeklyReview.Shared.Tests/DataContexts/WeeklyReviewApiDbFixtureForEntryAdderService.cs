@@ -25,6 +25,7 @@ namespace WeeklyReview.Shared.Tests.DataContexts
             Guid.NewGuid(), // 3
             Guid.NewGuid(), // 4
             Guid.NewGuid(), // 5
+            Guid.NewGuid(), // 6
         };
         public List<Guid> Users => users;
 
@@ -56,6 +57,7 @@ namespace WeeklyReview.Shared.Tests.DataContexts
                             AddCaseSports(context);
                             AddCaseVisit(context);
                             AddCaseSchool(context);
+                            AddCaseTrip(context);
                             context.SaveChanges();
                             transaction.Commit();
                         }
@@ -139,6 +141,23 @@ namespace WeeklyReview.Shared.Tests.DataContexts
 
             context.Activity.AddRange(aEnglish, aDanish, aMath);
             context.Entry.AddRange(e1, e2);
+        }
+
+        private void AddCaseTrip(WeeklyReviewDbContext context)
+        {
+            var user = users[6];
+            var startTime = _dt;
+            var endTime = startTime.AddHours(2);
+
+            var aSpain = new ActivityModel("Spian", false, user);
+            var aFrance = new ActivityModel("France", false, user);
+            var aItaly = new ActivityModel("Italy", false, user);
+            var e1 = new EntryModel(startTime.AddHours(0), endTime.AddHours(0), startTime, aSpain, false, user);
+            var e2 = new EntryModel(startTime.AddHours(2), endTime.AddHours(2), startTime, aFrance, false, user);
+            var e3 = new EntryModel(startTime.AddHours(4), endTime.AddHours(4), startTime, aFrance, false, user);
+
+            context.Activity.AddRange(aSpain, aFrance, aItaly);
+            context.Entry.AddRange(e1, e2, e3);
         }
 
     }
