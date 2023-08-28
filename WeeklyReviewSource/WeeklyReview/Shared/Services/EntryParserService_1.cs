@@ -11,17 +11,7 @@ namespace WeeklyReview.Shared.Services
 {
     public class NewEntryParserService
     {
-        private class ActivityCategory
-        {
-            public string? Activity { get; set; }
-            public string? Category { get; set; }
-
-            public ActivityCategory(string? activity, string? category)
-            {
-                Activity = activity;
-                Category = category;
-            }
-        }
+        private record ActivityCategory(string? Activity, string? Category);
 
         private readonly WeeklyReviewDbContext _db;
 
@@ -45,7 +35,8 @@ namespace WeeklyReview.Shared.Services
 
             foreach (var entry in entires)
             {
-                var act = _db.Activity.Single(x => x.NormalizedName == entry.Activity.ToLower() && x.UserGuid == userGuid);
+                var key = entry.Category is null ? entry.Activity : entry.Category + ": " + entry.Activity;
+                var act = _db.Activity.Single(x => x.NormalizedName == key.ToLower() && x.UserGuid == userGuid);
                 res.Add(act);
             }
 
@@ -58,7 +49,12 @@ namespace WeeklyReview.Shared.Services
             foreach (var entry in entries)
             {
                 var parseResult = ParseEntry(entry);
-                if (parseResult.Activity is not null)
+
+                if (parseResult.Category is not null && parseResult.Activity is null)
+                    throw new ArgumentException("An entry must contain an Activity, if a category is supplied");
+
+                if (parseResult.Activity is not null && 
+                    res.FirstOrDefault(x => x.Activity == parseResult.Activity && x.Category == parseResult.Category) is null)
                     res.Add(parseResult);
             }
             return res;
@@ -91,8 +87,8 @@ namespace WeeklyReview.Shared.Services
             if (sentance is null)
                 return null;
 
-            var regX = new Regex("\\s");
-            var res = regX.Replace(sentance, "");
+            var regX = new Regex("\\s+");
+            var res = regX.Replace(sentance, " ").Trim();
             if (res.Count() > 0)
                 return res;
             else

@@ -8,7 +8,7 @@ namespace WeeklyReview.Shared.Tests.DataContexts
 {
     public class WeeklyReviewApiDbFixtureForEntryParserService
     {
-        private const string ConnectionString = @"Server=(localdb)\mssqllocaldb;Database=EFTestSample;Trusted_Connection=True";
+        private const string ConnectionString = @"Server=(localdb)\mssqllocaldb;Database=WrTestEntryParser;Trusted_Connection=True";
         private static readonly object _lock = new();
         private static bool _databaseInitialized;
 
@@ -78,11 +78,11 @@ namespace WeeklyReview.Shared.Tests.DataContexts
         {
             var user = users[2];
 
-            var cTrips = new CategoryModel("Sports", 1, Color.Green, user);
-            var aSpain = new ActivityModel("Sports: Bike", false, user);
+            var cSports = new CategoryModel("Sports", 1, Color.Green, user);
+            var aBike = new ActivityModel("Sports: Bike", false, user);
 
-            context.Category.AddRange(cTrips);
-            context.Activity.AddRange(aSpain);
+            context.Category.AddRange(cSports);
+            context.Activity.AddRange(aBike);
         }
     }
 }

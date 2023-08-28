@@ -17,7 +17,7 @@ namespace WeeklyReview.Shared.Tests.DataContexts
 {
     public class WeeklyReviewApiDbFixtureForActivityRollbackService
     {
-        private const string ConnectionString = @"Server=(localdb)\mssqllocaldb;Database=EFTestSample;Trusted_Connection=True";
+        private const string ConnectionString = @"Server=(localdb)\mssqllocaldb;Database=WrTestActivityRollback;Trusted_Connection=True";
         private static readonly object _lock = new();
         private static bool _databaseInitialized;
 

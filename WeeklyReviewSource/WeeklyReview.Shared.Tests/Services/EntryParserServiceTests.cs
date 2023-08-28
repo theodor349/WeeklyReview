@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using Syncfusion.Blazor.Inputs;
+using System.Diagnostics;
 using WeeklyReview.Shared.Services;
 using WeeklyReview.Shared.Tests.DataContexts;
 using Xunit;
@@ -67,7 +68,7 @@ namespace WeeklyReview.Shared.Tests.Services
         [Fact]
         public void ParseEntry_SportsBike_Exists_CaseUser1()
         {
-            int aBike = 2;
+            int aBike = 4;
             var user = DbFixture.Users[1];
 
             // Arrange 
@@ -92,8 +93,8 @@ namespace WeeklyReview.Shared.Tests.Services
         [Fact]
         public void ParseEntry_SportsBikeAndDance_Exists_CaseUser1()
         {
-            int aBike = 2;
-            int aDance = 3;
+            int aBike = 4;
+            int aDance = 2;
             var user = DbFixture.Users[1];
 
             // Arrange 
@@ -120,8 +121,8 @@ namespace WeeklyReview.Shared.Tests.Services
         [Fact]
         public void ParseEntry_SportsBikeAndExerciseRun_Exists_CaseUser1()
         {
-            int aBike = 2;
-            int aRun = 4;
+            int aBike = 4;
+            int aRun = 5;
             var user = DbFixture.Users[1];
 
             // Arrange 
@@ -148,7 +149,7 @@ namespace WeeklyReview.Shared.Tests.Services
         [Fact]
         public void ParseEntry_BlankAndSportsBike_Exists_CaseUser1()
         {
-            int aBike = 2;
+            int aBike = 4;
             var user = DbFixture.Users[1];
 
             // Arrange 
@@ -175,7 +176,7 @@ namespace WeeklyReview.Shared.Tests.Services
         public void ParseEntry_DifficultCompetionsParticipatinginRaceWithSpaces_Exists_CaseUser1()
         {
             var user = DbFixture.Users[1];
-            int aRace = 5;
+            int aRace = 6;
 
             // Arrange 
             using var context = DbFixture.CreateContext();
@@ -277,6 +278,31 @@ namespace WeeklyReview.Shared.Tests.Services
             var exception = Assert.Throws<ArgumentException>(() => sut.ParseEntry(input, user));
             context.ChangeTracker.Clear();
             Assert.Equal("An entry must contain an Activity, if a category is supplied", exception.Message);
+        }
+
+        [Fact]
+        public void ParseEntry_DoubleSwimEntry_OnlyOneSwim_CaseUser1()
+        {
+            var user = DbFixture.Users[1];
+            int aSwim = 1;
+
+            // Arrange 
+            using var context = DbFixture.CreateContext();
+            var _dt = DbFixture.Dt;
+            context.Database.BeginTransaction();
+
+            // Act
+            var sut = new NewEntryParserService(context);
+            var res = sut.ParseEntry(new List<string>()
+            {
+                "Swim",
+                "Swim"
+            }, user);
+            context.ChangeTracker.Clear();
+
+            // Assert
+            Assert.Single(res);
+            Assert.Contains(res, x => x.Id == aSwim);
         }
 
     }
