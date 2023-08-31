@@ -52,7 +52,7 @@ namespace WeeklyReview.Shared.Services
             var act = entry.Category is null ? entry.Activity : entry.Category + ": " + entry.Activity;
             var cat = entry.Category;
 
-            var catModel = _db.Category.SingleOrDefault(x => x.NormalizedName == cat.ToLower() && x.UserGuid == userGuid);
+            var catModel = cat is null ? null : _db.Category.SingleOrDefault(x => x.NormalizedName == cat.ToLower() && x.UserGuid == userGuid);
 
             if (string.IsNullOrEmpty(cat) is false && catModel is null)
             {

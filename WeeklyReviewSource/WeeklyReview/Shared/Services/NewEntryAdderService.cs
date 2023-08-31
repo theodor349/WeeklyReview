@@ -22,7 +22,7 @@ namespace WeeklyReview.Shared.Services
         public EntryModel? AddEntry(DateTime date, List<ActivityModel> activities, Guid userGuid)
         {
             EntryModel? res = null;
-            if (activities.Count == 0)
+            if(activities.Count == 0)
             {
                 DeleteEntryAt(date, userGuid);
                 var endTime = GetEndTime(date, userGuid);
@@ -41,8 +41,11 @@ namespace WeeklyReview.Shared.Services
 
         private EntryModel AddNewEntry(DateTime date, List<ActivityModel> activities, Guid userGuid, DateTime? endTime)
         {
-            var entry = new EntryModel(date, endTime, _timeService.Current, activities, false, userGuid);
+            var entry = new EntryModel(date, endTime, _timeService.Current, new List<ActivityModel>(), false, userGuid);
             _db.Entry.Add(entry);
+            _db.SaveChanges(); // This needs to happen before we add the activities
+            entry.Activities = activities;
+            _db.SaveChanges();
             return entry;
         }
 
@@ -58,10 +61,10 @@ namespace WeeklyReview.Shared.Services
         {
             var res = _db.Entry
                 .Where(x => x.StartTime > date && x.Deleted == false && x.UserGuid == userGuid)
-                .Min(x => (DateTime?)x.StartTime);
-            if (res == DateTime.MinValue)
+                .Min(x => (DateTime?) x.StartTime);
+            if(res == DateTime.MinValue)
                 return null;
-            else
+            else 
                 return res;
         }
 
@@ -72,7 +75,7 @@ namespace WeeklyReview.Shared.Services
                 .AsEnumerable()
                 .MaxBy(x => x.StartTime);
 
-            if (entry is not null)
+            if(entry is not null)
                 entry.EndTime = endTime;
         }
     }

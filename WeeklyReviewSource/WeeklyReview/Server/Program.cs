@@ -1,7 +1,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
+using WeeklyReview.Database.Persitance;
 using WeeklyReview.Server.Persitance;
+using WeeklyReview.Shared;
 
 var allowedOrigins = "_allowOrigins";
 
@@ -22,13 +27,43 @@ builder.Services.AddCors(options => options
 
 builder.Services.AddDbContext<WeeklyReviewApiDbContext>(options =>
 {
-    options.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=weeklyReviewLocal;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False");
+    options.UseSqlServer(builder.Configuration.GetConnectionString("WeeklyReview"));
 });
+builder.Services.AddTransient<WeeklyReviewDbContext, WeeklyReviewApiDbContext>();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddApiVersioning(setup =>
+{
+    setup.DefaultApiVersion = new ApiVersion(1, 0);
+    setup.AssumeDefaultVersionWhenUnspecified = true;
+    setup.ReportApiVersions = true;
+});
+builder.Services.AddVersionedApiExplorer(setup =>
+{
+    setup.GroupNameFormat = "'v'VVV";
+    setup.SubstituteApiVersionInUrl = true;
+});
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
+builder.Services.AddSharedServices();
+
 var app = builder.Build();
+
+app.UseSwagger();
+var provider = app.Services.GetService<IApiVersionDescriptionProvider>();
+app.UseSwaggerUI(options =>
+{
+    foreach (var description in provider.ApiVersionDescriptions)
+    {
+        options.SwaggerEndpoint(
+        "/swagger/" + description.GroupName + "/swagger.json",
+        description.GroupName.ToUpperInvariant()
+        );
+    }
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

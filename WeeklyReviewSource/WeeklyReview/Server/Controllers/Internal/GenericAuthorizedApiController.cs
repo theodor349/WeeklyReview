@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace WeeklyReview.Server.Controllers.Internal
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]")]
     public class GenericAuthorizedApiController : ControllerBase
