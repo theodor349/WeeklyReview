@@ -53,7 +53,10 @@ namespace WeeklyReview.Shared.Services
 
         private void OverrideEntry(ActivityModel originalAct, ActivityModel overrideAct, IQueryable<EntryModel> newerEntries)
         {
-            var newestEntry = newerEntries.Single(x => x.Deleted == false);
+            var newestEntry = newerEntries.SingleOrDefault(x => x.Deleted == false);
+            if (newestEntry is null)
+                return;
+
             newestEntry.Deleted = true;
             _db.Entry.Update(newestEntry);
 

@@ -21,12 +21,12 @@ namespace WeeklyReview.Shared.Tests.Services
     ///     - Therefore deletion should be another service which also checks that no enties references it
     /// </summary>
 
-    public class ActivityRollBackServiceTests : IClassFixture<WeeklyReviewApiDbFixture>
+    public class ActivityRollBackServiceTests : IClassFixture<WeeklyReviewApiDbFixtureForActivityRollbackService>
     {
-        public WeeklyReviewApiDbFixture DbFixture { get; }
+        public WeeklyReviewApiDbFixtureForActivityRollbackService DbFixture { get; }
         public ITimeService TimeService { get; }
         
-        public ActivityRollBackServiceTests(WeeklyReviewApiDbFixture dbFixture)
+        public ActivityRollBackServiceTests(WeeklyReviewApiDbFixtureForActivityRollbackService dbFixture)
         {
             DbFixture = dbFixture;
             TimeService = Substitute.For<ITimeService>();
@@ -61,6 +61,11 @@ namespace WeeklyReview.Shared.Tests.Services
         {
         }
         #endregion
+
+        /// <summary>
+        /// TODO: Fix Test
+        ///     Seems like the dabase is inserting the activities in a non-determanistic fassion, e.g. Spain is Id=0 but should be Id=14
+        /// </summary>
 
         [Fact]
         public void Rolback_NoNewEntry_Override_CaseMovies()
@@ -184,6 +189,39 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Assert
             CheckEntryIsEnabledWithCorrectActivities(context, startTime, endTime, new() { aEnglish }, userGuid);
+            CheckActivityChangeHaveBeenRemoved(context, changeId);
+            Assert.Equal(expectedEntryCount, context.Entry.Count());
+        }
+
+        [Fact]
+        public void Rolback_NewEntryHaveBeenDeleted_DoNothing_CaseTrip()
+        {
+            int changeId = 5;
+            int aSpain = 14;
+            var startTime = DbFixture.Dt.AddHours(8);
+            var endTime = startTime.AddHours(1);
+            var userGuid = DbFixture.User1;
+
+            // Arrange
+            using var context = DbFixture.CreateContext();
+            var _dt = DbFixture.Dt;
+            context.Database.BeginTransaction();
+            var expectedEntryCount = context.Entry.Count();
+
+            // Act
+            var sut = new ActivityRollBackService(context, TimeService);
+            var model = context.ActivityChange
+                .Include(x => x.Source)
+                .Include(x => x.Destination)
+                .Single(x => x.Id == changeId);
+            sut.RollBackActivityChange(model);
+            context.ChangeTracker.Clear();
+
+            // Assert
+            var entry = context.Entry.SingleOrDefault(x => x.StartTime == startTime && x.UserGuid == userGuid && x.Deleted == false);
+            Assert.Null(entry);
+            var activity = context.Activity.Single(x => x.Id == aSpain);
+            Assert.False(activity.Deleted);
             CheckActivityChangeHaveBeenRemoved(context, changeId);
             Assert.Equal(expectedEntryCount, context.Entry.Count());
         }
