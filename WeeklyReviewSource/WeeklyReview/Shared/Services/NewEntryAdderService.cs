@@ -21,6 +21,8 @@ namespace WeeklyReview.Shared.Services
 
         public EntryModel? AddEntry(DateTime date, List<ActivityModel> activities, Guid userGuid)
         {
+            date = new DateTime(date.Year, date.Month, date.Day, date.Hour, date.Minute / 15 * 15, 0, date.Kind);
+
             EntryModel? res = null;
             if(activities.Count == 0)
             {

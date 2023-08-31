@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoFixture.Xunit2;
+using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -58,6 +60,39 @@ namespace WeeklyReview.Shared.Tests.Services
             Assert.Equal(2, entry.Activities.Count);
             Assert.Contains(entry.Activities, x => x.Id == aSeries);
             Assert.Contains(entry.Activities, x => x.Id == aMovies);
+        }
+
+        [Theory, AutoData]
+        public void Entry_OnlyEntry_AddEntry_CaseMovies_CheckThatDateIsFlooredTo15Minutes([Range(0, 59)] int minutes)
+        {
+            int aSeries = 1;
+            int aMovies = 2;
+            var date = DbFixture.Dt.AddHours(0).AddMinutes(minutes);
+            var expectedDate = DbFixture.Dt.AddHours(0).AddMinutes(minutes / 15 * 15);
+            var entryDate = date.AddHours(1);
+            var user = DbFixture.Users[1];
+
+            // Arrange 
+            using var context = DbFixture.CreateContext();
+            var _dt = DbFixture.Dt;
+            context.Database.BeginTransaction();
+            TimeService.Current.Returns(entryDate);
+
+            // Act
+            var sut = new NewEntryAdderService(context, TimeService);
+            var activities = context.Activity.Where(x => x.Id == aSeries || x.Id == aMovies).ToList();
+            var res = sut.AddEntry(date, activities, user);
+            context.ChangeTracker.Clear();
+
+            // Assert
+            var entry = context.Entry
+                .Include(x => x.Activities)
+                .Single(x =>
+                    x.StartTime == expectedDate &&
+                    x.UserGuid == user &&
+                    x.Deleted == false);
+            Assert.Equivalent(entry, res);
+            Assert.Equal(expectedDate.Minute, entry.StartTime.Minute);
         }
 
         [Fact]
