@@ -335,7 +335,6 @@ namespace WeeklyReview.Shared.Tests.Services
         public void ParseEntry_SportsExist_RunDoesNotExist_AddRun_CaseUser2()
         {
             var user = DbFixture.Users[2];
-            int aRun = 7;
             int cSports = 4;
 
             // Arrange 
@@ -362,10 +361,37 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
+        public void ParseEntry_NoCat_SwimDoesNotExist_AddRun_CaseUser2()
+        {
+            var user = DbFixture.Users[2];
+
+            // Arrange 
+            using var context = DbFixture.CreateContext();
+            var _dt = DbFixture.Dt;
+            context.Database.BeginTransaction();
+            var expectedActivityCount = context.Activity.Count() + 1;
+            var expectedCategoryCount = context.Category.Count();
+
+            // Act
+            var sut = new NewEntryParserService(context);
+            var res = sut.ParseEntry(new List<string>()
+            {
+                "Swim"
+            }, user);
+            context.ChangeTracker.Clear();
+
+            // Assert
+            var newActivity = context.Activity.Include(x => x.Category).Single(x => x.NormalizedName == "Swim" && x.UserGuid == user);
+            Assert.Equal("Swim", newActivity.Name);
+            Assert.Null(newActivity.Category);
+            Assert.Equal(expectedActivityCount, context.Activity.Count());
+            Assert.Equal(expectedCategoryCount, context.Category.Count());
+        }
+
+        [Fact]
         public void ParseEntry_ExerciseDoesNotExist_BikeDoesNotExist_AddExerciseAndBike_CaseUser2()
         {
             var user = DbFixture.Users[2];
-            int aBike = 8;
             int cExercise = 5;
 
             // Arrange 

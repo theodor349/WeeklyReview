@@ -12,8 +12,8 @@ using WeeklyReview.Server.Persitance;
 namespace WeeklyReview.Server.Migrations
 {
     [DbContext(typeof(WeeklyReviewApiDbContext))]
-    [Migration("20230807191105_InitialModels")]
-    partial class InitialModels
+    [Migration("20230831193739_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -51,10 +51,18 @@ namespace WeeklyReview.Server.Migrations
                     b.Property<DateTime>("ChangeDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("DestinationId")
+                        .HasColumnType("int");
+
                     b.Property<int>("SourceId")
                         .HasColumnType("int");
 
+                    b.Property<Guid>("UserGuid")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("DestinationId");
 
                     b.HasIndex("SourceId");
 
@@ -85,6 +93,9 @@ namespace WeeklyReview.Server.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
+                    b.Property<Guid>("UserGuid")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
@@ -103,6 +114,9 @@ namespace WeeklyReview.Server.Migrations
                     b.Property<int>("Color")
                         .HasColumnType("int");
 
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(64)
@@ -115,6 +129,9 @@ namespace WeeklyReview.Server.Migrations
 
                     b.Property<int>("Priority")
                         .HasColumnType("int");
+
+                    b.Property<Guid>("UserGuid")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -132,11 +149,17 @@ namespace WeeklyReview.Server.Migrations
                     b.Property<bool>("Deleted")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("EndTime")
+                    b.Property<DateTime?>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("RecordedTime")
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserGuid")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -160,11 +183,19 @@ namespace WeeklyReview.Server.Migrations
 
             modelBuilder.Entity("WeeklyReview.Database.Models.ActivityChangeModel", b =>
                 {
+                    b.HasOne("WeeklyReview.Database.Models.ActivityModel", "Destination")
+                        .WithMany()
+                        .HasForeignKey("DestinationId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("WeeklyReview.Database.Models.ActivityModel", "Source")
                         .WithMany()
                         .HasForeignKey("SourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("Destination");
 
                     b.Navigation("Source");
                 });
@@ -175,19 +206,7 @@ namespace WeeklyReview.Server.Migrations
                         .WithMany()
                         .HasForeignKey("CategoryId");
 
-                    b.HasOne("WeeklyReview.Database.Models.ActivityChangeModel", null)
-                        .WithOne("Destination")
-                        .HasForeignKey("WeeklyReview.Database.Models.ActivityModel", "Id")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("WeeklyReview.Database.Models.ActivityChangeModel", b =>
-                {
-                    b.Navigation("Destination")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

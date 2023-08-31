@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WeeklyReview.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialModels : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -20,7 +20,9 @@ namespace WeeklyReview.Server.Migrations
                     Name = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     NormalizedName = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     Priority = table.Column<int>(type: "int", nullable: false),
-                    Color = table.Column<int>(type: "int", nullable: false)
+                    Color = table.Column<int>(type: "int", nullable: false),
+                    Deleted = table.Column<bool>(type: "bit", nullable: false),
+                    UserGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -34,8 +36,10 @@ namespace WeeklyReview.Server.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Deleted = table.Column<bool>(type: "bit", nullable: false)
+                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    RecordedTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Deleted = table.Column<bool>(type: "bit", nullable: false),
+                    UserGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -51,7 +55,8 @@ namespace WeeklyReview.Server.Migrations
                     Name = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     NormalizedName = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false),
                     Deleted = table.Column<bool>(type: "bit", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: true)
+                    CategoryId = table.Column<int>(type: "int", nullable: true),
+                    UserGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -70,17 +75,23 @@ namespace WeeklyReview.Server.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SourceId = table.Column<int>(type: "int", nullable: false),
-                    ChangeDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    DestinationId = table.Column<int>(type: "int", nullable: false),
+                    ChangeDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserGuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ActivityChange", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_ActivityChange_Activity_DestinationId",
+                        column: x => x.DestinationId,
+                        principalTable: "Activity",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_ActivityChange_Activity_SourceId",
                         column: x => x.SourceId,
                         principalTable: "Activity",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -113,6 +124,11 @@ namespace WeeklyReview.Server.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ActivityChange_DestinationId",
+                table: "ActivityChange",
+                column: "DestinationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ActivityChange_SourceId",
                 table: "ActivityChange",
                 column: "SourceId");
@@ -121,33 +137,22 @@ namespace WeeklyReview.Server.Migrations
                 name: "IX_ActivityModelEntryModel_EntryModelId",
                 table: "ActivityModelEntryModel",
                 column: "EntryModelId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Activity_ActivityChange_Id",
-                table: "Activity",
-                column: "Id",
-                principalTable: "ActivityChange",
-                principalColumn: "Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Activity_ActivityChange_Id",
-                table: "Activity");
+            migrationBuilder.DropTable(
+                name: "ActivityChange");
 
             migrationBuilder.DropTable(
                 name: "ActivityModelEntryModel");
 
             migrationBuilder.DropTable(
-                name: "Entry");
-
-            migrationBuilder.DropTable(
-                name: "ActivityChange");
-
-            migrationBuilder.DropTable(
                 name: "Activity");
+
+            migrationBuilder.DropTable(
+                name: "Entry");
 
             migrationBuilder.DropTable(
                 name: "Category");
