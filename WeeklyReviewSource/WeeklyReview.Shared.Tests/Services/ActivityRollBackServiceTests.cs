@@ -197,7 +197,7 @@ namespace WeeklyReview.Shared.Tests.Services
         public void Rolback_NewEntryHaveBeenDeleted_DoNothing_CaseTrip()
         {
             int changeId = 5;
-            int aSpain = 12;
+            int aSpain = 14;
             var startTime = DbFixture.Dt.AddHours(8);
             var endTime = startTime.AddHours(1);
             var userGuid = DbFixture.User1;

@@ -46,6 +46,7 @@ namespace WeeklyReview.Shared.Tests.DataContexts
                         using (var transaction = context.Database.BeginTransaction())
                         {
                             AddCaseUser1(context);
+                            context.SaveChanges();
                             AddCaseUser2(context);
                             context.SaveChanges();
                             transaction.Commit();

@@ -48,9 +48,13 @@ namespace WeeklyReview.Shared.Tests.DataContexts
                         using (var transaction = context.Database.BeginTransaction())
                         {
                             AddCaseMovies(context);
+                            context.SaveChanges();
                             AddCaseSports(context);
+                            context.SaveChanges();
                             AddCaseFoods(context);
+                            context.SaveChanges();
                             AddCaseSchool(context);
+                            context.SaveChanges();
                             AddCaseTrip(context);
                             context.SaveChanges();
                             transaction.Commit();

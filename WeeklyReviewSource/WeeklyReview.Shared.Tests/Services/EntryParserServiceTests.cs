@@ -68,7 +68,7 @@ namespace WeeklyReview.Shared.Tests.Services
         [Fact]
         public void ParseEntry_SportsBike_Exists_CaseUser1()
         {
-            int aBike = 4;
+            int aBike = 3;
             var user = DbFixture.Users[1];
 
             // Arrange 
@@ -93,7 +93,7 @@ namespace WeeklyReview.Shared.Tests.Services
         [Fact]
         public void ParseEntry_SportsBikeAndDance_Exists_CaseUser1()
         {
-            int aBike = 4;
+            int aBike = 3;
             int aDance = 2;
             var user = DbFixture.Users[1];
 
@@ -121,8 +121,8 @@ namespace WeeklyReview.Shared.Tests.Services
         [Fact]
         public void ParseEntry_SportsBikeAndExerciseRun_Exists_CaseUser1()
         {
-            int aBike = 4;
-            int aRun = 5;
+            int aBike = 3;
+            int aRun = 4;
             var user = DbFixture.Users[1];
 
             // Arrange 
@@ -149,7 +149,7 @@ namespace WeeklyReview.Shared.Tests.Services
         [Fact]
         public void ParseEntry_BlankAndSportsBike_Exists_CaseUser1()
         {
-            int aBike = 4;
+            int aBike = 3;
             var user = DbFixture.Users[1];
 
             // Arrange 
@@ -176,7 +176,7 @@ namespace WeeklyReview.Shared.Tests.Services
         public void ParseEntry_DifficultCompetionsParticipatinginRaceWithSpaces_Exists_CaseUser1()
         {
             var user = DbFixture.Users[1];
-            int aRace = 6;
+            int aRace = 5;
 
             // Arrange 
             using var context = DbFixture.CreateContext();
