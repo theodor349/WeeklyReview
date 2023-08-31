@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -36,11 +37,32 @@ namespace WeeklyReview.Shared.Services
             foreach (var entry in entires)
             {
                 var key = entry.Category is null ? entry.Activity : entry.Category + ": " + entry.Activity;
-                var act = _db.Activity.Single(x => x.NormalizedName == key.ToLower() && x.UserGuid == userGuid);
+                var act = _db.Activity.SingleOrDefault(x => x.NormalizedName == key.ToLower() && x.UserGuid == userGuid);
+                if (act is null)
+                    act = CreateNewActivity(entry, userGuid);
+
                 res.Add(act);
             }
-
+            _db.SaveChanges();
             return res;
+        }
+
+        private ActivityModel CreateNewActivity(ActivityCategory entry, Guid userGuid)
+        {
+            var act = entry.Category is null ? entry.Activity : entry.Category + ": " + entry.Activity;
+            var cat = entry.Category;
+
+            var catModel = _db.Category.SingleOrDefault(x => x.NormalizedName == cat.ToLower() && x.UserGuid == userGuid);
+
+            if (string.IsNullOrEmpty(cat) is false && catModel is null)
+            {
+                catModel = new CategoryModel(cat, 0, Color.White, userGuid);
+                _db.Category.Add(catModel);
+            }
+
+            var actModel = new ActivityModel(act, false, catModel, userGuid);
+            _db.Activity.Add(actModel);
+            return actModel;
         }
 
         private List<ActivityCategory> GetActivityCategories(List<string> entries)

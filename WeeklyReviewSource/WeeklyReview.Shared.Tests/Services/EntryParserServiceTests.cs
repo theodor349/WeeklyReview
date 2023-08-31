@@ -1,4 +1,5 @@
-﻿using Syncfusion.Blazor.Inputs;
+﻿using Microsoft.EntityFrameworkCore;
+using Syncfusion.Blazor.Inputs;
 using System.Diagnostics;
 using WeeklyReview.Shared.Services;
 using WeeklyReview.Shared.Tests.DataContexts;
@@ -303,6 +304,116 @@ namespace WeeklyReview.Shared.Tests.Services
             // Assert
             Assert.Single(res);
             Assert.Contains(res, x => x.Id == aSwim);
+        }
+
+        [Fact]
+        public void ParseEntry_ActivityExists_DoNothing_CaseUser2()
+        {
+            var user = DbFixture.Users[2];
+
+            // Arrange 
+            using var context = DbFixture.CreateContext();
+            var _dt = DbFixture.Dt;
+            context.Database.BeginTransaction();
+            var expectedActivityCount = context.Activity.Count();
+            var expectedCategoryCount = context.Category.Count();
+
+            // Act
+            var sut = new NewEntryParserService(context);
+            var res = sut.ParseEntry(new List<string>()
+            {
+                "Sports: Bike"
+            }, user);
+            context.ChangeTracker.Clear();
+
+            // Assert
+            Assert.Equal(expectedActivityCount, context.Activity.Count());
+            Assert.Equal(expectedCategoryCount, context.Category.Count());
+        }
+
+        [Fact]
+        public void ParseEntry_SportsExist_RunDoesNotExist_AddRun_CaseUser2()
+        {
+            var user = DbFixture.Users[2];
+            int aRun = 7;
+            int cSports = 4;
+
+            // Arrange 
+            using var context = DbFixture.CreateContext();
+            var _dt = DbFixture.Dt;
+            context.Database.BeginTransaction();
+            var expectedActivityCount = context.Activity.Count() + 1;
+            var expectedCategoryCount = context.Category.Count();
+
+            // Act
+            var sut = new NewEntryParserService(context);
+            var res = sut.ParseEntry(new List<string>()
+            {
+                "Sports: Run"
+            }, user);
+            context.ChangeTracker.Clear();
+
+            // Assert
+            var newActivity = context.Activity.Include(x => x.Category).Single(x => x.NormalizedName == "Sports: Run" && x.UserGuid == user);
+            Assert.Equal("Sports: Run", newActivity.Name);
+            Assert.Equal(cSports, newActivity.Category.Id);
+            Assert.Equal(expectedActivityCount, context.Activity.Count());
+            Assert.Equal(expectedCategoryCount, context.Category.Count());
+        }
+
+        [Fact]
+        public void ParseEntry_ExerciseDoesNotExist_BikeDoesNotExist_AddExerciseAndBike_CaseUser2()
+        {
+            var user = DbFixture.Users[2];
+            int aBike = 8;
+            int cExercise = 5;
+
+            // Arrange 
+            using var context = DbFixture.CreateContext();
+            var _dt = DbFixture.Dt;
+            context.Database.BeginTransaction();
+            var expectedActivityCount = context.Activity.Count() + 1;
+            var expectedCategoryCount = context.Category.Count() + 1;
+
+            // Act
+            var sut = new NewEntryParserService(context);
+            var res = sut.ParseEntry(new List<string>()
+            {
+                "Exercise: Bike"
+            }, user);
+            context.ChangeTracker.Clear();
+
+            // Assert
+            var newActivity = context.Activity.Include(x => x.Category).Single(x => x.NormalizedName == "Exercise: Bike" && x.UserGuid == user);
+            Assert.Equal("Exercise: Bike", newActivity.Name);
+            Assert.Equal(cExercise, newActivity.Category.Id);
+            Assert.Equal("Exercise", newActivity.Category.Name);
+            Assert.Equal(expectedActivityCount, context.Activity.Count());
+            Assert.Equal(expectedCategoryCount, context.Category.Count());
+        }
+
+        [Fact]
+        public void ParseEntry_Blank_DoNothing_CaseUser2()
+        {
+            var user = DbFixture.Users[2];
+
+            // Arrange 
+            using var context = DbFixture.CreateContext();
+            var _dt = DbFixture.Dt;
+            context.Database.BeginTransaction();
+            var expectedActivityCount = context.Activity.Count();
+            var expectedCategoryCount = context.Category.Count();
+
+            // Act
+            var sut = new NewEntryParserService(context);
+            var res = sut.ParseEntry(new List<string>()
+            {
+            }, user);
+            context.ChangeTracker.Clear();
+
+            // Assert
+            Assert.Equal(expectedActivityCount, context.Activity.Count());
+            Assert.Equal(expectedCategoryCount, context.Category.Count());
         }
 
     }
