@@ -9,7 +9,7 @@ using WeeklyReview.Database.Persitance;
 
 namespace WeeklyReview.Shared.Services
 {
-    public class NewEntryParserService
+    public class NewEntryParserService : INewEntryParserService
     {
         private record ActivityCategory(string? Activity, string? Category);
 
@@ -53,7 +53,7 @@ namespace WeeklyReview.Shared.Services
                 if (parseResult.Category is not null && parseResult.Activity is null)
                     throw new ArgumentException("An entry must contain an Activity, if a category is supplied");
 
-                if (parseResult.Activity is not null && 
+                if (parseResult.Activity is not null &&
                     res.FirstOrDefault(x => x.Activity == parseResult.Activity && x.Category == parseResult.Category) is null)
                     res.Add(parseResult);
             }

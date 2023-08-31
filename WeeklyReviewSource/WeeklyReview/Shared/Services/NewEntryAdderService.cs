@@ -8,7 +8,7 @@ using WeeklyReview.Database.Persitance;
 
 namespace WeeklyReview.Shared.Services
 {
-    public class NewEntryAdderService
+    public class NewEntryAdderService : INewEntryAdderService
     {
         private readonly WeeklyReviewDbContext _db;
         private readonly ITimeService _timeService;
@@ -22,7 +22,7 @@ namespace WeeklyReview.Shared.Services
         public EntryModel? AddEntry(DateTime date, List<ActivityModel> activities, Guid userGuid)
         {
             EntryModel? res = null;
-            if(activities.Count == 0)
+            if (activities.Count == 0)
             {
                 DeleteEntryAt(date, userGuid);
                 var endTime = GetEndTime(date, userGuid);
@@ -58,10 +58,10 @@ namespace WeeklyReview.Shared.Services
         {
             var res = _db.Entry
                 .Where(x => x.StartTime > date && x.Deleted == false && x.UserGuid == userGuid)
-                .Min(x => (DateTime?) x.StartTime);
-            if(res == DateTime.MinValue)
+                .Min(x => (DateTime?)x.StartTime);
+            if (res == DateTime.MinValue)
                 return null;
-            else 
+            else
                 return res;
         }
 
@@ -72,7 +72,7 @@ namespace WeeklyReview.Shared.Services
                 .AsEnumerable()
                 .MaxBy(x => x.StartTime);
 
-            if(entry is not null)
+            if (entry is not null)
                 entry.EndTime = endTime;
         }
     }
