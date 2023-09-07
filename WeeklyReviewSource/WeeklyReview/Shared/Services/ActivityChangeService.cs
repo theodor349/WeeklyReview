@@ -10,12 +10,12 @@ using WeeklyReview.Database.Persitance;
 
 namespace WeeklyReview.Shared.Services
 {
-    internal class ActivityRollBackService : IActivityRollBackService
+    internal class ActivityChangeService : IActivityChangeService
     {
         private readonly WeeklyReviewDbContext _db;
         private readonly ITimeService _timeService;
 
-        public ActivityRollBackService(WeeklyReviewDbContext dataService, ITimeService timeService)
+        public ActivityChangeService(WeeklyReviewDbContext dataService, ITimeService timeService)
         {
             _db = dataService;
             _timeService = timeService;
@@ -63,6 +63,11 @@ namespace WeeklyReview.Shared.Services
             var activities = newestEntry.Activities.Where(x => x.Id != overrideAct.Id).ToList();
             activities.Add(originalAct);
             _db.Add(new EntryModel(newestEntry.StartTime, newestEntry.EndTime, _timeService.Current, activities, false, newestEntry.UserGuid));
+        }
+
+        public ActivityChangeModel ChangeActivity(ActivityModel source, ActivityModel destination)
+        {
+            throw new NotImplementedException();
         }
     }
 }
