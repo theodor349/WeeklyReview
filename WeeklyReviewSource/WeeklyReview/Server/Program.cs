@@ -2,8 +2,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
+using Microsoft.OData.ModelBuilder;
+using WeeklyReview.Database.Models;
 using WeeklyReview.Database.Persitance;
 using WeeklyReview.Server.Persitance;
 using WeeklyReview.Shared;
@@ -45,7 +48,7 @@ builder.Services.AddVersionedApiExplorer(setup =>
 });
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddOData(options => options.EnableQueryFeatures(null).EnableQueryFeatures(null));
 builder.Services.AddRazorPages();
 
 builder.Services.AddSharedServices();
