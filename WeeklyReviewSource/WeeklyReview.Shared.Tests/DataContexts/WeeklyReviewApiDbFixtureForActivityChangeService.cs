@@ -68,8 +68,8 @@ namespace WeeklyReview.Shared.Tests.DataContexts
 
             var aRun = new ActivityModel("Run", false, null, User1);
             var aBike = new ActivityModel("Bike", false, null, User1);
-            var e1 = new EntryModel(startTime.AddHours(0), endTime.AddHours(0), startTime.AddMinutes(1), aBike, false, User1);
-            var e2 = new EntryModel(startTime.AddHours(2), endTime.AddHours(2), startTime.AddMinutes(2), aBike, false, User1);
+            var e1 = new EntryModel(startTime.AddHours(0), endTime.AddHours(0), startTime.AddHours(0).AddMinutes(1), aRun, false, User1);
+            var e2 = new EntryModel(startTime.AddHours(2), endTime.AddHours(2), startTime.AddHours(2).AddMinutes(1), aRun, false, User1);
 
             context.Activity.AddRange(aRun, aBike);
             context.Entry.AddRange(e1, e2);

@@ -40,7 +40,8 @@ namespace WeeklyReview.Shared.Tests.Services
             var sut = new ActivityChangeService(context, TimeService);
             sut.ChangeActivity(
                 context.Activity.Single(x => x.Id == aLunch), 
-                context.Activity.Single(x => x.Id == aDinner));
+                context.Activity.Single(x => x.Id == aDinner),
+                userGuid);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -67,9 +68,10 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new ActivityChangeService(context, TimeService);
-            sut.ChangeActivity(
+            var res = sut.ChangeActivity(
                 context.Activity.Single(x => x.Id == aLunch),
-                context.Activity.Single(x => x.Id == aDinner));
+                context.Activity.Single(x => x.Id == aDinner),
+                userGuid);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -78,6 +80,7 @@ namespace WeeklyReview.Shared.Tests.Services
                 .Include(x => x.Destination)
                 .Single(x => x.Source.Id == aLunch && x.Destination.Id == aDinner && x.UserGuid == userGuid);
             Assert.Equal(expectedChangeDate, change.ChangeDate);
+            Assert.Equivalent(res, change);
         }
 
         [Fact]
@@ -99,7 +102,8 @@ namespace WeeklyReview.Shared.Tests.Services
             var sut = new ActivityChangeService(context, TimeService);
             sut.ChangeActivity(
                 context.Activity.Single(x => x.Id == aRun),
-                context.Activity.Single(x => x.Id == aBike));
+                context.Activity.Single(x => x.Id == aBike),
+                userGuid);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -143,7 +147,8 @@ namespace WeeklyReview.Shared.Tests.Services
             var sut = new ActivityChangeService(context, TimeService);
             sut.ChangeActivity(
                 context.Activity.Single(x => x.Id == aSpain),
-                context.Activity.Single(x => x.Id == aFrance));
+                context.Activity.Single(x => x.Id == aFrance),
+                userGuid);
             context.ChangeTracker.Clear();
 
             // Assert

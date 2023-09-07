@@ -58,7 +58,7 @@ namespace WeeklyReview.Server.Controllers
                 return NotFound($"Model not found with id {sKey}");
             if (dModel is null)
                 return NotFound($"Model not found with id {dKey}");
-            var model = _activityChangeService.ChangeActivity(sModel, dModel);
+            var model = _activityChangeService.ChangeActivity(sModel, dModel, UserGuid);
             return Ok(model);
         }
     }

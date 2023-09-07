@@ -65,9 +65,44 @@ namespace WeeklyReview.Shared.Services
             _db.Add(new EntryModel(newestEntry.StartTime, newestEntry.EndTime, _timeService.Current, activities, false, newestEntry.UserGuid));
         }
 
-        public ActivityChangeModel ChangeActivity(ActivityModel source, ActivityModel destination)
+        public ActivityChangeModel ChangeActivity(ActivityModel source, ActivityModel destination, Guid userGuid)
         {
-            throw new NotImplementedException();
+            DeleteActivity(source);
+            OverrideEntries(source, destination, userGuid);
+
+            var change = AddChange(source, destination, userGuid);
+            return change;
+        }
+
+        private void OverrideEntries(ActivityModel source, ActivityModel destination, Guid userGuid)
+        {
+            var entries = _db.Entry.Include(x => x.Activities).Where(x => x.Activities.Contains(source));
+            foreach (var entry in entries)
+            {
+                entry.Deleted = true;
+
+                var activities = entry.Activities;
+                activities.Remove(source);
+                activities.Add(destination);
+                var newEntry = new EntryModel(entry.StartTime, entry.EndTime, entry.RecordedTime, activities, false, userGuid);
+                _db.Entry.Add(newEntry);
+            }
+            _db.SaveChanges();
+        }
+
+        private void DeleteActivity(ActivityModel source)
+        {
+            var model = _db.Activity.Single(x => x.Id == source.Id);
+            model.Deleted = true;
+            _db.SaveChanges();
+        }
+
+        private ActivityChangeModel AddChange(ActivityModel source, ActivityModel destination, Guid userGuid)
+        {
+            var change = new ActivityChangeModel(source, destination, _timeService.Current, userGuid);
+            _db.ActivityChange.Add(change);
+            _db.SaveChanges();
+            return change;
         }
     }
 }
