@@ -45,12 +45,12 @@ namespace WeeklyReview.Shared.Services
                 var newEntry = new EntryModel(entry.StartTime, entry.EndTime, entry.RecordedTime, new List<ActivityModel>(), false, userGuid);
                 _db.Entry.Add(newEntry);
 
+                var changes2 = _db.ChangeTracker.DebugView.LongView;
                 var activities = entry.Activities;
                 activities.Remove(source);
                 activities.Add(destination);
                 newEntry.Activities = activities;
 
-                var changes3 = _db.ChangeTracker.DebugView.LongView;
                 _db.SaveChanges();
             }
         }
