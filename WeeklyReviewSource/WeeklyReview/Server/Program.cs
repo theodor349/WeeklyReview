@@ -32,7 +32,7 @@ builder.Services.AddDbContext<WeeklyReviewApiDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("WeeklyReview"));
 });
-builder.Services.AddTransient<WeeklyReviewDbContext, WeeklyReviewApiDbContext>();
+builder.Services.AddScoped<WeeklyReviewDbContext, WeeklyReviewApiDbContext>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddApiVersioning(setup =>
