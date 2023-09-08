@@ -55,10 +55,15 @@ namespace WeeklyReview.Shared.Tests.DataContexts
 
         private void AddCaseFoods(WeeklyReviewDbContext context)
         {
+            var startTime = _dt.AddHours(0);
+            var endTime = startTime.AddHours(1);
+
             var aLunch = new ActivityModel("Lunch", false, null, User1);
             var aDinner = new ActivityModel("Dinner", false, null, User1);
+            var e1 = new EntryModel(startTime.AddHours(0), endTime.AddHours(0), startTime.AddHours(0).AddMinutes(1), aLunch, true, User1);
 
             context.Activity.AddRange(aLunch, aDinner);
+            context.Entry.AddRange(e1);
         }
 
         private void AddCaseSports(WeeklyReviewDbContext context)

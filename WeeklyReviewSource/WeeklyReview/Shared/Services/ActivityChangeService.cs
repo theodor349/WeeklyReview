@@ -32,18 +32,27 @@ namespace WeeklyReview.Shared.Services
 
         private void OverrideEntries(ActivityModel source, ActivityModel destination, Guid userGuid)
         {
-            var entries = _db.Entry.Include(x => x.Activities).Where(x => x.Activities.Contains(source));
+            //var entries = _db.Entry.Include(x => x.Activities).Where(x => x.Activities.Contains(source) && x.Deleted == false).ToList();
+            var entries = _db.Entry.Include(x => x.Activities).Where(x => x.Activities.Contains(source)).ToList();
             foreach (var entry in entries)
             {
                 entry.Deleted = true;
+            }
+            _db.SaveChanges();
+
+            foreach (var entry in entries)
+            {
+                var newEntry = new EntryModel(entry.StartTime, entry.EndTime, entry.RecordedTime, new List<ActivityModel>(), false, userGuid);
+                _db.Entry.Add(newEntry);
 
                 var activities = entry.Activities;
                 activities.Remove(source);
                 activities.Add(destination);
-                var newEntry = new EntryModel(entry.StartTime, entry.EndTime, entry.RecordedTime, activities, false, userGuid);
-                _db.Entry.Add(newEntry);
+                newEntry.Activities = activities;
+
+                var changes3 = _db.ChangeTracker.DebugView.LongView;
+                _db.SaveChanges();
             }
-            _db.SaveChanges();
         }
 
         private void DeleteActivity(ActivityModel source)

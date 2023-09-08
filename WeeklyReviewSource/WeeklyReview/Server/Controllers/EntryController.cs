@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using WeeklyReview.Database.Models;
 using WeeklyReview.Server.Controllers.Internal;
 using WeeklyReview.Server.Persitance;
@@ -27,14 +28,14 @@ namespace WeeklyReview.Server.Controllers
         [EnableQuery]
         public ActionResult<IEnumerable<EntryModel>> GetAll()
         {
-            return Ok(_db.Entry.Where(x => x.UserGuid == UserGuid).AsQueryable());
+            return Ok(_db.Entry.Include(x => x.Activities).Where(x => x.UserGuid == UserGuid).AsQueryable());
         }
 
         [HttpGet("{key}")]
         [EnableQuery]
         public ActionResult<EntryModel> Get([FromRoute] int key)
         {
-            var res = _db.Entry.SingleOrDefault(x => x.Id == key && x.UserGuid == UserGuid);
+            var res = _db.Entry.Include(x => x.Activities).SingleOrDefault(x => x.Id == key && x.UserGuid == UserGuid);
             return Ok(res);
         }
 

@@ -80,6 +80,7 @@ namespace WeeklyReview.Shared.Tests.Services
                 .Include(x => x.Destination)
                 .Single(x => x.Source.Id == aLunch && x.Destination.Id == aDinner && x.UserGuid == userGuid);
             Assert.Equal(expectedChangeDate, change.ChangeDate);
+            Assert.Equal(res.Id, change.Id);
             Assert.Equivalent(res, change);
         }
 
