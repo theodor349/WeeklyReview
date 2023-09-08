@@ -15,16 +15,11 @@ using Xunit;
 
 namespace WeeklyReview.Shared.Tests.Services
 {
-    /// <summary> Notes
-    /// Should we delete the Destination activity?
-    ///     - No, because we might not have changed all entries that reference the Destination activity
-    ///     - Therefore deletion should be another service which also checks that no enties references it
-    /// </summary>
-
     public class ActivityRollBackServiceTests : IClassFixture<WeeklyReviewApiDbFixtureForActivityRollbackService>
     {
         public WeeklyReviewApiDbFixtureForActivityRollbackService DbFixture { get; }
         public ITimeService TimeService { get; }
+        private ActivityRollBackService _sut;
         
         public ActivityRollBackServiceTests(WeeklyReviewApiDbFixtureForActivityRollbackService dbFixture)
         {
@@ -62,8 +57,13 @@ namespace WeeklyReview.Shared.Tests.Services
         }
         #endregion
 
+        /// <summary> Notes
+        /// Should we delete the Destination activity?
+        ///     - No, because we might not have changed all entries that reference the Destination activity
+        ///     - Therefore deletion should be another service which also checks that no enties references it
+        /// </summary>
         [Fact]
-        public void Rolback_NoNewEntry_Override_CaseMovies()
+        public void RollBack_NoNewEntry_Override_CaseMovies()
         {
             int changeId = 1;
             int eOldId = 2;
@@ -95,7 +95,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void Rolback_NewEntryWithSameActivityAndAnother_Override_CaseSports()
+        public void RollBack_NewEntryWithSameActivityAndAnother_Override_CaseSports()
         {
             int changeId = 2;
             int eOldId = 5;
@@ -128,7 +128,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void Rolback_NewEntryWithoutSameActivityAndAnother_DoNotOverride_CaseFoods()
+        public void RollBack_NewEntryWithoutSameActivityAndAnother_DoNotOverride_CaseFoods()
         {
             int changeId = 3;
             int aDinner = 8;
@@ -159,7 +159,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void Rolback_NewEntryWithoutSameActivityAndNewEntryWithSameActivity_DoNotOverride_CaseSchool()
+        public void RollBack_NewEntryWithoutSameActivityAndNewEntryWithSameActivity_DoNotOverride_CaseSchool()
         {
             int changeId = 4;
             int aEnglish = 11;
@@ -189,7 +189,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void Rolback_NewEntryHaveBeenDeleted_DoNothing_CaseTrip()
+        public void RollBack_NewEntryHaveBeenDeleted_DoNothing_CaseTrip()
         {
             int changeId = 5;
             int aSpain = 14;

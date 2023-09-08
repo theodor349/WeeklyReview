@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.OData.Deltas;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Syncfusion.Blazor.Diagrams;
 using WeeklyReview.Database.Models;
 using WeeklyReview.Server.Controllers.Internal;
 using WeeklyReview.Server.Persitance;
+using WeeklyReview.Shared.Services;
 
 namespace WeeklyReview.Server.Controllers
 {
@@ -14,10 +16,12 @@ namespace WeeklyReview.Server.Controllers
     public class ActivityController : GenericAuthorizedApiController
     {
         private readonly WeeklyReviewApiDbContext _db;
+        private readonly IActivityChangeService _activityChangeService;
 
-        public ActivityController(WeeklyReviewApiDbContext db)
+        public ActivityController(WeeklyReviewApiDbContext db, IActivityChangeService activityChangeService)
         {
             _db = db;
+            _activityChangeService = activityChangeService;
         }
 
         [HttpGet]
@@ -55,8 +59,7 @@ namespace WeeklyReview.Server.Controllers
                 return NotFound($"Model not found with id {sKey}");
             if (dModel is null)
                 return NotFound($"Model not found with id {dKey}");
-            var model = new ActivityChangeModel(sModel, dModel, DateTime.Now, UserGuid);
-            // TODO: Implement Change Activity
+            var model = _activityChangeService.ChangeActivity(sModel, dModel, UserGuid);
             return Ok(model);
         }
     }

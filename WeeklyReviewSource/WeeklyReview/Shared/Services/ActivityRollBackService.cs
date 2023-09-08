@@ -1,16 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Intrinsics.X86;
-using System.Text;
-using System.Threading.Tasks;
 using WeeklyReview.Database.Models;
 using WeeklyReview.Database.Persitance;
 
 namespace WeeklyReview.Shared.Services
 {
-    internal class ActivityRollBackService : IActivityRollBackService
+    internal class ActivityRollBackService : IActivityRollbackService
     {
         private readonly WeeklyReviewDbContext _db;
         private readonly ITimeService _timeService;

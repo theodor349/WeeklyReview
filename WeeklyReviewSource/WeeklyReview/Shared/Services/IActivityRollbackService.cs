@@ -2,7 +2,7 @@
 
 namespace WeeklyReview.Shared.Services
 {
-    public interface IActivityRollBackService
+    public interface IActivityRollbackService
     {
         void RollBackActivityChange(ActivityChangeModel activityChange);
     }
