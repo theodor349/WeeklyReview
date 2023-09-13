@@ -45,6 +45,11 @@ namespace WeeklyReview.Server.Controllers
             var model = _db.Activity.SingleOrDefault(x => x.Id == key && x.UserGuid == UserGuid);
             if (model is null)
                 return NotFound($"Model not found with id {key}");
+
+            var entriesReferencesActivity = _db.Entry.Include(x => x.Activities).Any(x => x.Activities.Contains(model) && x.Deleted == false);
+            if (entriesReferencesActivity)
+                return BadRequest($"It is not possible to delete an activity which is still referenced by entries");
+
             model.Deleted = true;
             _db.SaveChanges();
             return Ok(model);

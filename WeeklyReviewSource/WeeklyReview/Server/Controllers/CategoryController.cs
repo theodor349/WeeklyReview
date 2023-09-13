@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
+using Microsoft.EntityFrameworkCore;
 using System.Drawing;
 using WeeklyReview.Database.Models;
 using WeeklyReview.Server.Controllers.Internal;
@@ -37,6 +38,11 @@ namespace WeeklyReview.Server.Controllers
             var model = _db.Category.SingleOrDefault(x => x.Id == key && x.UserGuid == UserGuid);
             if (model is null)
                 return NotFound($"Model not found with id {key}");
+
+            var activitiesReferencesActivity = _db.Activity.Include(x => x.Category).Any(x => x.Category == model && x.Deleted == false);
+            if (activitiesReferencesActivity)
+                return BadRequest($"It is not possible to delete a category which is still referenced by activities");
+
             model.Deleted = true;
             _db.SaveChanges();
             return Ok(model);
