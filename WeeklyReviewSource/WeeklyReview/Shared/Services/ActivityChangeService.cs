@@ -127,6 +127,7 @@ namespace WeeklyReview.Shared.Services
             _db.Add(new EntryModel(newestEntry.StartTime, newestEntry.EndTime, _timeService.Current, activities, false, newestEntry.UserGuid));
         }
 
+        // TODO: Test
         public ActivityChangeModel Remove(int key, Guid userGuid)
         {
             var model = _db.ActivityChange.SingleOrDefault(x => x.Id == key && x.UserGuid == userGuid);
