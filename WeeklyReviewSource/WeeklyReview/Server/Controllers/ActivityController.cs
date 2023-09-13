@@ -58,14 +58,15 @@ namespace WeeklyReview.Server.Controllers
         [HttpPost("{sKey}/ChangeTo/{dKey}")]
         public ActionResult<ActivityChangeModel> Create([FromRoute] int sKey, [FromRoute] int dKey)
         {
-            var sModel = _db.Activity.SingleOrDefault(x => x.Id == sKey);
-            var dModel = _db.Activity.SingleOrDefault(x => x.Id == dKey);
-            if (sModel is null)
-                return NotFound($"Model not found with id {sKey}");
-            if (dModel is null)
-                return NotFound($"Model not found with id {dKey}");
-            var model = _activityChangeService.ChangeActivity(sModel, dModel, UserGuid);
-            return Ok(model);
+            try
+            {
+                var model = _activityChangeService.ChangeActivity(sKey, dKey, UserGuid);
+                return Ok(model);
+            }
+            catch(KeyNotFoundException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

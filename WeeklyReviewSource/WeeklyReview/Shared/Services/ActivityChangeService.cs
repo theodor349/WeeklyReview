@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
@@ -23,8 +24,15 @@ namespace WeeklyReview.Shared.Services
             _timeService = timeService;
         }
 
-        public ActivityChangeModel ChangeActivity(ActivityModel source, ActivityModel destination, Guid userGuid)
+        public ActivityChangeModel ChangeActivity(int sourceKey, int destinationKey, Guid userGuid)
         {
+            var source = _db.Activity.SingleOrDefault(x => x.Id == sourceKey);
+            var destination = _db.Activity.SingleOrDefault(x => x.Id == destinationKey);
+            if (source is null)
+                throw new KeyNotFoundException($"Model not found with id {sourceKey}");
+            if (destination is null)
+                throw new KeyNotFoundException($"Model not found with id {destinationKey}");
+
             DeleteActivity(source);
             OverrideEntries(source, destination, userGuid);
 

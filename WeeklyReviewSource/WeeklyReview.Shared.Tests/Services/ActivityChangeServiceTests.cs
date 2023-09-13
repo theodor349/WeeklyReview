@@ -38,10 +38,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new ActivityChangeService(context, TimeService);
-            sut.ChangeActivity(
-                context.Activity.Single(x => x.Id == aLunch), 
-                context.Activity.Single(x => x.Id == aDinner),
-                userGuid);
+            sut.ChangeActivity(aLunch, aDinner, userGuid);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -68,10 +65,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new ActivityChangeService(context, TimeService);
-            var res = sut.ChangeActivity(
-                context.Activity.Single(x => x.Id == aLunch),
-                context.Activity.Single(x => x.Id == aDinner),
-                userGuid);
+            var res = sut.ChangeActivity(aLunch, aDinner, userGuid);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -101,10 +95,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new ActivityChangeService(context, TimeService);
-            sut.ChangeActivity(
-                context.Activity.Single(x => x.Id == aRun),
-                context.Activity.Single(x => x.Id == aBike),
-                userGuid);
+            sut.ChangeActivity(aRun, aBike, userGuid);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -146,10 +137,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new ActivityChangeService(context, TimeService);
-            sut.ChangeActivity(
-                context.Activity.Single(x => x.Id == aSpain),
-                context.Activity.Single(x => x.Id == aFrance),
-                userGuid);
+            sut.ChangeActivity(aSpain, aFrance, userGuid);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -157,6 +145,52 @@ namespace WeeklyReview.Shared.Tests.Services
             Assert.Equivalent(2, e.Activities.Count());
             Assert.Contains(e.Activities, x => x.Id == aItaly);
             Assert.Contains(e.Activities, x => x.Id == aFrance);
+        }
+
+        [Fact]
+        public void Change_FirstDoesNotExist_ThrowError_CaseTravel()
+        {
+            var userGuid = DbFixture.User1;
+            var aNotExist = 42424242;
+            var aFrance = 7;
+            var startTime = DbFixture.Dt.AddHours(6);
+
+            // Arrange
+            using var context = DbFixture.CreateContext();
+            var _dt = DbFixture.Dt;
+            context.Database.BeginTransaction();
+            int expectedEntryCount = context.Entry.Count() + 2;
+
+            // Act
+            var sut = new ActivityChangeService(context, TimeService);
+            var e = Assert.Throws<KeyNotFoundException>(() => sut.ChangeActivity(aNotExist, aFrance, userGuid));
+            context.ChangeTracker.Clear();
+
+            // Assert
+            Assert.Equal($"Model not found with id {aNotExist}", e.Message);
+        }
+
+        [Fact]
+        public void Change_SecondDoesNotExist_ThrowError_CaseTravel()
+        {
+            var userGuid = DbFixture.User1;
+            var aNotExist = 42424242;
+            var aFrance = 7;
+            var startTime = DbFixture.Dt.AddHours(6);
+
+            // Arrange
+            using var context = DbFixture.CreateContext();
+            var _dt = DbFixture.Dt;
+            context.Database.BeginTransaction();
+            int expectedEntryCount = context.Entry.Count() + 2;
+
+            // Act
+            var sut = new ActivityChangeService(context, TimeService);
+            var e = Assert.Throws<KeyNotFoundException>(() => sut.ChangeActivity(aFrance, aNotExist, userGuid));
+            context.ChangeTracker.Clear();
+
+            // Assert
+            Assert.Equal($"Model not found with id {aNotExist}", e.Message);
         }
     }
 }
