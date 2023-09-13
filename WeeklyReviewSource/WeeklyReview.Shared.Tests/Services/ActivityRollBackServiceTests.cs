@@ -19,7 +19,6 @@ namespace WeeklyReview.Shared.Tests.Services
     {
         public WeeklyReviewApiDbFixtureForActivityRollbackService DbFixture { get; }
         public ITimeService TimeService { get; }
-        private ActivityRollBackService _sut;
         
         public ActivityRollBackServiceTests(WeeklyReviewApiDbFixtureForActivityRollbackService dbFixture)
         {
@@ -78,7 +77,7 @@ namespace WeeklyReview.Shared.Tests.Services
             context.Database.BeginTransaction();
 
             // Act
-            var sut = new ActivityRollBackService(context, TimeService);
+            var sut = new ActivityChangeService(context, TimeService);
             var model = context.ActivityChange
                 .Include(x => x.Source)
                 .Include(x => x.Destination)
@@ -111,7 +110,7 @@ namespace WeeklyReview.Shared.Tests.Services
             context.Database.BeginTransaction();
 
             // Act
-            var sut = new ActivityRollBackService(context, TimeService);
+            var sut = new ActivityChangeService(context, TimeService);
             var model = context.ActivityChange
                 .Include(x => x.Source)
                 .Include(x => x.Destination)
@@ -144,7 +143,7 @@ namespace WeeklyReview.Shared.Tests.Services
             var expectedEntryCount = context.Entry.Count();
 
             // Act
-            var sut = new ActivityRollBackService(context, TimeService);
+            var sut = new ActivityChangeService(context, TimeService);
             var model = context.ActivityChange
                 .Include(x => x.Source)
                 .Include(x => x.Destination)
@@ -174,7 +173,7 @@ namespace WeeklyReview.Shared.Tests.Services
             var expectedEntryCount = context.Entry.Count();
 
             // Act
-            var sut = new ActivityRollBackService(context, TimeService);
+            var sut = new ActivityChangeService(context, TimeService);
             var model = context.ActivityChange
                 .Include(x => x.Source)
                 .Include(x => x.Destination)
@@ -204,7 +203,7 @@ namespace WeeklyReview.Shared.Tests.Services
             var expectedEntryCount = context.Entry.Count();
 
             // Act
-            var sut = new ActivityRollBackService(context, TimeService);
+            var sut = new ActivityChangeService(context, TimeService);
             var model = context.ActivityChange
                 .Include(x => x.Source)
                 .Include(x => x.Destination)

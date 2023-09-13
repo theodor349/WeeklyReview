@@ -12,9 +12,9 @@ namespace WeeklyReview.Server.Controllers
     public class ActivityChangeController : GenericAuthorizedApiController
     {
         private readonly WeeklyReviewApiDbContext _db;
-        private readonly IActivityRollbackService _rollBackService;
+        private readonly IActivityChangeService _rollBackService;
 
-        public ActivityChangeController(WeeklyReviewApiDbContext db, IActivityRollbackService rollBackService)
+        public ActivityChangeController(WeeklyReviewApiDbContext db, IActivityChangeService rollBackService)
         {
             _db = db;
             _rollBackService = rollBackService;
