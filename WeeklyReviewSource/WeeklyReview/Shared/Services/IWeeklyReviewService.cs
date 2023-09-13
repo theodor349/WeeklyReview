@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,7 +43,10 @@ namespace WeeklyReview.Shared.Services
 
     public interface ICategoryService
     {
-
+        CategoryModel ChangeColor(int key, Color color, Guid userGuid);
+        CategoryModel Delete(int key, Guid userGuid);
+        CategoryModel? Get(int key, Guid userGuid);
+        IEnumerable<CategoryModel> GetAll(Guid userGuid);
     }
 
     public interface IEntryService

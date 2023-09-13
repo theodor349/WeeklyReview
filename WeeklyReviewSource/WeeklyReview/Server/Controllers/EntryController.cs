@@ -37,7 +37,14 @@ namespace WeeklyReview.Server.Controllers
         [HttpPost("Enter")]
         public ActionResult<EntryModel?> Create([FromBody] EnterEntryModel model)
         {
-            return Ok(_entryService.Create(model, UserGuid));
+            try
+            {
+                return Ok(_entryService.Create(model, UserGuid));
+            }
+            catch(ArgumentException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }
