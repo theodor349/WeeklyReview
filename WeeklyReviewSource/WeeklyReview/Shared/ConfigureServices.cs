@@ -16,6 +16,7 @@ namespace WeeklyReview.Shared
             services.AddTransient<INewEntryParserService, NewEntryParserService>();
             services.AddTransient<IActivityChangeService, ActivityChangeService>();
             services.AddTransient<ITimeService, TimeService>();
+            services.AddTransient<IWeeklyReviewService, WeeklyReviewService>();
         }
     }
 }

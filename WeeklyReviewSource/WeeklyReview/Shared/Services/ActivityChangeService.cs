@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Intrinsics.X86;
 using System.Text;
 using System.Threading.Tasks;
@@ -107,6 +109,27 @@ namespace WeeklyReview.Shared.Services
             var activities = newestEntry.Activities.Where(x => x.Id != overrideAct.Id).ToList();
             activities.Add(originalAct);
             _db.Add(new EntryModel(newestEntry.StartTime, newestEntry.EndTime, _timeService.Current, activities, false, newestEntry.UserGuid));
+        }
+
+        public ActivityChangeModel Remove(int key, Guid UserGuid)
+        {
+            var model = _db.ActivityChange.SingleOrDefault(x => x.Id == key && x.UserGuid == UserGuid);
+            if (model is null)
+                throw new KeyNotFoundException($"Model not found with id {key}");
+
+            _db.ActivityChange.Remove(model);
+            _db.SaveChanges();
+            return model!;
+        }
+
+        public ActivityChangeModel? Get(int key, Guid UserGuid)
+        {
+            return _db.ActivityChange.SingleOrDefault(x => x.Id == key && x.UserGuid == UserGuid);
+        }
+
+        public IEnumerable<ActivityChangeModel> GetAll(Guid UserGuid)
+        {
+            return _db.ActivityChange.Where(x => x.UserGuid == UserGuid);
         }
     }
 }

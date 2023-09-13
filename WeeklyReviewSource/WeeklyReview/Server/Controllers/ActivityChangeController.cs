@@ -12,47 +12,49 @@ namespace WeeklyReview.Server.Controllers
     public class ActivityChangeController : GenericAuthorizedApiController
     {
         private readonly WeeklyReviewApiDbContext _db;
-        private readonly IActivityChangeService _rollBackService;
+        private readonly IWeeklyReviewService _weeklyReviewService;
 
-        public ActivityChangeController(WeeklyReviewApiDbContext db, IActivityChangeService rollBackService)
+        public ActivityChangeController(WeeklyReviewApiDbContext db, IWeeklyReviewService weeklyReviewService)
         {
             _db = db;
-            _rollBackService = rollBackService;
+            _weeklyReviewService = weeklyReviewService;
         }
 
         [HttpGet]
         [EnableQuery]
         public ActionResult<IEnumerable<CategoryModel>> GetAll()
         {
-            return Ok(_db.ActivityChange.Where(x => x.UserGuid == UserGuid).AsQueryable());
+            return Ok(_weeklyReviewService.ActivityChange.GetAll(UserGuid));
         }
 
         [HttpGet("{key}")]
         [EnableQuery]
         public ActionResult<CategoryModel> Get([FromRoute] int key)
         {
-            var res = _db.ActivityChange.SingleOrDefault(x => x.Id == key && x.UserGuid == UserGuid);
-            return Ok(res);
+            return Ok(_weeklyReviewService.ActivityChange.Get(key, UserGuid));
         }
 
         [HttpDelete("{key}")]
-        public ActionResult<ActivityModel> Delete([FromRoute] int key)
+        public ActionResult<ActivityChangeModel> Delete([FromRoute] int key)
         {
-            var model = _db.ActivityChange.SingleOrDefault(x => x.Id == key && x.UserGuid == UserGuid);
-            if (model is null)
-                return NotFound($"Model not found with id {key}");
-            _db.ActivityChange.Remove(model);
-            _db.SaveChanges();
-            return Ok(model);
+            try
+            {
+                var model = _weeklyReviewService.ActivityChange.Remove(key, UserGuid);
+                return Ok(model);
+            }
+            catch(KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
         }
 
         [HttpPost("{key}/Rollback")]
-        public ActionResult Create([FromRoute] int key)
+        public ActionResult Rollback([FromRoute] int key)
         {
             var model = _db.ActivityChange.SingleOrDefault(x => x.Id == key && x.UserGuid == UserGuid);
             if (model is null)
                 return NotFound($"Model not found with id {key}");
-            _rollBackService.RollBackActivityChange(model);
+            _weeklyReviewService.ActivityChange.RollBackActivityChange(model);
             return Ok();
         }
     }
