@@ -51,11 +51,15 @@ namespace WeeklyReview.Server.Controllers
         [HttpPost("{key}/Rollback")]
         public ActionResult Rollback([FromRoute] int key)
         {
-            var model = _db.ActivityChange.SingleOrDefault(x => x.Id == key && x.UserGuid == UserGuid);
-            if (model is null)
-                return NotFound($"Model not found with id {key}");
-            _weeklyReviewService.ActivityChange.RollBackActivityChange(model);
-            return Ok();
+            try
+            {
+                _weeklyReviewService.ActivityChange.RollBackActivityChange(key, UserGuid);
+                return Ok();
+            }
+            catch (KeyNotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
         }
     }
 }

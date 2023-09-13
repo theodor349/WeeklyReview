@@ -52,7 +52,7 @@ namespace WeeklyReview.Shared.Services
     public interface IActivityChangeService
     {
         ActivityChangeModel ChangeActivity(ActivityModel source, ActivityModel destination, Guid userGuid);
-        void RollBackActivityChange(ActivityChangeModel activityChange);
+        void RollBackActivityChange(int key, Guid UserGuid);
         ActivityChangeModel Remove(int key, Guid UserGuid);
         ActivityChangeModel? Get(int key, Guid UserGuid);
         IEnumerable<ActivityChangeModel> GetAll(Guid UserGuid);

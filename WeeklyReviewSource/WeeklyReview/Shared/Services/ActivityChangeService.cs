@@ -67,8 +67,16 @@ namespace WeeklyReview.Shared.Services
             return change;
         }
 
-        public void RollBackActivityChange(ActivityChangeModel activityChange)
+        public void RollBackActivityChange(int key, Guid userGuid)
         {
+            var activityChange = _db.ActivityChange
+                .Include(x => x.Source)
+                .Include(x => x.Destination)
+                .SingleOrDefault(x => x.Id == key && x.UserGuid == userGuid);
+            if (activityChange is null)
+                throw new KeyNotFoundException($"Model not found with id {key}");
+
+
             var oldActivity = _db.Activity.Single(x => x.Id == activityChange.Source.Id);
             oldActivity.Deleted = false;
             var oldEntries = _db.Entry
@@ -111,9 +119,9 @@ namespace WeeklyReview.Shared.Services
             _db.Add(new EntryModel(newestEntry.StartTime, newestEntry.EndTime, _timeService.Current, activities, false, newestEntry.UserGuid));
         }
 
-        public ActivityChangeModel Remove(int key, Guid UserGuid)
+        public ActivityChangeModel Remove(int key, Guid userGuid)
         {
-            var model = _db.ActivityChange.SingleOrDefault(x => x.Id == key && x.UserGuid == UserGuid);
+            var model = _db.ActivityChange.SingleOrDefault(x => x.Id == key && x.UserGuid == userGuid);
             if (model is null)
                 throw new KeyNotFoundException($"Model not found with id {key}");
 
@@ -122,14 +130,14 @@ namespace WeeklyReview.Shared.Services
             return model!;
         }
 
-        public ActivityChangeModel? Get(int key, Guid UserGuid)
+        public ActivityChangeModel? Get(int key, Guid userGuid)
         {
-            return _db.ActivityChange.SingleOrDefault(x => x.Id == key && x.UserGuid == UserGuid);
+            return _db.ActivityChange.SingleOrDefault(x => x.Id == key && x.UserGuid == userGuid);
         }
 
-        public IEnumerable<ActivityChangeModel> GetAll(Guid UserGuid)
+        public IEnumerable<ActivityChangeModel> GetAll(Guid userGuid)
         {
-            return _db.ActivityChange.Where(x => x.UserGuid == UserGuid);
+            return _db.ActivityChange.Where(x => x.UserGuid == userGuid);
         }
     }
 }
