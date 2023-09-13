@@ -13,38 +13,31 @@ namespace WeeklyReview.Server.Controllers
     [ApiVersion("1.0")]
     public class EntryController : GenericAuthorizedApiController
     {
-        private readonly WeeklyReviewApiDbContext _db;
-        private readonly INewEntryAdderService _entryAdderService;
-        private readonly INewEntryParserService _entryParserService;
+        private readonly IEntryService _entryService;
 
-        public EntryController(WeeklyReviewApiDbContext db, INewEntryAdderService entryAdderService, INewEntryParserService entryParserService)
+        public EntryController(IEntryService entryService)
         {
-            _db = db;
-            _entryAdderService = entryAdderService;
-            _entryParserService = entryParserService;
+            _entryService = entryService;
         }
 
         [HttpGet]
         [EnableQuery]
         public ActionResult<IEnumerable<EntryModel>> GetAll()
         {
-            return Ok(_db.Entry.Include(x => x.Activities).Where(x => x.UserGuid == UserGuid).AsQueryable());
+            return Ok(_entryService.GetAll(UserGuid));
         }
 
         [HttpGet("{key}")]
         [EnableQuery]
-        public ActionResult<EntryModel> Get([FromRoute] int key)
+        public ActionResult<EntryModel?> Get([FromRoute] int key)
         {
-            var res = _db.Entry.Include(x => x.Activities).SingleOrDefault(x => x.Id == key && x.UserGuid == UserGuid);
-            return Ok(res);
+            return Ok(_entryService.Get(key, UserGuid));
         }
 
         [HttpPost("Enter")]
-        public ActionResult<EntryModel> Create([FromBody] EnterEntryModel model)
+        public ActionResult<EntryModel?> Create([FromBody] EnterEntryModel model)
         {
-            var activities = _entryParserService.ParseEntry(model.Entries, UserGuid);
-            var entry = _entryAdderService.AddEntry(model.Date, activities, UserGuid);
-            return Ok(entry);
+            return Ok(_entryService.Create(model, UserGuid));
         }
     }
 }

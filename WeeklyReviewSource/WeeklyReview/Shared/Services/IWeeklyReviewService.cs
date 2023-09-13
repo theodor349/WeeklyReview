@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using WeeklyReview.Database.Models;
+using WeeklyReview.Shared.Models;
 
 namespace WeeklyReview.Shared.Services
 {
@@ -46,7 +47,9 @@ namespace WeeklyReview.Shared.Services
 
     public interface IEntryService
     {
-
+        EntryModel? Create(EnterEntryModel model, Guid userGuid);
+        EntryModel? Get(int key, Guid userGuid);
+        IEnumerable<EntryModel> GetAll(Guid userGuid);
     }
 
     public interface IActivityChangeService
