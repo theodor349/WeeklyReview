@@ -38,7 +38,10 @@ namespace WeeklyReview.Shared.Services
 
     public interface IActivityService
     {
-
+        ActivityChangeModel Convert(int sKey, int dKey, Guid userGuid);
+        ActivityModel Delete(int key, Guid userGuid);
+        ActivityModel? Get(int key, Guid userGuid);
+        IEnumerable<ActivityModel> GetAll(Guid userGuid);
     }
 
     public interface ICategoryService
@@ -60,7 +63,7 @@ namespace WeeklyReview.Shared.Services
     {
         ActivityChangeModel ChangeActivity(int sourceKey, int destinationKey, Guid userGuid);
         void RollBackActivityChange(int key, Guid UserGuid);
-        ActivityChangeModel Remove(int key, Guid UserGuid);
+        ActivityChangeModel Delete(int key, Guid UserGuid);
         ActivityChangeModel? Get(int key, Guid UserGuid);
         IEnumerable<ActivityChangeModel> GetAll(Guid UserGuid);
     }

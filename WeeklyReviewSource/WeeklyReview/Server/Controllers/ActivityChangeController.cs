@@ -11,12 +11,11 @@ namespace WeeklyReview.Server.Controllers
 {
     public class ActivityChangeController : GenericAuthorizedApiController
     {
-        private readonly WeeklyReviewApiDbContext _db;
         private readonly IWeeklyReviewService _weeklyReviewService;
+        private IActivityChangeService _activityChangeService => _weeklyReviewService.ActivityChange;
 
-        public ActivityChangeController(WeeklyReviewApiDbContext db, IWeeklyReviewService weeklyReviewService)
+        public ActivityChangeController(IWeeklyReviewService weeklyReviewService)
         {
-            _db = db;
             _weeklyReviewService = weeklyReviewService;
         }
 
@@ -24,14 +23,14 @@ namespace WeeklyReview.Server.Controllers
         [EnableQuery]
         public ActionResult<IEnumerable<CategoryModel>> GetAll()
         {
-            return Ok(_weeklyReviewService.ActivityChange.GetAll(UserGuid));
+            return Ok(_activityChangeService.GetAll(UserGuid));
         }
 
         [HttpGet("{key}")]
         [EnableQuery]
         public ActionResult<CategoryModel> Get([FromRoute] int key)
         {
-            return Ok(_weeklyReviewService.ActivityChange.Get(key, UserGuid));
+            return Ok(_activityChangeService.Get(key, UserGuid));
         }
 
         [HttpDelete("{key}")]
@@ -39,7 +38,7 @@ namespace WeeklyReview.Server.Controllers
         {
             try
             {
-                var model = _weeklyReviewService.ActivityChange.Remove(key, UserGuid);
+                var model = _activityChangeService.Delete(key, UserGuid);
                 return Ok(model);
             }
             catch(KeyNotFoundException e)
@@ -53,7 +52,7 @@ namespace WeeklyReview.Server.Controllers
         {
             try
             {
-                _weeklyReviewService.ActivityChange.RollBackActivityChange(key, UserGuid);
+                _activityChangeService.RollBackActivityChange(key, UserGuid);
                 return Ok();
             }
             catch (KeyNotFoundException e)

@@ -128,7 +128,7 @@ namespace WeeklyReview.Shared.Services
         }
 
         // TODO: Test
-        public ActivityChangeModel Remove(int key, Guid userGuid)
+        public ActivityChangeModel Delete(int key, Guid userGuid)
         {
             var model = _db.ActivityChange.SingleOrDefault(x => x.Id == key && x.UserGuid == userGuid);
             if (model is null)

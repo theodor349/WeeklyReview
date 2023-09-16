@@ -13,11 +13,12 @@ namespace WeeklyReview.Server.Controllers
     [ApiVersion("1.0")]
     public class EntryController : GenericAuthorizedApiController
     {
-        private readonly IEntryService _entryService;
+        private readonly IWeeklyReviewService _weeklyReviewService;
+        private IEntryService _entryService => _weeklyReviewService.Entry;
 
-        public EntryController(IEntryService entryService)
+        public EntryController(IWeeklyReviewService weeklyReviewService)
         {
-            _entryService = entryService;
+            _weeklyReviewService = weeklyReviewService;
         }
 
         [HttpGet]

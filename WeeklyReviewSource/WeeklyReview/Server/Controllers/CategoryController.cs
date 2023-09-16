@@ -11,11 +11,12 @@ namespace WeeklyReview.Server.Controllers
 {
     public class CategoryController : GenericAuthorizedApiController
     {
-        private readonly ICategoryService _categoryService;
+        private readonly IWeeklyReviewService _weeklyReviewService;
+        private ICategoryService _categoryService => _weeklyReviewService.Category;
 
-        public CategoryController(ICategoryService categoryService)
+        public CategoryController(IWeeklyReviewService weeklyReviewService)
         {
-            _categoryService = categoryService;
+            _weeklyReviewService = weeklyReviewService;
         }
 
         [HttpGet]
