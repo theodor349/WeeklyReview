@@ -51,6 +51,7 @@ namespace WeeklyReview.Server.Controllers
         public ActionResult Rollback([FromRoute] int key)
         {
             _activityChangeService.RollBackActivityChange(key, UserGuid);
+            return Ok();
         }
     }
 }

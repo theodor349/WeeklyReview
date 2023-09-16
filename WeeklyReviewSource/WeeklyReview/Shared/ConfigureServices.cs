@@ -14,7 +14,10 @@ namespace WeeklyReview.Shared
         {
             services.AddTransient<INewEntryAdderService, NewEntryAdderService>();
             services.AddTransient<INewEntryParserService, NewEntryParserService>();
+            services.AddTransient<IEntryService, EntryService>();
             services.AddTransient<IActivityChangeService, ActivityChangeService>();
+            services.AddTransient<IActivityService, ActivityService>();
+            services.AddTransient<ICategoryService, CategoryService>();
             services.AddTransient<ITimeService, TimeService>();
             services.AddTransient<IWeeklyReviewService, WeeklyReviewService>();
         }
