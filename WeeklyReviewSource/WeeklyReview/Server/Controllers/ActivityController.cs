@@ -46,14 +46,7 @@ namespace WeeklyReview.Server.Controllers
         [HttpPost("{sKey}/ChangeTo/{dKey}")]
         public ActionResult<ActivityChangeModel> Create([FromRoute] int sKey, [FromRoute] int dKey)
         {
-            try
-            {
-                return Ok(_activityService.Convert(sKey, dKey, UserGuid));
-            }
-            catch(KeyNotFoundException e)
-            {
-                return BadRequest(e.Message);
-            }
+            return Ok(_activityService.Convert(sKey, dKey, UserGuid));
         }
     }
 }

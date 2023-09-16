@@ -9,6 +9,7 @@ using Microsoft.OData.ModelBuilder;
 using WeeklyReview.Database.Models;
 using WeeklyReview.Database.Persitance;
 using WeeklyReview.Server.Persitance;
+using WeeklyReview.Server.Setup;
 using WeeklyReview.Shared;
 
 var allowedOrigins = "_allowOrigins";
@@ -48,7 +49,13 @@ builder.Services.AddVersionedApiExplorer(setup =>
 });
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddControllersWithViews().AddOData(options => options.EnableQueryFeatures(null).EnableQueryFeatures(null));
+builder.Services
+    .AddControllersWithViews(options =>
+        {
+            options.Filters.Add<ExceptionFilter>();
+        })
+    .AddOData(options => options.EnableQueryFeatures(null)
+    .EnableQueryFeatures(null));
 builder.Services.AddRazorPages();
 
 builder.Services.AddSharedServices();

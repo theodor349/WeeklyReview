@@ -50,15 +50,7 @@ namespace WeeklyReview.Server.Controllers
         [HttpPost("{key}/Rollback")]
         public ActionResult Rollback([FromRoute] int key)
         {
-            try
-            {
-                _activityChangeService.RollBackActivityChange(key, UserGuid);
-                return Ok();
-            }
-            catch (KeyNotFoundException e)
-            {
-                return NotFound(e.Message);
-            }
+            _activityChangeService.RollBackActivityChange(key, UserGuid);
         }
     }
 }

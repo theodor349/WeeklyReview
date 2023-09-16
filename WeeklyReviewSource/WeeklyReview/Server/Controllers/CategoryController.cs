@@ -36,31 +36,13 @@ namespace WeeklyReview.Server.Controllers
         [HttpDelete("{key}")]
         public ActionResult<ActivityModel> Delete([FromRoute] int key)
         {
-            try
-            {
-                return Ok(_categoryService.Delete(key, UserGuid));
-            }
-            catch(KeyNotFoundException e)
-            {
-                return BadRequest(e.Message);
-            }
-            catch(InvalidOperationException e)
-            {
-                return BadRequest(e.Message);
-            }
+            return Ok(_categoryService.Delete(key, UserGuid));
         }
 
         [HttpPost("{key}/ChangeColor")]
         public ActionResult<ActivityChangeModel> ChangeColor([FromRoute] int key, [FromBody] Color color)
         {
-            try
-            {
-                return Ok(_categoryService.ChangeColor(key, color, UserGuid));
-            }
-            catch (KeyNotFoundException e)
-            {
-                return BadRequest(e.Message);
-            }
+            return Ok(_categoryService.ChangeColor(key, color, UserGuid));
         }
     }
 }
