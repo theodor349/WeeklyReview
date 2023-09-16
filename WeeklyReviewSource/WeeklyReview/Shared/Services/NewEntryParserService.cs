@@ -10,7 +10,7 @@ using WeeklyReview.Database.Persitance;
 
 namespace WeeklyReview.Shared.Services
 {
-    public class NewEntryParserService : INewEntryParserService
+    internal class NewEntryParserService : INewEntryParserService
     {
         private record ActivityCategory(string? Activity, string? Category);
 

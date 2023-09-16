@@ -8,7 +8,7 @@ using WeeklyReview.Database.Persitance;
 
 namespace WeeklyReview.Shared.Services
 {
-    public class NewEntryAdderService : INewEntryAdderService
+    internal class NewEntryAdderService : INewEntryAdderService
     {
         private readonly WeeklyReviewDbContext _db;
         private readonly ITimeService _timeService;

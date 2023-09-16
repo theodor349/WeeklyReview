@@ -2,7 +2,7 @@
 
 namespace WeeklyReview.Client.Services
 {
-    public interface IWeeklyReviewService
+    public interface IWeeklyReviewServiceOld
     {
         List<ActivityDto> Activities { get; }
         List<CategoryDto> Categories { get; }

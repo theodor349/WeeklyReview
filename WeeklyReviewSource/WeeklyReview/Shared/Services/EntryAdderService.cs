@@ -8,7 +8,7 @@ using WeeklyReview.Shared.Models.DTOs;
 
 namespace WeeklyReview.Shared.Services
 {
-    public class EntryAdderService : IEntryAdderService
+    internal class EntryAdderService : IEntryAdderService
     {
         // TODO: If an entry changes endtime, then all entries including deleted ones should be updated.
         private readonly IEntryParserService _entryParser;

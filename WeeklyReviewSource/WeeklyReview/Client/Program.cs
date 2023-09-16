@@ -5,6 +5,9 @@ using WeeklyReview.Client;
 using Syncfusion.Blazor;
 using WeeklyReview.Client.Services;
 using WeeklyReview.Shared.Services;
+using WeeklyReview.Shared;
+using WeeklyReview.Client.Persistance;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -15,9 +18,11 @@ builder.Services.AddHttpClient("WeeklyReview.ServerAPI", client => client.BaseAd
 
 // Supply HttpClient instances that include access tokens when making requests to the server project
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("WeeklyReview.ServerAPI"));
-builder.Services.AddScoped<IDataService, DataService>();
-builder.Services.AddTransient<IEntryParserService, EntryParserService>();
-builder.Services.AddTransient<IEntryAdderService, EntryAdderService>();
+builder.Services.AddDbContext<WeeklyReviewBlazorClientDbContext>(options =>
+{
+    options.UseInMemoryDatabase(databaseName: "WeeklyReview"); 
+});
+builder.Services.AddSharedServices();
 
 builder.Services.AddMsalAuthentication(options =>
 {
