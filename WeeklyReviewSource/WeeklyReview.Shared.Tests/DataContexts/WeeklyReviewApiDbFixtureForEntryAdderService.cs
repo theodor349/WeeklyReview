@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.Intrinsics.X86;
 using System.Text;
 using System.Threading.Tasks;
 using WeeklyReview.Database.Models;
@@ -70,26 +71,30 @@ namespace WeeklyReview.Shared.Tests.DataContexts
         private void AddCaseMovies(WeeklyReviewDbContext context)
         {
             var user = users[1];
+            var defaultCategory = new CategoryModel("", 0, Color.White, user);
 
-            var aSeries = new ActivityModel("Series", false, user);
-            var aMovie = new ActivityModel("Movie", false, user);
+            var aSeries = new ActivityModel("Series", false, defaultCategory, user);
+            var aMovie = new ActivityModel("Movie", false, defaultCategory, user);
 
+            context.Category.AddRange(defaultCategory);
             context.Activity.AddRange(aMovie, aSeries);
         }
 
         private void AddCaseFoods(WeeklyReviewDbContext context)
         {
             var user = users[2];
+            var defaultCategory = new CategoryModel("", 0, Color.White, user);
             var startTime = _dt;
             var endTime = startTime.AddHours(4);
 
-            var aBreakfast = new ActivityModel("Breakfast", false, user);
-            var aLunch = new ActivityModel("Lunch", false, user);
-            var aDinner = new ActivityModel("Dinner", false, user);
+            var aBreakfast = new ActivityModel("Breakfast", false, defaultCategory, user);
+            var aLunch = new ActivityModel("Lunch", false, defaultCategory, user);
+            var aDinner = new ActivityModel("Dinner", false, defaultCategory, user);
             var e1 = new EntryModel(startTime, endTime, startTime, aLunch, true, user);
             var e2 = new EntryModel(startTime, endTime, startTime, aBreakfast, false, user);
             var e3 = new EntryModel(startTime.AddHours(4), null, startTime, aLunch, false, user);
 
+            context.Category.AddRange(defaultCategory);
             context.Activity.AddRange(aBreakfast, aLunch, aDinner);
             context.Entry.AddRange(e1, e2, e3);
         }
@@ -97,15 +102,17 @@ namespace WeeklyReview.Shared.Tests.DataContexts
         private void AddCaseSports(WeeklyReviewDbContext context)
         {
             var user = users[3];
+            var defaultCategory = new CategoryModel("", 0, Color.White, user);
             var startTime = _dt;
             var endTime = startTime.AddHours(4);
 
-            var aRun = new ActivityModel("Run", false, user);
-            var aBike = new ActivityModel("Bike", false, user);
-            var aSwim = new ActivityModel("Swim", false, user);
+            var aRun = new ActivityModel("Run", false, defaultCategory, user);
+            var aBike = new ActivityModel("Bike", false, defaultCategory, user);
+            var aSwim = new ActivityModel("Swim", false, defaultCategory, user);
             var e1 = new EntryModel(startTime, endTime, startTime, aRun, false, user);
             var e2 = new EntryModel(endTime, endTime.AddHours(2), startTime, aBike, false, user);
 
+            context.Category.AddRange(defaultCategory);
             context.Activity.AddRange(aRun, aBike, aSwim);
             context.Entry.AddRange(e1, e2);
         }
@@ -113,16 +120,18 @@ namespace WeeklyReview.Shared.Tests.DataContexts
         private void AddCaseTrip(WeeklyReviewDbContext context)
         {
             var user = users[4];
+            var defaultCategory = new CategoryModel("", 0, Color.White, user);
             var startTime = _dt;
             var endTime = startTime.AddHours(2);
 
-            var aSpain = new ActivityModel("Spian", false, user);
-            var aFrance = new ActivityModel("France", false, user);
-            var aItaly = new ActivityModel("Italy", false, user);
+            var aSpain = new ActivityModel("Spian", false, defaultCategory, user);
+            var aFrance = new ActivityModel("France", false, defaultCategory, user);
+            var aItaly = new ActivityModel("Italy", false, defaultCategory, user);
             var e1 = new EntryModel(startTime.AddHours(0), endTime.AddHours(0), startTime, aSpain, false, user);
             var e2 = new EntryModel(startTime.AddHours(2), endTime.AddHours(2), startTime, aFrance, false, user);
             var e3 = new EntryModel(startTime.AddHours(4), endTime.AddHours(4), startTime, aFrance, false, user);
 
+            context.Category.AddRange(defaultCategory);
             context.Activity.AddRange(aSpain, aFrance, aItaly);
             context.Entry.AddRange(e1, e2, e3);
         }

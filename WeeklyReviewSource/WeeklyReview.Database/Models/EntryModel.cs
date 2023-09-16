@@ -11,7 +11,7 @@
         public bool Deleted { get; set; }
         public Guid UserGuid { get; set; }
 
-        private EntryModel()
+        public EntryModel()
         {
             
         }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using System.Drawing;
 using WeeklyReview.Client.Services;
 using WeeklyReview.Client.ViewModels;
+using WeeklyReview.Database.Models;
 using WeeklyReview.Shared.Models.DTOs;
 using WeeklyReview.Shared.Services;
 
@@ -10,19 +11,18 @@ namespace WeeklyReview.Client.Pages
     public partial class WeekView
     {
         [Inject]
-        public IDataService _dataService { get; set; }
+        public IWeeklyReviewService WeeklyReviewService { get; set; }
+        public Guid UserGuid = new Guid("24fe9480-4e7a-4515-b96c-248171496591");
 
         public DateTime InputDate = DateTime.Now;
         public DateTime ViewDate = DateTime.Now;
         public List<ScheduleViewModel> DataSource { get; set; } = new List<ScheduleViewModel>();
         public List<CategoryViewModel> Categories { get; set; } = new List<CategoryViewModel>();
-        public List<ActivityDto> Activities
+        public IEnumerable<ActivityModel> Activities
         {
             get
             {
-                var task = _dataService.GetActivities();
-                task.Wait();
-                return task.Result.ToList();
+                return WeeklyReviewService.Activity.GetAll(UserGuid);
             }
         }
         public string EnteredActivity { get; set; }
@@ -48,17 +48,17 @@ namespace WeeklyReview.Client.Pages
 
         private async Task GenerateViewModels()
         {
-            foreach (var cat in await _dataService.GetCategories())
+            foreach (var cat in WeeklyReviewService.Category.GetAll(UserGuid))
             {
                 Categories.Add(new CategoryViewModel(cat));
             }
 
-            foreach (var entry in await _dataService.GetEntries())
+            foreach (var entry in WeeklyReviewService.Entry.GetAll(UserGuid))
             {
                 var s = new ScheduleViewModel();
                 s.Subject = entry.Activities.ConvertAll(x => x.Name).Aggregate((x, y) => x + " + " + y);
-                s.StartTime = entry.StarTime;
-                s.EndTime = entry.EndTime;
+                s.StartTime = entry.StartTime;
+                s.EndTime = entry.EndTime is null ? entry.StartTime.AddDays(1) : entry.EndTime.Value;
                 s.CategoryId = entry.Activities.ConvertAll(x => x.Category).MaxBy(x => x.Priority).Id;
                 DataSource.Add(s);
             }

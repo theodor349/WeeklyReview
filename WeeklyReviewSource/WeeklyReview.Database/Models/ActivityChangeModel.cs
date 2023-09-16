@@ -8,7 +8,7 @@
         public DateTime ChangeDate { get; set; }
         public Guid UserGuid { get; set; }
 
-        private ActivityChangeModel()
+        public ActivityChangeModel()
         {
             
         }

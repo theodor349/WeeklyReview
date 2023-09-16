@@ -1,17 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Syncfusion.Blazor.Inputs;
 using System.Diagnostics;
+using System.Drawing;
+using WeeklyReview.Database.Models;
 using WeeklyReview.Shared.Services;
 using WeeklyReview.Shared.Tests.DataContexts;
 using Xunit;
 
 namespace WeeklyReview.Shared.Tests.Services
 {
-    public class NewEntryParserServiceTests : IClassFixture<WeeklyReviewApiDbFixtureForEntryParserService>
+    public class EntryParserServiceTests : IClassFixture<WeeklyReviewApiDbFixtureForEntryParserService>
     {
         public WeeklyReviewApiDbFixtureForEntryParserService DbFixture { get; }
 
-        public NewEntryParserServiceTests(WeeklyReviewApiDbFixtureForEntryParserService dbFixture)
+        public EntryParserServiceTests(WeeklyReviewApiDbFixtureForEntryParserService dbFixture)
         {
             DbFixture = dbFixture;
         }
@@ -69,7 +71,7 @@ namespace WeeklyReview.Shared.Tests.Services
         [Fact]
         public void ParseEntry_SportsBike_Exists_CaseUser1()
         {
-            int aBike = 3;
+            int aBike = 2;
             var user = DbFixture.Users[1];
 
             // Arrange 
@@ -122,7 +124,7 @@ namespace WeeklyReview.Shared.Tests.Services
         [Fact]
         public void ParseEntry_SportsBikeAndExerciseRun_Exists_CaseUser1()
         {
-            int aBike = 3;
+            int aBike = 2;
             int aRun = 4;
             var user = DbFixture.Users[1];
 
@@ -150,7 +152,7 @@ namespace WeeklyReview.Shared.Tests.Services
         [Fact]
         public void ParseEntry_BlankAndSportsBike_Exists_CaseUser1()
         {
-            int aBike = 3;
+            int aBike = 2;
             var user = DbFixture.Users[1];
 
             // Arrange 
@@ -335,7 +337,7 @@ namespace WeeklyReview.Shared.Tests.Services
         public void ParseEntry_SportsExist_RunDoesNotExist_AddRun_CaseUser2()
         {
             var user = DbFixture.Users[2];
-            int cSports = 4;
+            int cSports = 6;
 
             // Arrange 
             using var context = DbFixture.CreateContext();
@@ -361,7 +363,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void ParseEntry_NoCat_SwimDoesNotExist_AddRun_CaseUser2()
+        public void ParseEntry_NoDefaultCat_SwimDoesNotExist_AddSwim_CaseUser2()
         {
             var user = DbFixture.Users[2];
 
@@ -370,7 +372,6 @@ namespace WeeklyReview.Shared.Tests.Services
             var _dt = DbFixture.Dt;
             context.Database.BeginTransaction();
             var expectedActivityCount = context.Activity.Count() + 1;
-            var expectedCategoryCount = context.Category.Count();
 
             // Act
             var sut = new NewEntryParserService(context);
@@ -383,8 +384,38 @@ namespace WeeklyReview.Shared.Tests.Services
             // Assert
             var newActivity = context.Activity.Include(x => x.Category).Single(x => x.NormalizedName == "Swim" && x.UserGuid == user);
             Assert.Equal("Swim", newActivity.Name);
-            Assert.Null(newActivity.Category);
             Assert.Equal(expectedActivityCount, context.Activity.Count());
+        }
+
+        [Fact]
+        public void ParseEntry_NoDefaultCat_SwimDoesExist_AssignDefaultCategory_CaseUser2()
+        {
+            var user = DbFixture.Users[2];
+
+            // Arrange 
+            using var context = DbFixture.CreateContext();
+            var _dt = DbFixture.Dt;
+            context.Database.BeginTransaction();
+            var expectedCategoryCount = context.Category.Count();
+
+            // Act
+            var sut = new NewEntryParserService(context);
+            var res = sut.ParseEntry(new List<string>()
+            {
+                "Swim"
+            }, user);
+            context.ChangeTracker.Clear();
+
+            // Assert
+            var newActivity = context.Activity.Include(x => x.Category).Single(x => x.NormalizedName == "Swim" && x.UserGuid == user);
+            var newCat = newActivity.Category;
+            Assert.Equal("", newCat.Name);
+            Assert.Equal(0, newCat.Priority);
+            Assert.Equal(Color.White.R, newCat.Color.R);
+            Assert.Equal(Color.White.G, newCat.Color.G);
+            Assert.Equal(Color.White.B, newCat.Color.B);
+            Assert.Equal(user, newCat.UserGuid);
+            Assert.False(newCat.Deleted);
             Assert.Equal(expectedCategoryCount, context.Category.Count());
         }
 
@@ -392,7 +423,7 @@ namespace WeeklyReview.Shared.Tests.Services
         public void ParseEntry_ExerciseDoesNotExist_BikeDoesNotExist_AddExerciseAndBike_CaseUser2()
         {
             var user = DbFixture.Users[2];
-            int cExercise = 5;
+            int cExercise = 7;
 
             // Arrange 
             using var context = DbFixture.CreateContext();
@@ -442,5 +473,36 @@ namespace WeeklyReview.Shared.Tests.Services
             Assert.Equal(expectedCategoryCount, context.Category.Count());
         }
 
+        [Fact]
+        public void ParseEntry_NoDefaultCat_SwimDoesNotExist_AddDefaultCategory_CaseUser3()
+        {
+            var user = DbFixture.Users[3];
+
+            // Arrange 
+            using var context = DbFixture.CreateContext();
+            var _dt = DbFixture.Dt;
+            context.Database.BeginTransaction();
+            var expectedCategoryCount = context.Category.Count() + 1;
+
+            // Act
+            var sut = new NewEntryParserService(context);
+            var res = sut.ParseEntry(new List<string>()
+            {
+                "Swim"
+            }, user);
+            context.ChangeTracker.Clear();
+
+            // Assert
+            var newActivity = context.Activity.Include(x => x.Category).Single(x => x.NormalizedName == "Swim" && x.UserGuid == user);
+            var newCat = newActivity.Category;
+            Assert.Equal("", newCat.Name);
+            Assert.Equal(0, newCat.Priority);
+            Assert.Equal(Color.White.R, newCat.Color.R);
+            Assert.Equal(Color.White.G, newCat.Color.G);
+            Assert.Equal(Color.White.B, newCat.Color.B);
+            Assert.Equal(user, newCat.UserGuid);
+            Assert.False(newCat.Deleted);
+            Assert.Equal(expectedCategoryCount, context.Category.Count());
+        }
     }
 }

@@ -12,7 +12,7 @@ namespace WeeklyReview.Database.Models
         public bool Deleted { get; set; }
         public Guid UserGuid { get; set; }
 
-        private CategoryModel()
+        public CategoryModel()
         {
             
         }

@@ -35,7 +35,7 @@
                     {
                         var bIndex = i;
                         <div class="my-1">
-                            <SfAutoComplete TValue="string" TItem="ActivityDto" Placeholder="e.g. Bike" DataSource="@Activities"
+                            <SfAutoComplete TValue="string" TItem="ActivityModel" Placeholder="e.g. Bike" DataSource="@Activities"
                                             EnableVirtualization="true" @bind-Value="@InputActivities[bIndex]">
                                 <AutoCompleteFieldSettings Value="Name"></AutoCompleteFieldSettings>
                             </SfAutoComplete>

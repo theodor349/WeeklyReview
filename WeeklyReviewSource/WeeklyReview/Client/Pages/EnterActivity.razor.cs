@@ -23,40 +23,38 @@ using Syncfusion.Blazor.SplitButtons;
 using Syncfusion.Blazor.DropDowns;
 using WeeklyReview.Client.ViewModels;
 using WeeklyReview.Client.Services;
-using WeeklyReview.Shared.Services;
 using WeeklyReview.Shared.Models.DTOs;
+using WeeklyReview.Shared.Services;
+using WeeklyReview.Database.Models;
+using WeeklyReview.Shared.Models;
 
 namespace WeeklyReview.Client.Pages
 {
     public partial class EnterActivity
     {
         [Inject]
-        public IDataService DataService { get; set; }
-        [Inject]
-        public IEntryAdderService EntryAdderService { get; set; }
+        public IWeeklyReviewService WeeklyReviewService { get; set; }
+        public Guid UserGuid = new Guid("24fe9480-4e7a-4515-b96c-248171496591");
 
         public DateTime ViewDate = DateTime.Now;
         public bool IsDiscord { get; set; }
         public List<string> InputActivities { get; set; } = new List<string>();
         public List<string> InputSocials { get; set; } = new List<string>();
 
-        public List<ActivityDto> Activities
+        public IEnumerable<ActivityModel> Activities
         {
             get
             {
-                var task = DataService.GetActivities();
-                task.Wait();
-                return task.Result.ToList();
+                return WeeklyReviewService.Activity.GetAll(UserGuid);
             }
         }
 
-        public List<string> Socials
+        public IEnumerable<string> Socials
         {
             get
             {
-                var task = DataService.GetSocials();
-                task.Wait();
-                return task.Result.ToList();
+                // TODO: Add socials to interface
+                return WeeklyReviewService.Activity.GetAll(UserGuid).ToList().ConvertAll(x => x.Name);
             }
         }
 
@@ -69,13 +67,13 @@ namespace WeeklyReview.Client.Pages
             AddInputSocial();
         }
 
-        public async Task SubmitEntry()
+        public void SubmitEntry()
         {
             var submittedActivities = new List<string>();
             submittedActivities.AddRange(InputActivities.Where(x => !string.IsNullOrWhiteSpace(x)));
             submittedActivities.AddRange(InputSocials.Where(x => !string.IsNullOrWhiteSpace(x)).ToList().ConvertAll(x => IsDiscord ? "Discord: " + x : "Social: " + x));
 
-            await EntryAdderService.AddEntry(ViewDate, submittedActivities);
+            WeeklyReviewService.Entry.Create(new EnterEntryModel() { Date = ViewDate, Entries = submittedActivities }, UserGuid);
 
             for (int i = 0; i < InputActivities.Count(); i++)
                 RemoveInputActivity();

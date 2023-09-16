@@ -25,6 +25,7 @@ namespace WeeklyReview.Shared.Services
         {
             var activityCategories = GetActivityCategories(activities);
             var res = AddActivityCategories(activityCategories, userGuid);
+            _db.SaveChanges();
             return res;
         }
 
@@ -43,7 +44,6 @@ namespace WeeklyReview.Shared.Services
 
                 res.Add(act);
             }
-            _db.SaveChanges();
             return res;
         }
 
@@ -54,7 +54,17 @@ namespace WeeklyReview.Shared.Services
 
             var catModel = cat is null ? null : _db.Category.SingleOrDefault(x => x.NormalizedName == cat.ToLower() && x.UserGuid == userGuid);
 
-            if (string.IsNullOrEmpty(cat) is false && catModel is null)
+            if(string.IsNullOrEmpty(cat))
+            {
+                var defaultCat = _db.Category.SingleOrDefault(x => x.UserGuid == userGuid && x.NormalizedName.Length == 0);
+                if(defaultCat is null)
+                {
+                    defaultCat = new CategoryModel("", 0, Color.White, userGuid);
+                    _db.Category.Add(defaultCat);
+                }
+                catModel = defaultCat;
+            }
+            else if (catModel is null)
             {
                 catModel = new CategoryModel(cat, 0, Color.White, userGuid);
                 _db.Category.Add(catModel);

@@ -28,6 +28,8 @@ namespace WeeklyReview.Shared.Tests.DataContexts
         public DateTime Dt => _dt;
         public DateTime MaxTime => _dt.AddHours(10);
 
+        private CategoryModel _defaultCategory;
+
         public WeeklyReviewDbContext CreateContext()
             => new WeeklyReviewApiDbContext(
             new DbContextOptionsBuilder<WeeklyReviewApiDbContext>()
@@ -36,6 +38,8 @@ namespace WeeklyReview.Shared.Tests.DataContexts
 
         public WeeklyReviewApiDbFixtureForActivityRollbackService()
         {
+            _defaultCategory = new CategoryModel("", 0, Color.White, User1);
+
             lock (_lock)
             {
                 if (!_databaseInitialized)
@@ -47,6 +51,8 @@ namespace WeeklyReview.Shared.Tests.DataContexts
 
                         using (var transaction = context.Database.BeginTransaction())
                         {
+                            context.Category.Add(_defaultCategory);
+                            context.SaveChanges();
                             AddCaseMovies(context);
                             context.SaveChanges();
                             AddCaseSports(context);
@@ -71,8 +77,8 @@ namespace WeeklyReview.Shared.Tests.DataContexts
             var startTime = _dt.AddHours(8);
             var endTime = startTime.AddHours(1);
 
-            var aSpain = new ActivityModel("Spain", false, User1);
-            var aFrance = new ActivityModel("France", false, User1);
+            var aSpain = new ActivityModel("Spain", false, _defaultCategory, User1);
+            var aFrance = new ActivityModel("France", false, _defaultCategory, User1);
             var change = new ActivityChangeModel(aSpain, aFrance, endTime.AddHours(1), User1);
             var e1 = new EntryModel(startTime, endTime, startTime.AddMinutes(1), aSpain, true, User1);
             var e2 = new EntryModel(startTime, endTime, startTime.AddMinutes(2), aFrance, true, User1);

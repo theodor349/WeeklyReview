@@ -13,27 +13,19 @@ namespace WeeklyReview.Database.Models
         public string Name { get; set; }
         public string NormalizedName { get; set; }
         public bool Deleted { get; set; }
-        public CategoryModel? Category { get; set; }
+        public CategoryModel Category { get; set; }
         public Guid UserGuid { get; set; }
 
-        private ActivityModel()
+        public ActivityModel()
         {
             
         }
 
-        public ActivityModel(string name, bool deleted, CategoryModel? category, Guid userGuid)
+        public ActivityModel(string name, bool deleted, CategoryModel category, Guid userGuid)
         {
             Name = name;
             Deleted = deleted;
             Category = category;
-            NormalizedName = name.ToLower();
-            UserGuid = userGuid;
-        }
-
-        public ActivityModel(string name, bool deleted, Guid userGuid)
-        {
-            Name = name;
-            Deleted = deleted;
             NormalizedName = name.ToLower();
             UserGuid = userGuid;
         }

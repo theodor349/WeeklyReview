@@ -8,6 +8,7 @@ using WeeklyReview.Shared.Services;
 using WeeklyReview.Shared;
 using WeeklyReview.Client.Persistance;
 using Microsoft.EntityFrameworkCore;
+using WeeklyReview.Database.Persitance;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -22,6 +23,7 @@ builder.Services.AddDbContext<WeeklyReviewBlazorClientDbContext>(options =>
 {
     options.UseInMemoryDatabase(databaseName: "WeeklyReview"); 
 });
+builder.Services.AddScoped<WeeklyReviewDbContext, WeeklyReviewBlazorClientDbContext>();
 builder.Services.AddSharedServices();
 
 builder.Services.AddMsalAuthentication(options =>
