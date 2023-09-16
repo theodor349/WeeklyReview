@@ -56,7 +56,9 @@ namespace WeeklyReview.Client.Pages
                 s.Subject = entry.Activities.ConvertAll(x => x.Name).Aggregate((x, y) => x + " + " + y);
                 s.StartTime = entry.StartTime;
                 s.EndTime = entry.EndTime is null ? entry.StartTime.AddHours(12) : entry.EndTime.Value;
-                s.CategoryId = entry.Activities.ConvertAll(x => x.Category).MaxBy(x => x.Priority).Id;
+                var primaryCat = entry.Activities.ConvertAll(x => x.Category).MaxBy(x => x.Priority);
+                s.CategoryId = primaryCat.Id;
+                s.Color = primaryCat.Color;
                 DataSource.Add(s);
             }
         }

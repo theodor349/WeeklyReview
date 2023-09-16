@@ -1,5 +1,6 @@
 ﻿@page "/weekview"
 @using System.Globalization;
+@using System.Drawing;
 
 <PageTitle>Week View</PageTitle>
 <div class="container-fluid">
@@ -19,7 +20,7 @@
         <ScheduleEventSettings DataSource="@DataSource" IgnoreWhitespace="true">
             <Template>
                 <div class="e-appointment-details">
-                    <div class="e-subject">@((context as ScheduleViewModel).Subject)</div>
+                    <div class="e-subject" style="color:@(TextColor((context as ScheduleViewModel).Color))">@((context as ScheduleViewModel).Subject)</div>
                     @if((context as ScheduleViewModel).Duration.TotalMinutes > 15)
                     {
                         <div class="e-time">@((context as ScheduleViewModel).StartTime.ToString("HH:mm")) - @((context as ScheduleViewModel).EndTime.ToString("HH:mm"))</div>
@@ -56,5 +57,13 @@
         InputDate = args.Value;
         TimeUpdated();
         StateHasChanged();
+    }
+
+    public string TextColor(Color background)
+    {
+        if ((background.R * 0.299 + background.G * 0.587 + background.B * 0.114) > 186)
+            return "white";
+        else
+            return "black";
     }
 }
