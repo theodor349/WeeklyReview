@@ -1,9 +1,9 @@
-﻿using WeeklyReview.Shared.Models.DTOs;
+﻿using WeeklyReview.Database.Models;
 
 namespace WeeklyReview.Shared.Services
 {
     public interface IEntryParserService
     {
-        (List<ActivityDto> usedActivities, List<CategoryDto> usedCategories, List<ActivityDto> newActivities, List<CategoryDto> newCategories) ParseEntries(IEnumerable<string> entries, IEnumerable<ActivityDto> activities, IEnumerable<CategoryDto> categories, CategoryDto defaultCategory);
+        List<ActivityModel> ParseEntry(List<string> activities, Guid userGuid);
     }
 }

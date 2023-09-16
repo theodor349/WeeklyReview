@@ -1,9 +1,6 @@
 using Microsoft.AspNetCore.Components;
-using System.Drawing;
-using WeeklyReview.Client.Services;
 using WeeklyReview.Client.ViewModels;
 using WeeklyReview.Database.Models;
-using WeeklyReview.Shared.Models.DTOs;
 using WeeklyReview.Shared.Services;
 
 namespace WeeklyReview.Client.Pages

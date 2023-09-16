@@ -42,7 +42,7 @@ namespace WeeklyReview.Shared.Tests.Services
             TimeService.Current.Returns(entryDate);
 
             // Act
-            var sut = new NewEntryAdderService(context, TimeService);
+            var sut = new EntryAdderService(context, TimeService);
             var activities = context.Activity.Where(x => x.Id == aSeries || x.Id == aMovies).ToList();
             var res = sut.AddEntry(date, activities, user);
             context.ChangeTracker.Clear();
@@ -79,7 +79,7 @@ namespace WeeklyReview.Shared.Tests.Services
             TimeService.Current.Returns(entryDate);
 
             // Act
-            var sut = new NewEntryAdderService(context, TimeService);
+            var sut = new EntryAdderService(context, TimeService);
             var activities = context.Activity.Where(x => x.Id == aSeries || x.Id == aMovies).ToList();
             var res = sut.AddEntry(date, activities, user);
             context.ChangeTracker.Clear();
@@ -111,7 +111,7 @@ namespace WeeklyReview.Shared.Tests.Services
             TimeService.Current.Returns(entryDate);
 
             // Act
-            var sut = new NewEntryAdderService(context, TimeService);
+            var sut = new EntryAdderService(context, TimeService);
             var activities = context.Activity.Where(x => x.Id == aDinner).ToList();
             var res = sut.AddEntry(startTime, activities, user);
             context.ChangeTracker.Clear();
@@ -151,7 +151,7 @@ namespace WeeklyReview.Shared.Tests.Services
             TimeService.Current.Returns(entryDate);
 
             // Act
-            var sut = new NewEntryAdderService(context, TimeService);
+            var sut = new EntryAdderService(context, TimeService);
             var activities = context.Activity.Where(x => x.Id == aSwim).ToList();
             var res = sut.AddEntry(startTime, activities, user);
             context.ChangeTracker.Clear();
@@ -188,7 +188,7 @@ namespace WeeklyReview.Shared.Tests.Services
             TimeService.Current.Returns(entryDate);
 
             // Act
-            var sut = new NewEntryAdderService(context, TimeService);
+            var sut = new EntryAdderService(context, TimeService);
             var activities = new List<ActivityModel>();
             var res = sut.AddEntry(startTime, activities, user);
             context.ChangeTracker.Clear();

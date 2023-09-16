@@ -1,7 +1,9 @@
-﻿namespace WeeklyReview.Shared.Services
+﻿using WeeklyReview.Database.Models;
+
+namespace WeeklyReview.Shared.Services
 {
     public interface IEntryAdderService
     {
-        Task AddEntry(DateTime date, List<string> activities);
+        EntryModel? AddEntry(DateTime date, List<ActivityModel> activities, Guid userGuid);
     }
 }

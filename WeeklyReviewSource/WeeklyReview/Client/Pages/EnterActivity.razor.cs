@@ -1,32 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
-using System.Net.Http;
-using System.Net.Http.Json;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.Web.Virtualization;
-using Microsoft.AspNetCore.Components.WebAssembly.Http;
-using Microsoft.JSInterop;
-using WeeklyReview.Client;
-using WeeklyReview.Client.Shared;
-using Syncfusion.Blazor;
-using Syncfusion.Blazor.Calendars;
-using Syncfusion.Blazor.Schedule;
-using Syncfusion.Blazor.Cards;
-using Syncfusion.Blazor.Buttons;
-using Syncfusion.Blazor.SplitButtons;
-using Syncfusion.Blazor.DropDowns;
-using WeeklyReview.Client.ViewModels;
-using WeeklyReview.Client.Services;
-using WeeklyReview.Shared.Models.DTOs;
-using WeeklyReview.Shared.Services;
 using WeeklyReview.Database.Models;
 using WeeklyReview.Shared.Models;
+using WeeklyReview.Shared.Services;
 
 namespace WeeklyReview.Client.Pages
 {

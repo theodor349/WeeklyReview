@@ -3,75 +3,82 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WeeklyReview.Shared.Models;
-using WeeklyReview.Shared.Models.DTOs;
+using WeeklyReview.Database.Models;
+using WeeklyReview.Database.Persitance;
 
 namespace WeeklyReview.Shared.Services
 {
     internal class EntryAdderService : IEntryAdderService
     {
-        // TODO: If an entry changes endtime, then all entries including deleted ones should be updated.
-        private readonly IEntryParserService _entryParser;
-        private readonly IDataService _dataService;
+        private readonly WeeklyReviewDbContext _db;
+        private readonly ITimeService _timeService;
 
-        public EntryAdderService(IEntryParserService entryParser, IDataService dataService)
+        public EntryAdderService(WeeklyReviewDbContext db, ITimeService timeService)
         {
-            _entryParser = entryParser;
-            _dataService = dataService;
+            _db = db;
+            _timeService = timeService;
         }
 
-        public async Task AddEntry(DateTime date, List<string> activities)
+        public EntryModel? AddEntry(DateTime date, List<ActivityModel> activities, Guid userGuid)
         {
-            var Activities = await _dataService.GetActivities();
-            var Categories = await _dataService.GetCategories();
-            var defaultActivity = await _dataService.GetDefaultCategory();
+            date = new DateTime(date.Year, date.Month, date.Day, date.Hour, date.Minute / 15 * 15, 0, date.Kind);
 
-            var res = _entryParser.ParseEntries(activities, Activities, Categories, defaultActivity);
-            bool isEmpty = res.usedActivities.Count() == 0;
-
-            if (isEmpty)
-                await HandleEmpty(date);
-            else
-                await HandleNewEntry(date, res);
-        }
-
-        private async Task HandleNewEntry(DateTime date, (List<ActivityDto> usedActivities, List<CategoryDto> usedCategories, List<ActivityDto> newActivities, List<CategoryDto> newCategories) res)
-        {
-            await _dataService.AddActivities(res.newActivities);
-            await _dataService.AddCategories(res.newCategories);
-
-            var endTime = date.AddDays(1);
-            var otherEntry = await _dataService.GetBeforeOrEqualEntry(date);
-            if (otherEntry is not null)
+            EntryModel? res = null;
+            if(activities.Count == 0)
             {
-                endTime = otherEntry.EndTime;
-                otherEntry.EndTime = date;
-                if (otherEntry.StarTime == date)
-                    await _dataService.RemoveEntry(otherEntry);
+                DeleteEntryAt(date, userGuid);
+                var endTime = GetEndTime(date, userGuid);
+                UpdateBefore(date, endTime, userGuid);
             }
-
-            var e = new EntryDto();
-            e.StarTime = date;
-            e.EndTime = endTime;
-            e.Entered = DateTime.Now;
-            e.Activities.AddRange(res.usedActivities);
-            await _dataService.AddEntry(e);
+            else
+            {
+                DeleteEntryAt(date, userGuid);
+                var endTime = GetEndTime(date, userGuid);
+                UpdateBefore(date, date, userGuid);
+                res = AddNewEntry(date, activities, userGuid, endTime);
+            }
+            _db.SaveChanges();
+            return res;
         }
 
-        private async Task HandleEmpty(DateTime date)
+        private EntryModel AddNewEntry(DateTime date, List<ActivityModel> activities, Guid userGuid, DateTime? endTime)
         {
-            var overriddenEntry = await _dataService.GetEqualEntry(date);
-            if (overriddenEntry is null)
-                return;
+            var entry = new EntryModel(date, endTime, _timeService.Current, new List<ActivityModel>(), false, userGuid);
+            _db.Entry.Add(entry);
+            _db.SaveChanges(); // This needs to happen before we add the activities
+            entry.Activities = activities;
+            _db.SaveChanges();
+            return entry;
+        }
 
-            await _dataService.RemoveEntry(overriddenEntry);
+        private EntryModel? DeleteEntryAt(DateTime date, Guid userGuid)
+        {
+            var entry = _db.Entry.FirstOrDefault(x => x.StartTime == date && x.UserGuid == userGuid && x.Deleted == false);
+            if (entry is not null)
+                entry.Deleted = true;
+            return entry;
+        }
 
-            var beforeEntry = await _dataService.GetBeforeEntry(date);
-            var afterEntry = await _dataService.GetAfterEntry(date);
-            if (beforeEntry is null || afterEntry is null)
-                return;
+        private DateTime? GetEndTime(DateTime date, Guid userGuid)
+        {
+            var res = _db.Entry
+                .Where(x => x.StartTime > date && x.Deleted == false && x.UserGuid == userGuid)
+                .Min(x => (DateTime?) x.StartTime);
+            if(res == DateTime.MinValue)
+                return null;
+            else 
+                return res;
+        }
 
-            beforeEntry.EndTime = afterEntry.StarTime;
+        private void UpdateBefore(DateTime date, DateTime? endTime, Guid userGuid)
+        {
+            var entry = _db.Entry
+                .Where(x => x.StartTime < date && x.Deleted == false && x.UserGuid == userGuid)
+                .AsEnumerable()
+                .MaxBy(x => x.StartTime);
+
+            if(entry is not null)
+                entry.EndTime = endTime;
         }
     }
 }

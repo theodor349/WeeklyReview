@@ -1,54 +1,130 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using WeeklyReview.Shared.Models.DTOs;
+using WeeklyReview.Database.Models;
+using WeeklyReview.Database.Persitance;
 
 namespace WeeklyReview.Shared.Services
 {
     internal class EntryParserService : IEntryParserService
     {
-        public (List<ActivityDto> usedActivities, List<CategoryDto> usedCategories, List<ActivityDto> newActivities, List<CategoryDto> newCategories)
-            ParseEntries(IEnumerable<string> entries, IEnumerable<ActivityDto> activities, IEnumerable<CategoryDto> categories, CategoryDto defaultCategory)
+        private record ActivityCategory(string? Activity, string? Category);
+
+        private readonly WeeklyReviewDbContext _db;
+
+        public EntryParserService(WeeklyReviewDbContext db)
         {
-            RegexOptions options = RegexOptions.None;
-            Regex regex = new Regex("[ ]{2,}", options);
+            _db = db;
+        }
 
-            var usedActivities = new List<ActivityDto>();
-            var usedCategories = new List<CategoryDto>();
+        public List<ActivityModel> ParseEntry(List<string> activities, Guid userGuid)
+        {
+            var activityCategories = GetActivityCategories(activities);
+            var res = AddActivityCategories(activityCategories, userGuid);
+            _db.SaveChanges();
+            return res;
+        }
 
-            var newActivities = new List<ActivityDto>();
-            var newCategories = new List<CategoryDto>();
-            foreach (var entry in entries)
+        private List<ActivityModel> AddActivityCategories(List<ActivityCategory> entires, Guid userGuid)
+        {
+            // Ensure all Categories and Activities exist
+            // Retrive relvant Activities
+            var res = new List<ActivityModel>();
+
+            foreach (var entry in entires)
             {
-                var trimmedEntry = regex.Replace(entry, " ").Trim();
-                var splits = trimmedEntry.Split(":");
-                var activity = trimmedEntry;
-                var category = splits.Length > 1 ? splits[0] : "";
+                var key = entry.Category is null ? entry.Activity : entry.Category + ": " + entry.Activity;
+                var act = _db.Activity.SingleOrDefault(x => x.NormalizedName == key.ToLower() && x.UserGuid == userGuid);
+                if (act is null)
+                    act = CreateNewActivity(entry, userGuid);
 
-                var c = category.Length == 0 ? defaultCategory : categories.FirstOrDefault(x => x.Name == category);
-                if (c is null)
-                {
-                    c = new CategoryDto(splits[0], 0, Color.White);
-                    newCategories.Add(c);
-                }
+                res.Add(act);
+            }
+            return res;
+        }
 
-                var a = activities.FirstOrDefault(x => x.Name == activity);
-                if (a is null)
+        private ActivityModel CreateNewActivity(ActivityCategory entry, Guid userGuid)
+        {
+            var act = entry.Category is null ? entry.Activity : entry.Category + ": " + entry.Activity;
+            var cat = entry.Category;
+
+            var catModel = cat is null ? null : _db.Category.SingleOrDefault(x => x.NormalizedName == cat.ToLower() && x.UserGuid == userGuid);
+
+            if(string.IsNullOrEmpty(cat))
+            {
+                var defaultCat = _db.Category.SingleOrDefault(x => x.UserGuid == userGuid && x.NormalizedName.Length == 0);
+                if(defaultCat is null)
                 {
-                    a = new ActivityDto(activity, c, false);
-                    newActivities.Add(a);
+                    defaultCat = new CategoryModel("", 0, Color.White, userGuid);
+                    _db.Category.Add(defaultCat);
                 }
-                usedActivities.Add(a);
-                usedCategories.Add(c);
+                catModel = defaultCat;
+            }
+            else if (catModel is null)
+            {
+                catModel = new CategoryModel(cat, 0, Color.White, userGuid);
+                _db.Category.Add(catModel);
             }
 
-            return (usedActivities, usedCategories, newActivities, newCategories);
+            var actModel = new ActivityModel(act, false, catModel, userGuid);
+            _db.Activity.Add(actModel);
+            return actModel;
+        }
+
+        private List<ActivityCategory> GetActivityCategories(List<string> entries)
+        {
+            var res = new List<ActivityCategory>();
+            foreach (var entry in entries)
+            {
+                var parseResult = ParseEntry(entry);
+
+                if (parseResult.Category is not null && parseResult.Activity is null)
+                    throw new ArgumentException("An entry must contain an Activity, if a category is supplied");
+
+                if (parseResult.Activity is not null &&
+                    res.FirstOrDefault(x => x.Activity == parseResult.Activity && x.Category == parseResult.Category) is null)
+                    res.Add(parseResult);
+            }
+            return res;
+        }
+
+        private ActivityCategory ParseEntry(string entry)
+        {
+            var splits = entry.Split(':');
+            string? cat = null;
+            string? act;
+            if (splits.Count() > 2)
+            {
+                throw new ArgumentException("An entry cannot contain multiple ':'");
+            }
+            else if (splits.Count() == 2)
+            {
+                cat = splits[0];
+                act = splits[1];
+            }
+            else
+            {
+                act = splits[0];
+            }
+
+            return new ActivityCategory(TrimSentance(act), TrimSentance(cat));
+        }
+
+        private string? TrimSentance(string? sentance)
+        {
+            if (sentance is null)
+                return null;
+
+            var regX = new Regex("\\s+");
+            var res = regX.Replace(sentance, " ").Trim();
+            if (res.Count() > 0)
+                return res;
+            else
+                return null;
         }
     }
 }

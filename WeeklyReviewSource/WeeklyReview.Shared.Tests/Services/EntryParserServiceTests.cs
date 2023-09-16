@@ -34,7 +34,7 @@ namespace WeeklyReview.Shared.Tests.Services
             };
 
             // Act
-            var sut = new NewEntryParserService(context);
+            var sut = new EntryParserService(context);
             var res = sut.ParseEntry(input, user);
             context.ChangeTracker.Clear();
 
@@ -59,7 +59,7 @@ namespace WeeklyReview.Shared.Tests.Services
             };
 
             // Act
-            var sut = new NewEntryParserService(context);
+            var sut = new EntryParserService(context);
             var res = sut.ParseEntry(input, user);
             context.ChangeTracker.Clear();
 
@@ -84,7 +84,7 @@ namespace WeeklyReview.Shared.Tests.Services
             };
 
             // Act
-            var sut = new NewEntryParserService(context);
+            var sut = new EntryParserService(context);
             var res = sut.ParseEntry(input, user);
             context.ChangeTracker.Clear();
 
@@ -111,7 +111,7 @@ namespace WeeklyReview.Shared.Tests.Services
             };
 
             // Act
-            var sut = new NewEntryParserService(context);
+            var sut = new EntryParserService(context);
             var res = sut.ParseEntry(input, user);
             context.ChangeTracker.Clear();
 
@@ -139,7 +139,7 @@ namespace WeeklyReview.Shared.Tests.Services
             };
 
             // Act
-            var sut = new NewEntryParserService(context);
+            var sut = new EntryParserService(context);
             var res = sut.ParseEntry(input, user);
             context.ChangeTracker.Clear();
 
@@ -166,7 +166,7 @@ namespace WeeklyReview.Shared.Tests.Services
             };
 
             // Act
-            var sut = new NewEntryParserService(context);
+            var sut = new EntryParserService(context);
             var res = sut.ParseEntry(input, user);
             context.ChangeTracker.Clear();
 
@@ -190,7 +190,7 @@ namespace WeeklyReview.Shared.Tests.Services
                 "\t  Difficult  \t  Competions: \t Participating  \t in \t  Race \t"
             };
             // Act
-            var sut = new NewEntryParserService(context);
+            var sut = new EntryParserService(context);
             var res = sut.ParseEntry(input, user);
             context.ChangeTracker.Clear();
 
@@ -212,7 +212,7 @@ namespace WeeklyReview.Shared.Tests.Services
             context.Database.BeginTransaction();
 
             // Act
-            var sut = new NewEntryParserService(context);
+            var sut = new EntryParserService(context);
             var res = sut.ParseEntry(input.ToList(), user);
             context.ChangeTracker.Clear();
 
@@ -231,7 +231,7 @@ namespace WeeklyReview.Shared.Tests.Services
             context.Database.BeginTransaction();
 
             // Act
-            var sut = new NewEntryParserService(context);
+            var sut = new EntryParserService(context);
             var res = sut.ParseEntry(new List<string>(), user);
             context.ChangeTracker.Clear();
 
@@ -253,7 +253,7 @@ namespace WeeklyReview.Shared.Tests.Services
                 "Sports: Bike: Fast"
             };
             // Act
-            var sut = new NewEntryParserService(context);
+            var sut = new EntryParserService(context);
 
             // Assert
             var exception = Assert.Throws<ArgumentException>(() => sut.ParseEntry(input, user));
@@ -275,7 +275,7 @@ namespace WeeklyReview.Shared.Tests.Services
                 "Sports: "
             };
             // Act
-            var sut = new NewEntryParserService(context);
+            var sut = new EntryParserService(context);
 
             // Assert
             var exception = Assert.Throws<ArgumentException>(() => sut.ParseEntry(input, user));
@@ -295,7 +295,7 @@ namespace WeeklyReview.Shared.Tests.Services
             context.Database.BeginTransaction();
 
             // Act
-            var sut = new NewEntryParserService(context);
+            var sut = new EntryParserService(context);
             var res = sut.ParseEntry(new List<string>()
             {
                 "Swim",
@@ -321,7 +321,7 @@ namespace WeeklyReview.Shared.Tests.Services
             var expectedCategoryCount = context.Category.Count();
 
             // Act
-            var sut = new NewEntryParserService(context);
+            var sut = new EntryParserService(context);
             var res = sut.ParseEntry(new List<string>()
             {
                 "Sports: Bike"
@@ -347,7 +347,7 @@ namespace WeeklyReview.Shared.Tests.Services
             var expectedCategoryCount = context.Category.Count();
 
             // Act
-            var sut = new NewEntryParserService(context);
+            var sut = new EntryParserService(context);
             var res = sut.ParseEntry(new List<string>()
             {
                 "Sports: Run"
@@ -374,7 +374,7 @@ namespace WeeklyReview.Shared.Tests.Services
             var expectedActivityCount = context.Activity.Count() + 1;
 
             // Act
-            var sut = new NewEntryParserService(context);
+            var sut = new EntryParserService(context);
             var res = sut.ParseEntry(new List<string>()
             {
                 "Swim"
@@ -399,7 +399,7 @@ namespace WeeklyReview.Shared.Tests.Services
             var expectedCategoryCount = context.Category.Count();
 
             // Act
-            var sut = new NewEntryParserService(context);
+            var sut = new EntryParserService(context);
             var res = sut.ParseEntry(new List<string>()
             {
                 "Swim"
@@ -433,7 +433,7 @@ namespace WeeklyReview.Shared.Tests.Services
             var expectedCategoryCount = context.Category.Count() + 1;
 
             // Act
-            var sut = new NewEntryParserService(context);
+            var sut = new EntryParserService(context);
             var res = sut.ParseEntry(new List<string>()
             {
                 "Exercise: Bike"
@@ -462,7 +462,7 @@ namespace WeeklyReview.Shared.Tests.Services
             var expectedCategoryCount = context.Category.Count();
 
             // Act
-            var sut = new NewEntryParserService(context);
+            var sut = new EntryParserService(context);
             var res = sut.ParseEntry(new List<string>()
             {
             }, user);
@@ -485,7 +485,7 @@ namespace WeeklyReview.Shared.Tests.Services
             var expectedCategoryCount = context.Category.Count() + 1;
 
             // Act
-            var sut = new NewEntryParserService(context);
+            var sut = new EntryParserService(context);
             var res = sut.ParseEntry(new List<string>()
             {
                 "Swim"
