@@ -27,13 +27,13 @@ namespace WeeklyReview.Client.Pages
         }
         public string EnteredActivity { get; set; }
 
-        protected override async Task OnParametersSetAsync()
+        protected override void OnParametersSet()
         {
-            await base.OnParametersSetAsync();
+            base.OnParametersSet();
          
             if (DataSource.Count == 0 ) 
             {
-                await GenerateViewModels();
+                GenerateViewModels();
                 TimeUpdated();
             }
         }
@@ -46,7 +46,7 @@ namespace WeeklyReview.Client.Pages
             ViewDate.AddMinutes(minutes - ViewDate.Minute);
         }
 
-        private async Task GenerateViewModels()
+        private void GenerateViewModels()
         {
             foreach (var cat in WeeklyReviewService.Category.GetAll(UserGuid))
             {
@@ -58,7 +58,7 @@ namespace WeeklyReview.Client.Pages
                 var s = new ScheduleViewModel();
                 s.Subject = entry.Activities.ConvertAll(x => x.Name).Aggregate((x, y) => x + " + " + y);
                 s.StartTime = entry.StartTime;
-                s.EndTime = entry.EndTime is null ? entry.StartTime.AddDays(1) : entry.EndTime.Value;
+                s.EndTime = entry.EndTime is null ? entry.StartTime.AddHours(12) : entry.EndTime.Value;
                 s.CategoryId = entry.Activities.ConvertAll(x => x.Category).MaxBy(x => x.Priority).Id;
                 DataSource.Add(s);
             }
