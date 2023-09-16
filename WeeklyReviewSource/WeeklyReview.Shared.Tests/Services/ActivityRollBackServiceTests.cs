@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using NSubstitute;
 using System;
 using System.Collections;
@@ -19,7 +20,6 @@ namespace WeeklyReview.Shared.Tests.Services
     {
         public WeeklyReviewApiDbFixtureForActivityRollbackService DbFixture { get; }
         public ITimeService TimeService { get; }
-        private ActivityRollBackService _sut;
         
         public ActivityRollBackServiceTests(WeeklyReviewApiDbFixtureForActivityRollbackService dbFixture)
         {
@@ -78,12 +78,8 @@ namespace WeeklyReview.Shared.Tests.Services
             context.Database.BeginTransaction();
 
             // Act
-            var sut = new ActivityRollBackService(context, TimeService);
-            var model = context.ActivityChange
-                .Include(x => x.Source)
-                .Include(x => x.Destination)
-                .Single(x => x.Id == changeId);
-            sut.RollBackActivityChange(model);
+            var sut = new ActivityChangeService(context, TimeService);
+            sut.RollBackActivityChange(changeId, userGuid);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -111,12 +107,8 @@ namespace WeeklyReview.Shared.Tests.Services
             context.Database.BeginTransaction();
 
             // Act
-            var sut = new ActivityRollBackService(context, TimeService);
-            var model = context.ActivityChange
-                .Include(x => x.Source)
-                .Include(x => x.Destination)
-                .Single(x => x.Id == changeId);
-            sut.RollBackActivityChange(model);
+            var sut = new ActivityChangeService(context, TimeService);
+            sut.RollBackActivityChange(changeId, userGuid);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -144,12 +136,8 @@ namespace WeeklyReview.Shared.Tests.Services
             var expectedEntryCount = context.Entry.Count();
 
             // Act
-            var sut = new ActivityRollBackService(context, TimeService);
-            var model = context.ActivityChange
-                .Include(x => x.Source)
-                .Include(x => x.Destination)
-                .Single(x => x.Id == changeId);
-            sut.RollBackActivityChange(model);
+            var sut = new ActivityChangeService(context, TimeService);
+            sut.RollBackActivityChange(changeId, userGuid);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -174,12 +162,8 @@ namespace WeeklyReview.Shared.Tests.Services
             var expectedEntryCount = context.Entry.Count();
 
             // Act
-            var sut = new ActivityRollBackService(context, TimeService);
-            var model = context.ActivityChange
-                .Include(x => x.Source)
-                .Include(x => x.Destination)
-                .Single(x => x.Id == changeId);
-            sut.RollBackActivityChange(model);
+            var sut = new ActivityChangeService(context, TimeService);
+            sut.RollBackActivityChange(changeId, userGuid);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -204,12 +188,8 @@ namespace WeeklyReview.Shared.Tests.Services
             var expectedEntryCount = context.Entry.Count();
 
             // Act
-            var sut = new ActivityRollBackService(context, TimeService);
-            var model = context.ActivityChange
-                .Include(x => x.Source)
-                .Include(x => x.Destination)
-                .Single(x => x.Id == changeId);
-            sut.RollBackActivityChange(model);
+            var sut = new ActivityChangeService(context, TimeService);
+            sut.RollBackActivityChange(changeId, userGuid);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -219,6 +199,27 @@ namespace WeeklyReview.Shared.Tests.Services
             Assert.False(activity.Deleted);
             CheckActivityChangeHaveBeenRemoved(context, changeId);
             Assert.Equal(expectedEntryCount, context.Entry.Count());
+        }
+
+        [Fact]
+        public void RollBack_IdDoesNotExist_ThrowError()
+        {
+            int changeId = 42424242;
+            var userGuid = DbFixture.User1;
+
+            // Arrange
+            using var context = DbFixture.CreateContext();
+            var _dt = DbFixture.Dt;
+            context.Database.BeginTransaction();
+            var expectedEntryCount = context.Entry.Count();
+
+            // Act
+            var sut = new ActivityChangeService(context, TimeService);
+            var e = Assert.Throws<KeyNotFoundException>(() => sut.RollBackActivityChange(changeId, userGuid));
+            context.ChangeTracker.Clear();
+
+            // Assert
+            Assert.Equal($"Model not found with id {changeId}", e.Message);
         }
     }
 }

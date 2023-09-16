@@ -15,57 +15,38 @@ namespace WeeklyReview.Server.Controllers
     [ApiVersion("1.0")]
     public class ActivityController : GenericAuthorizedApiController
     {
-        private readonly WeeklyReviewApiDbContext _db;
-        private readonly IActivityChangeService _activityChangeService;
+        private readonly IWeeklyReviewService _weeklyReviewService;
+        private IActivityService _activityService => _weeklyReviewService.Activity;
 
-        public ActivityController(WeeklyReviewApiDbContext db, IActivityChangeService activityChangeService)
+        public ActivityController(IWeeklyReviewService weeklyReviewService)
         {
-            _db = db;
-            _activityChangeService = activityChangeService;
+            _weeklyReviewService = weeklyReviewService;
         }
 
         [HttpGet]
         [EnableQuery]
         public ActionResult<IEnumerable<ActivityModel>> GetAll()
         {
-            return Ok(_db.Activity.Where(x => x.UserGuid == UserGuid).AsQueryable());
+            return Ok(_activityService.GetAll(UserGuid));
         }
 
         [HttpGet("{key}")]
         [EnableQuery]
         public ActionResult<ActivityModel> Get([FromRoute] int key)
         {
-            var res = _db.Activity.SingleOrDefault(x => x.Id == key && x.UserGuid == UserGuid);
-            return Ok(res);
+            return Ok(_activityService.Get(key, UserGuid));
         }
 
         [HttpDelete("{key}")]
         public ActionResult<ActivityModel> Delete([FromRoute] int key)
         {
-            var model = _db.Activity.SingleOrDefault(x => x.Id == key && x.UserGuid == UserGuid);
-            if (model is null)
-                return NotFound($"Model not found with id {key}");
-
-            var entriesReferencesActivity = _db.Entry.Include(x => x.Activities).Any(x => x.Activities.Contains(model) && x.Deleted == false);
-            if (entriesReferencesActivity)
-                return BadRequest($"It is not possible to delete an activity which is still referenced by entries");
-
-            model.Deleted = true;
-            _db.SaveChanges();
-            return Ok(model);
+            return Ok(_activityService.Delete(key, UserGuid));
         }
 
         [HttpPost("{sKey}/ChangeTo/{dKey}")]
         public ActionResult<ActivityChangeModel> Create([FromRoute] int sKey, [FromRoute] int dKey)
         {
-            var sModel = _db.Activity.SingleOrDefault(x => x.Id == sKey);
-            var dModel = _db.Activity.SingleOrDefault(x => x.Id == dKey);
-            if (sModel is null)
-                return NotFound($"Model not found with id {sKey}");
-            if (dModel is null)
-                return NotFound($"Model not found with id {dKey}");
-            var model = _activityChangeService.ChangeActivity(sModel, dModel, UserGuid);
-            return Ok(model);
+            return Ok(_activityService.Convert(sKey, dKey, UserGuid));
         }
     }
 }
