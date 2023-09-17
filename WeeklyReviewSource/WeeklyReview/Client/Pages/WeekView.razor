@@ -4,10 +4,11 @@
 
 <PageTitle>Week View</PageTitle>
 <div class="container-fluid">
-    <SfSchedule TValue="ScheduleViewModel" Width="100%" Height="calc(100vh - 4.6rem)" @bind-SelectedDate="@ViewDate"
+    <SfSchedule TValue="ScheduleViewModel" @ref="ScheduleObj" Width="100%" Height="calc(100vh - 4.6rem)" @bind-SelectedDate="@ViewDate"
                 EnableAutoRowHeight="true"
                 AllowMultiCellSelection="false" AllowMultiRowSelection="false" AllowDragAndDrop="false" AllowResizing="false"
                 DateFormat="yyyy-MM-dd" TimeFormat="HH:mm" StartHour="00:00" FirstDayOfWeek="1" ShowWeekNumber="true">
+        <ScheduleEvents TValue="ScheduleViewModel" OnPopupOpen="@OnPopupOpen"></ScheduleEvents>
         <ScheduleTimeScale Interval="60" SlotCount="4"></ScheduleTimeScale>
         <ScheduleTemplates>
             <DateHeaderTemplate>
@@ -17,17 +18,28 @@
         <ScheduleResources>
             <ScheduleResource TItem="CategoryViewModel" TValue="int" DataSource="@Categories" Field="CategoryId" IdField="Id" ColorField="Color"></ScheduleResource>
         </ScheduleResources>
-        <ScheduleEventSettings DataSource="@DataSource" IgnoreWhitespace="true">
+        <ScheduleEventSettings DataSource="@DataSource" IgnoreWhitespace="true" AllowDeleting="false" SpannedEventPlacement="@SpannedEventPlacement.TimeSlot">
             <Template>
                 <div class="e-appointment-details">
                     <div class="e-subject" style="color:@(TextColor((context as ScheduleViewModel).Color))">@((context as ScheduleViewModel).Subject)</div>
                     @if((context as ScheduleViewModel).Duration.TotalMinutes > 15)
                     {
-                        <div class="e-time">@((context as ScheduleViewModel).StartTime.ToString("HH:mm")) - @((context as ScheduleViewModel).EndTime.ToString("HH:mm"))</div>
+                        <div class="e-time" style="color:@(TextColor((context as ScheduleViewModel).Color))">@((context as ScheduleViewModel).StartTime.ToString("HH:mm")) - @((context as ScheduleViewModel).EndTime.ToString("HH:mm"))</div>
                     }
                 </div>
             </Template>
         </ScheduleEventSettings>
+        <ScheduleQuickInfoTemplates TemplateType="TemplateType.Cell">
+            <HeaderTemplate>
+            </HeaderTemplate>
+            <ContentTemplate>
+                <EnterActivity ResetOnInit=@(true) OnAfterEntryAdded=@(OnEntryAdded) ViewDate="@((context as ScheduleViewModel).StartTime)">
+
+                </EnterActivity>
+            </ContentTemplate>
+            <FooterTemplate>
+            </FooterTemplate>
+        </ScheduleQuickInfoTemplates>
         <ScheduleViews>
             <ScheduleView Option="View.Day"></ScheduleView>
             <ScheduleView Option="View.Week"></ScheduleView>
@@ -38,6 +50,8 @@
 </div>
 
 @code{
+
+    private SfSchedule<ScheduleViewModel> ScheduleObj;
 
     public static string getDateHeaderText(DateTime date)
     {
@@ -65,5 +79,20 @@
             return "white";
         else
             return "black";
+    }
+
+    public void OnEntryAdded()
+    {
+        var task = ScheduleObj.CloseQuickInfoPopupAsync();
+        task.Wait();
+        StateHasChanged();
+    }
+
+    private void OnPopupOpen(PopupOpenEventArgs<ScheduleViewModel> args)
+    {
+        if (args.Type == PopupType.Editor) //to prevent the editor on cells
+        {
+            args.Cancel = true;
+        }
     }
 }

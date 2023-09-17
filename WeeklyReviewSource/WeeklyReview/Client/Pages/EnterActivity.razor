@@ -94,6 +94,13 @@
 
 
 @code {
+    [Parameter]
+    public DateTime ViewDate { get; set; } = DateTime.Now;
+    [Parameter]
+    public Action OnAfterEntryAdded { get; set; }
+    [Parameter]
+    public bool ResetOnInit { get; set; } = false;
+
     public void Add15Minutes() => ViewDate = ViewDate.AddMinutes(15);
     public void Sub15Minutes() => ViewDate = ViewDate.AddMinutes(-15);
     public void ResetTime()

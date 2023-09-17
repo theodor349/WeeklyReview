@@ -11,7 +11,6 @@ namespace WeeklyReview.Client.Pages
         public IWeeklyReviewService WeeklyReviewService { get; set; }
         public Guid UserGuid = new Guid("24fe9480-4e7a-4515-b96c-248171496591");
 
-        public DateTime ViewDate = DateTime.Now;
         public bool IsDiscord { get; set; }
         public List<string> InputActivities { get; set; } = new List<string>();
         public List<string> InputSocials { get; set; } = new List<string>();
@@ -38,8 +37,23 @@ namespace WeeklyReview.Client.Pages
             base.OnParametersSet();
             TimeUpdated();
 
-            AddInputActivity();
-            AddInputSocial();
+            if (ResetOnInit)
+            {
+                for (int i = 0; i < InputActivities.Count; i++)
+                {
+                    RemoveInputActivity();
+                }
+                for (int i = 0; i < InputSocials.Count; i++)
+                {
+                    RemoveInputSocial();
+                }
+            }
+
+            if (InputActivities.Count() == 0)
+            {
+                AddInputActivity();
+                AddInputSocial();
+            }
         }
 
         public void SubmitEntry()
@@ -49,6 +63,9 @@ namespace WeeklyReview.Client.Pages
             submittedActivities.AddRange(InputSocials.Where(x => !string.IsNullOrWhiteSpace(x)).ToList().ConvertAll(x => IsDiscord ? "Discord: " + x : "Social: " + x));
 
             WeeklyReviewService.Entry.Create(new EnterEntryModel() { Date = ViewDate, Entries = submittedActivities }, UserGuid);
+
+            if(OnAfterEntryAdded != null) 
+                OnAfterEntryAdded.Invoke();
         }
 
         private void AddInputActivity()
