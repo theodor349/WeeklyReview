@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using WeeklyReview.Client.Services;
 using WeeklyReview.Client.ViewModels;
 using WeeklyReview.Database.Models;
 using WeeklyReview.Shared.Services;
@@ -8,7 +9,7 @@ namespace WeeklyReview.Client.Pages
     public partial class WeekView
     {
         [Inject]
-        public IWeeklyReviewService WeeklyReviewService { get; set; }
+        public IClientWeeklyReviewService WeeklyReviewService { get; set; }
         public Guid UserGuid = new Guid("24fe9480-4e7a-4515-b96c-248171496591");
 
         public DateTime InputDate = DateTime.Now;

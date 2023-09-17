@@ -25,7 +25,8 @@ namespace WeeklyReview.Shared.Services
 
         public IEnumerable<EntryModel> GetAll(Guid userGuid)
         {
-            return _db.Entry.Include(x => x.Activities).Where(x => x.UserGuid == userGuid);
+            var res = _db.Entry.Include(x => x.Activities).Where(x => x.UserGuid == userGuid).ToList();
+            return res;
         }
 
         public EntryModel? Get(int key, Guid userGuid)

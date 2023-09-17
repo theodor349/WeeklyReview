@@ -5,8 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Syncfusion.Blazor;
 using WeeklyReview.Client;
 using WeeklyReview.Client.Persistance;
+using WeeklyReview.Client.Services;
 using WeeklyReview.Database.Persitance;
 using WeeklyReview.Shared;
+using WeeklyReview.Shared.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -19,10 +21,13 @@ builder.Services.AddHttpClient("WeeklyReview.ServerAPI", client => client.BaseAd
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("WeeklyReview.ServerAPI"));
 builder.Services.AddDbContext<WeeklyReviewBlazorClientDbContext>(options =>
 {
+    //options.UseLazyLoadingProxies();
     options.UseInMemoryDatabase(databaseName: "WeeklyReview"); 
 });
 builder.Services.AddScoped<WeeklyReviewDbContext, WeeklyReviewBlazorClientDbContext>();
 builder.Services.AddSharedServices();
+builder.Services.AddTransient<IClientWeeklyReviewService, ClientWeeklyReviewService>();
+//builder.Services.AddTransient<IApiWeeklyReviewService, >();
 
 builder.Services.AddMsalAuthentication(options =>
 {
