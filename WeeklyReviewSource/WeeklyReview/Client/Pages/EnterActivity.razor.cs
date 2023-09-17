@@ -49,11 +49,6 @@ namespace WeeklyReview.Client.Pages
             submittedActivities.AddRange(InputSocials.Where(x => !string.IsNullOrWhiteSpace(x)).ToList().ConvertAll(x => IsDiscord ? "Discord: " + x : "Social: " + x));
 
             WeeklyReviewService.Entry.Create(new EnterEntryModel() { Date = ViewDate, Entries = submittedActivities }, UserGuid);
-
-            for (int i = 0; i < InputActivities.Count(); i++)
-                RemoveInputActivity();
-            for (int i = 0; i < InputSocials.Count(); i++)
-                RemoveInputSocial();
         }
 
         private void AddInputActivity()
