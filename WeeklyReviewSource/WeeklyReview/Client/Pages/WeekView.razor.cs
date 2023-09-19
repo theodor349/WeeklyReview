@@ -16,13 +16,8 @@ namespace WeeklyReview.Client.Pages
         public DateTime ViewDate = DateTime.Now;
         public List<ScheduleViewModel> DataSource { get; set; } = new List<ScheduleViewModel>();
         public List<CategoryViewModel> Categories { get; set; } = new List<CategoryViewModel>();
-        public IEnumerable<ActivityModel> Activities
-        {
-            get
-            {
-                return WeeklyReviewService.Activity.GetAll(UserGuid);
-            }
-        }
+        public IEnumerable<ActivityModel> Activities = new List<ActivityModel>();
+        public async Task<IEnumerable<ActivityModel>> GetActivities() => await WeeklyReviewService.Activity.GetAll(UserGuid);
         public string EnteredActivity { get; set; }
 
         protected override void OnParametersSet()
@@ -36,6 +31,13 @@ namespace WeeklyReview.Client.Pages
             }
         }
 
+        protected override async Task OnParametersSetAsync()
+        {
+            await base.OnParametersSetAsync();
+
+            Activities = await GetActivities();
+        }
+
         public void TimeUpdated()
         {
             int minutes = ViewDate.Minute;
@@ -44,14 +46,14 @@ namespace WeeklyReview.Client.Pages
             ViewDate.AddMinutes(minutes - ViewDate.Minute);
         }
 
-        private void GenerateViewModels()
+        private async Task GenerateViewModels()
         {
-            foreach (var cat in WeeklyReviewService.Category.GetAll(UserGuid))
+            foreach (var cat in await WeeklyReviewService.Category.GetAll(UserGuid))
             {
                 Categories.Add(new CategoryViewModel(cat));
             }
 
-            foreach (var entry in WeeklyReviewService.Entry.GetAll(UserGuid))
+            foreach (var entry in await WeeklyReviewService.Entry.GetAll(UserGuid))
             {
                 var s = new ScheduleViewModel();
                 s.Subject = entry.Activities.ConvertAll(x => x.Name).Aggregate((x, y) => x + " + " + y);

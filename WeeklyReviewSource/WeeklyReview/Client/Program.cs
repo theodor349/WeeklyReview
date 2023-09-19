@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Syncfusion.Blazor;
 using WeeklyReview.Client;
+using WeeklyReview.Client.Http;
 using WeeklyReview.Client.Persistance;
 using WeeklyReview.Client.Services;
 using WeeklyReview.Database.Persitance;
@@ -27,7 +28,12 @@ builder.Services.AddDbContext<WeeklyReviewBlazorClientDbContext>(options =>
 builder.Services.AddScoped<WeeklyReviewDbContext, WeeklyReviewBlazorClientDbContext>();
 builder.Services.AddSharedServices();
 builder.Services.AddTransient<IClientWeeklyReviewService, ClientWeeklyReviewService>();
-//builder.Services.AddTransient<IApiWeeklyReviewService, >();
+builder.Services.AddTransient<WeeklyReviewApiClient>();
+builder.Services.AddTransient<IActivityChangeService, ActivityChangeService>();
+builder.Services.AddTransient<IActivityService, ActivityService>();
+builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddTransient<IEntryService, EntryService>();
+builder.Services.AddTransient<IApiWeeklyReviewService, ApiWeeklyReviewService>();
 
 builder.Services.AddMsalAuthentication(options =>
 {

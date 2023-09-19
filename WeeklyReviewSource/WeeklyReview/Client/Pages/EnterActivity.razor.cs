@@ -15,22 +15,13 @@ namespace WeeklyReview.Client.Pages
         public List<string> InputActivities { get; set; } = new List<string>();
         public List<string> InputSocials { get; set; } = new List<string>();
 
-        public IEnumerable<ActivityModel> Activities
-        {
-            get
-            {
-                return WeeklyReviewService.Activity.GetAll(UserGuid);
-            }
-        }
+        public IEnumerable<ActivityModel> Activities = new List<ActivityModel>();
+        public IEnumerable<string> Socials = new List<string>();
+        public async Task<IEnumerable<ActivityModel>> GetActivities()
+            => await WeeklyReviewService.Activity.GetAll(UserGuid);
 
-        public IEnumerable<string> Socials
-        {
-            get
-            {
-                // TODO: Add socials to interface
-                return WeeklyReviewService.Activity.GetAll(UserGuid).ToList().ConvertAll(x => x.Name);
-            }
-        }
+        public async Task<IEnumerable<string>> GetSocials()
+            => (await WeeklyReviewService.Activity.GetAll(UserGuid)).ToList().ConvertAll(x => x.Name);
 
         protected override void OnParametersSet()
         {
@@ -54,6 +45,14 @@ namespace WeeklyReview.Client.Pages
                 AddInputActivity();
                 AddInputSocial();
             }
+        }
+
+        protected override async Task OnParametersSetAsync()
+        {
+            await base.OnParametersSetAsync();
+         
+            Activities = await GetActivities();
+            Socials = await GetSocials();
         }
 
         public void SubmitEntry()

@@ -14,6 +14,25 @@ namespace WeeklyReview.Client.Services
     {
         private readonly IWeeklyReviewService _inMemmoryWeeklyReviewService;
         private readonly IApiWeeklyReviewService _apiWeeklyReviewService;
+        private bool _isLoggedIn => true;
+
+        public IActivityChangeService ActivityChange => _isLoggedIn ? _apiWeeklyReviewService.ActivityChange : _inMemmoryWeeklyReviewService.ActivityChange;
+
+        public IActivityService Activity => _isLoggedIn ? _apiWeeklyReviewService.Activity : _inMemmoryWeeklyReviewService.Activity;
+
+        public ICategoryService Category => _isLoggedIn ? _apiWeeklyReviewService.Category : _inMemmoryWeeklyReviewService.Category;
+
+        public IEntryService Entry => _isLoggedIn ? _apiWeeklyReviewService.Entry : _inMemmoryWeeklyReviewService.Entry;
+
+        public ClientWeeklyReviewService(IApiWeeklyReviewService apiWeeklyReviewService)
+        {
+            _apiWeeklyReviewService = apiWeeklyReviewService;
+
+            //if (_inMemmoryWeeklyReviewService.Category.GetAll(UserGuid).Count() == 0)
+            //    LoadPlageholderData();
+        }
+
+        #region Local Setup
         public Guid UserGuid { get; set; } = new Guid("24fe9480-4e7a-4515-b96c-248171496591");
         private List<string> movies;
         private List<string> series;
@@ -25,25 +44,6 @@ namespace WeeklyReview.Client.Services
         private string bath;
         private List<string> calls;
         private Random _random = new Random();
-
-        private bool _isLoggedIn => false;
-
-        public IActivityChangeService ActivityChange => _isLoggedIn ? _apiWeeklyReviewService.ActivityChange : _inMemmoryWeeklyReviewService.ActivityChange;
-
-        public IActivityService Activity => _isLoggedIn ? _apiWeeklyReviewService.Activity : _inMemmoryWeeklyReviewService.Activity;
-
-        public ICategoryService Category => _isLoggedIn ? _apiWeeklyReviewService.Category : _inMemmoryWeeklyReviewService.Category;
-
-        public IEntryService Entry => _isLoggedIn ? _apiWeeklyReviewService.Entry : _inMemmoryWeeklyReviewService.Entry;
-
-        public ClientWeeklyReviewService(IWeeklyReviewService inMemmoryWeeklyReviewService)//, IApiWeeklyReviewService apiWeeklyReviewService)
-        {
-            _inMemmoryWeeklyReviewService = inMemmoryWeeklyReviewService;
-            //_apiWeeklyReviewService = apiWeeklyReviewService;
-
-            if(_inMemmoryWeeklyReviewService.Category.GetAll(UserGuid).Count() == 0)
-                LoadPlageholderData();
-        }
 
         private void LoadPlageholderData()
         {
@@ -103,7 +103,6 @@ namespace WeeklyReview.Client.Services
             date = date.AddDays(-7);
             date = date.AddHours(7).AddMinutes(30);
 
-            date = GenerateRandomDate(date);
             date = GenerateRandomDate(date);
             //for (int i = 0; i < 7; i++)
             //{
@@ -214,5 +213,6 @@ namespace WeeklyReview.Client.Services
         {
             return AddEntry(new List<string>() { entry }, date, minuteOffset);
         }
+        #endregion
     }
 }
