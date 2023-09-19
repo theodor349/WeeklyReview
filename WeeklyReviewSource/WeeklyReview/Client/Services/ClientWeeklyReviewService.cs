@@ -52,9 +52,9 @@ namespace WeeklyReview.Client.Services
             ChangeCategoryColors();
         }
 
-        private void ChangeCategoryColors()
+        private async void ChangeCategoryColors()
         {
-            var cats = _inMemmoryWeeklyReviewService.Category.GetAll(UserGuid);
+            var cats = await _inMemmoryWeeklyReviewService.Category.GetAll(UserGuid);
             foreach (var cat in cats)
             {
                 switch (cat.NormalizedName) 

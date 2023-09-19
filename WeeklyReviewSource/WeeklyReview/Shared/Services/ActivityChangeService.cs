@@ -24,26 +24,26 @@ namespace WeeklyReview.Shared.Services
             _timeService = timeService;
         }
 
-        public ActivityChangeModel ChangeActivity(int sourceKey, int destinationKey, Guid userGuid)
+        public async Task<ActivityChangeModel> ChangeActivity(int sourceKey, int destinationKey, Guid userGuid)
         {
-            var source = _db.Activity.SingleOrDefault(x => x.Id == sourceKey);
-            var destination = _db.Activity.SingleOrDefault(x => x.Id == destinationKey);
+            var source = await _db.Activity.SingleOrDefaultAsync(x => x.Id == sourceKey);
+            var destination = await _db.Activity.SingleOrDefaultAsync(x => x.Id == destinationKey);
             if (source is null)
                 throw new KeyNotFoundException($"Model not found with id {sourceKey}");
             if (destination is null)
                 throw new KeyNotFoundException($"Model not found with id {destinationKey}");
 
             DeleteActivity(source);
-            OverrideEntries(source, destination, userGuid);
+            await OverrideEntries(source, destination, userGuid);
 
-            var change = AddChange(source, destination, userGuid);
-            _db.SaveChanges();
+            var change = await AddChange(source, destination, userGuid);
+            await _db.SaveChangesAsync();
             return change;
         }
 
-        private void OverrideEntries(ActivityModel source, ActivityModel destination, Guid userGuid)
+        private async Task OverrideEntries(ActivityModel source, ActivityModel destination, Guid userGuid)
         {
-            var entries = _db.Entry.Include(x => x.Activities).Where(x => x.Activities.Contains(source) && x.Deleted == false).ToList();
+            var entries = await _db.Entry.Include(x => x.Activities).Where(x => x.Activities.Contains(source) && x.Deleted == false).ToListAsync();
             foreach (var entry in entries)
             {
                 entry.Deleted = true;
@@ -66,39 +66,39 @@ namespace WeeklyReview.Shared.Services
             source.Deleted = true;
         }
 
-        private ActivityChangeModel AddChange(ActivityModel source, ActivityModel destination, Guid userGuid)
+        private async Task<ActivityChangeModel> AddChange(ActivityModel source, ActivityModel destination, Guid userGuid)
         {
             var change = new ActivityChangeModel(null, null, _timeService.Current, userGuid);
-            _db.ActivityChange.Add(change);
+            await _db.ActivityChange.AddAsync(change);
             change.Source = source;
             change.Destination = destination;
             return change;
         }
 
-        public void RollBackActivityChange(int key, Guid userGuid)
+        public async Task RollBackActivityChange(int key, Guid userGuid)
         {
-            var activityChange = _db.ActivityChange
+            var activityChange = await _db.ActivityChange
                 .Include(x => x.Source)
                 .Include(x => x.Destination)
-                .SingleOrDefault(x => x.Id == key && x.UserGuid == userGuid);
+                .SingleOrDefaultAsync(x => x.Id == key && x.UserGuid == userGuid);
             if (activityChange is null)
                 throw new KeyNotFoundException($"Model not found with id {key}");
 
 
-            var oldActivity = _db.Activity.Single(x => x.Id == activityChange.Source.Id);
+            var oldActivity = await _db.Activity.SingleAsync(x => x.Id == activityChange.Source.Id);
             oldActivity.Deleted = false;
-            var oldEntries = _db.Entry
-                .Where(x => x.Activities.Any(x => x.Id == activityChange.Source.Id)).ToList();
+            var oldEntries = await _db.Entry
+                .Where(x => x.Activities.Any(x => x.Id == activityChange.Source.Id)).ToListAsync();
             foreach (var entry in oldEntries)
             {
-                RollBackEntry(activityChange.Source, activityChange.Destination, entry);
+                await RollBackEntry(activityChange.Source, activityChange.Destination, entry);
             }
 
             _db.ActivityChange.Remove(activityChange);
             _db.SaveChanges();
         }
 
-        private void RollBackEntry(ActivityModel originalAct, ActivityModel overrideAct, EntryModel oldEntry)
+        private async Task RollBackEntry(ActivityModel originalAct, ActivityModel overrideAct, EntryModel oldEntry)
         {
             var newerEntries = _db.Entry
                 .Include(x => x.Activities)
@@ -110,12 +110,12 @@ namespace WeeklyReview.Shared.Services
                     return;
             }
 
-            OverrideEntry(originalAct, overrideAct, newerEntries);
+            await OverrideEntry(originalAct, overrideAct, newerEntries);
         }
 
-        private void OverrideEntry(ActivityModel originalAct, ActivityModel overrideAct, IQueryable<EntryModel> newerEntries)
+        private async Task OverrideEntry(ActivityModel originalAct, ActivityModel overrideAct, IQueryable<EntryModel> newerEntries)
         {
-            var newestEntry = newerEntries.SingleOrDefault(x => x.Deleted == false);
+            var newestEntry = await newerEntries.SingleOrDefaultAsync(x => x.Deleted == false);
             if (newestEntry is null)
                 return;
 
@@ -124,29 +124,29 @@ namespace WeeklyReview.Shared.Services
 
             var activities = newestEntry.Activities.Where(x => x.Id != overrideAct.Id).ToList();
             activities.Add(originalAct);
-            _db.Add(new EntryModel(newestEntry.StartTime, newestEntry.EndTime, _timeService.Current, activities, false, newestEntry.UserGuid));
+            await _db.AddAsync(new EntryModel(newestEntry.StartTime, newestEntry.EndTime, _timeService.Current, activities, false, newestEntry.UserGuid));
         }
 
         // TODO: Test
-        public ActivityChangeModel Delete(int key, Guid userGuid)
+        public async Task<ActivityChangeModel> Delete(int key, Guid userGuid)
         {
-            var model = _db.ActivityChange.SingleOrDefault(x => x.Id == key && x.UserGuid == userGuid);
+            var model = await _db.ActivityChange.SingleOrDefaultAsync(x => x.Id == key && x.UserGuid == userGuid);
             if (model is null)
                 throw new KeyNotFoundException($"Model not found with id {key}");
 
             _db.ActivityChange.Remove(model);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
             return model!;
         }
 
-        public ActivityChangeModel? Get(int key, Guid userGuid)
+        public async Task<ActivityChangeModel?> Get(int key, Guid userGuid)
         {
-            return _db.ActivityChange.SingleOrDefault(x => x.Id == key && x.UserGuid == userGuid);
+            return await _db.ActivityChange.SingleOrDefaultAsync(x => x.Id == key && x.UserGuid == userGuid);
         }
 
-        public IEnumerable<ActivityChangeModel> GetAll(Guid userGuid)
+        public async Task<IEnumerable<ActivityChangeModel>> GetAll(Guid userGuid)
         {
-            return _db.ActivityChange.Where(x => x.UserGuid == userGuid);
+            return await _db.ActivityChange.Where(x => x.UserGuid == userGuid).ToListAsync();
         }
     }
 }

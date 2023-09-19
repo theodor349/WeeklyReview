@@ -23,22 +23,22 @@ namespace WeeklyReview.Shared.Services
             _entryParserService = entryParserService;
         }
 
-        public IEnumerable<EntryModel> GetAll(Guid userGuid)
+        public async Task<IEnumerable<EntryModel>> GetAll(Guid userGuid)
         {
-            var res = _db.Entry.Include(x => x.Activities).Where(x => x.UserGuid == userGuid).ToList();
+            var res = await _db.Entry.Include(x => x.Activities).Where(x => x.UserGuid == userGuid).ToListAsync();
             return res;
         }
 
-        public EntryModel? Get(int key, Guid userGuid)
+        public async Task<EntryModel?> Get(int key, Guid userGuid)
         {
-            return _db.Entry.Include(x => x.Activities).SingleOrDefault(x => x.Id == key && x.UserGuid == userGuid);
+            return await _db.Entry.Include(x => x.Activities).SingleOrDefaultAsync(x => x.Id == key && x.UserGuid == userGuid);
         }
 
-        public EntryModel? Create(EnterEntryModel model, Guid userGuid)
+        public Task<EntryModel?> Create(EnterEntryModel model, Guid userGuid)
         {
             var activities = _entryParserService.ParseEntry(model.Entries, userGuid);
             var entry = _entryAdderService.AddEntry(model.Date, activities, userGuid);
-            return entry;
+            return Task.FromResult(entry);
         }
     }
 }
