@@ -24,7 +24,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void Change_NoEntry_DoNothing_CaseFoods()
+        public async void Change_NoEntry_DoNothing_CaseFoods()
         {
             var userGuid = DbFixture.User1;
             var aLunch = 1;
@@ -38,7 +38,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new ActivityChangeService(context, TimeService);
-            sut.ChangeActivity(aLunch, aDinner, userGuid);
+            await sut.ChangeActivity(aLunch, aDinner, userGuid);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -50,7 +50,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void Change_NoEntry_AddChange_CaseFoods()
+        public async void Change_NoEntry_AddChange_CaseFoods()
         {
             var userGuid = DbFixture.User1;
             var aLunch = 1;
@@ -65,7 +65,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new ActivityChangeService(context, TimeService);
-            var res = sut.ChangeActivity(aLunch, aDinner, userGuid);
+            var res = await sut.ChangeActivity(aLunch, aDinner, userGuid);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -79,7 +79,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void Change_MultipleEntries_OverrideAll_CaseSports()
+        public async void Change_MultipleEntries_OverrideAll_CaseSports()
         {
             var userGuid = DbFixture.User1;
             var aRun = 3;
@@ -95,7 +95,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new ActivityChangeService(context, TimeService);
-            sut.ChangeActivity(aRun, aBike, userGuid);
+            await sut.ChangeActivity(aRun, aBike, userGuid);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -121,7 +121,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void Change_MultipleActivities_OverrideCorrect_CaseTravel()
+        public async void Change_MultipleActivities_OverrideCorrect_CaseTravel()
         {
             var userGuid = DbFixture.User1;
             var aSpain = 5;
@@ -137,7 +137,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new ActivityChangeService(context, TimeService);
-            sut.ChangeActivity(aSpain, aFrance, userGuid);
+            await sut.ChangeActivity(aSpain, aFrance, userGuid);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -148,7 +148,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void Change_FirstDoesNotExist_ThrowError_CaseTravel()
+        public async void Change_FirstDoesNotExist_ThrowError_CaseTravel()
         {
             var userGuid = DbFixture.User1;
             var aNotExist = 42424242;
@@ -163,7 +163,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new ActivityChangeService(context, TimeService);
-            var e = Assert.Throws<KeyNotFoundException>(() => sut.ChangeActivity(aNotExist, aFrance, userGuid));
+            var e = await Assert.ThrowsAsync<KeyNotFoundException>(async () => await sut.ChangeActivity(aNotExist, aFrance, userGuid));
             context.ChangeTracker.Clear();
 
             // Assert
@@ -171,7 +171,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void Change_SecondDoesNotExist_ThrowError_CaseTravel()
+        public async void Change_SecondDoesNotExist_ThrowError_CaseTravel()
         {
             var userGuid = DbFixture.User1;
             var aNotExist = 42424242;
@@ -186,7 +186,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new ActivityChangeService(context, TimeService);
-            var e = Assert.Throws<KeyNotFoundException>(() => sut.ChangeActivity(aFrance, aNotExist, userGuid));
+            var e = await Assert.ThrowsAsync<KeyNotFoundException>(async () => await sut.ChangeActivity(aFrance, aNotExist, userGuid));
             context.ChangeTracker.Clear();
 
             // Assert

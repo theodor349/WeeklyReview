@@ -63,7 +63,7 @@ namespace WeeklyReview.Shared.Tests.Services
         ///     - Therefore deletion should be another service which also checks that no enties references it
         /// </summary>
         [Fact]
-        public void RollBack_NoNewEntry_Override_CaseMovies()
+        public async void RollBack_NoNewEntry_Override_CaseMovies()
         {
             int changeId = 1;
             int eOldId = 2;
@@ -79,7 +79,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new ActivityChangeService(context, TimeService);
-            sut.RollBackActivityChange(changeId, userGuid);
+            await sut.RollBackActivityChange(changeId, userGuid);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -91,7 +91,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void RollBack_NewEntryWithSameActivityAndAnother_Override_CaseSports()
+        public async void RollBack_NewEntryWithSameActivityAndAnother_Override_CaseSports()
         {
             int changeId = 2;
             int eOldId = 5;
@@ -108,7 +108,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new ActivityChangeService(context, TimeService);
-            sut.RollBackActivityChange(changeId, userGuid);
+            await sut.RollBackActivityChange(changeId, userGuid);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -120,7 +120,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void RollBack_NewEntryWithoutSameActivityAndAnother_DoNotOverride_CaseFoods()
+        public async void RollBack_NewEntryWithoutSameActivityAndAnother_DoNotOverride_CaseFoods()
         {
             int changeId = 3;
             int aDinner = 8;
@@ -137,7 +137,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new ActivityChangeService(context, TimeService);
-            sut.RollBackActivityChange(changeId, userGuid);
+            await sut.RollBackActivityChange(changeId, userGuid);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -147,7 +147,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void RollBack_NewEntryWithoutSameActivityAndNewEntryWithSameActivity_DoNotOverride_CaseSchool()
+        public async void RollBack_NewEntryWithoutSameActivityAndNewEntryWithSameActivity_DoNotOverride_CaseSchool()
         {
             int changeId = 4;
             int aEnglish = 11;
@@ -163,7 +163,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new ActivityChangeService(context, TimeService);
-            sut.RollBackActivityChange(changeId, userGuid);
+            await sut.RollBackActivityChange(changeId, userGuid);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -173,7 +173,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void RollBack_NewEntryHaveBeenDeleted_DoNothing_CaseTrip()
+        public async void RollBack_NewEntryHaveBeenDeleted_DoNothing_CaseTrip()
         {
             int changeId = 5;
             int aSpain = 14;
@@ -189,7 +189,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new ActivityChangeService(context, TimeService);
-            sut.RollBackActivityChange(changeId, userGuid);
+            await sut.RollBackActivityChange(changeId, userGuid);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -202,7 +202,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void RollBack_IdDoesNotExist_ThrowError()
+        public async void RollBack_IdDoesNotExist_ThrowError()
         {
             int changeId = 42424242;
             var userGuid = DbFixture.User1;
@@ -215,7 +215,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new ActivityChangeService(context, TimeService);
-            var e = Assert.Throws<KeyNotFoundException>(() => sut.RollBackActivityChange(changeId, userGuid));
+            var e = await Assert.ThrowsAsync<KeyNotFoundException>(async () => await sut.RollBackActivityChange(changeId, userGuid));
             context.ChangeTracker.Clear();
 
             // Assert

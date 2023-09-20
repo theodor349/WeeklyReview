@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -21,15 +22,15 @@ namespace WeeklyReview.Shared.Services
             _db = db;
         }
 
-        public List<ActivityModel> ParseEntry(List<string> activities, Guid userGuid)
+        public async Task<List<ActivityModel>> ParseEntry(List<string> activities, Guid userGuid)
         {
             var activityCategories = GetActivityCategories(activities);
-            var res = AddActivityCategories(activityCategories, userGuid);
-            _db.SaveChanges();
+            var res = await AddActivityCategories(activityCategories, userGuid);
+            await _db.SaveChangesAsync();
             return res;
         }
 
-        private List<ActivityModel> AddActivityCategories(List<ActivityCategory> entires, Guid userGuid)
+        private async Task<List<ActivityModel>> AddActivityCategories(List<ActivityCategory> entires, Guid userGuid)
         {
             // Ensure all Categories and Activities exist
             // Retrive relvant Activities
@@ -38,25 +39,25 @@ namespace WeeklyReview.Shared.Services
             foreach (var entry in entires)
             {
                 var key = entry.Category is null ? entry.Activity : entry.Category + ": " + entry.Activity;
-                var act = _db.Activity.SingleOrDefault(x => x.NormalizedName == key.ToLower() && x.UserGuid == userGuid);
+                var act = await _db.Activity.SingleOrDefaultAsync(x => x.NormalizedName == key.ToLower() && x.UserGuid == userGuid);
                 if (act is null)
-                    act = CreateNewActivity(entry, userGuid);
+                    act = await CreateNewActivity(entry, userGuid);
 
                 res.Add(act);
             }
             return res;
         }
 
-        private ActivityModel CreateNewActivity(ActivityCategory entry, Guid userGuid)
+        private async Task<ActivityModel> CreateNewActivity(ActivityCategory entry, Guid userGuid)
         {
             var act = entry.Category is null ? entry.Activity : entry.Category + ": " + entry.Activity;
             var cat = entry.Category;
 
-            var catModel = cat is null ? null : _db.Category.SingleOrDefault(x => x.NormalizedName == cat.ToLower() && x.UserGuid == userGuid);
+            var catModel = cat is null ? null : await _db.Category.SingleOrDefaultAsync(x => x.NormalizedName == cat.ToLower() && x.UserGuid == userGuid);
 
             if(string.IsNullOrEmpty(cat))
             {
-                var defaultCat = _db.Category.SingleOrDefault(x => x.UserGuid == userGuid && x.NormalizedName.Length == 0);
+                var defaultCat = await _db.Category.SingleOrDefaultAsync(x => x.UserGuid == userGuid && x.NormalizedName.Length == 0);
                 if(defaultCat is null)
                 {
                     defaultCat = new CategoryModel("", 0, Color.White, userGuid);

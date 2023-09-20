@@ -19,7 +19,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void ParseEntry_Swim_Exists_CaseUser1()
+        public async void ParseEntry_Swim_Exists_CaseUser1()
         {
             int aSwim = 1;
             var user = DbFixture.Users[1];
@@ -35,7 +35,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new EntryParserService(context);
-            var res = sut.ParseEntry(input, user);
+            var res = await sut.ParseEntry(input, user);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -44,7 +44,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void ParseEntry_SwimWithSpace_Exists_CaseUser1()
+        public async void ParseEntry_SwimWithSpace_Exists_CaseUser1()
         {
             int aSwim = 1;
             var user = DbFixture.Users[1];
@@ -60,7 +60,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new EntryParserService(context);
-            var res = sut.ParseEntry(input, user);
+            var res = await sut.ParseEntry(input, user);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -69,7 +69,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void ParseEntry_SportsBike_Exists_CaseUser1()
+        public async void ParseEntry_SportsBike_Exists_CaseUser1()
         {
             int aBike = 2;
             var user = DbFixture.Users[1];
@@ -85,7 +85,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new EntryParserService(context);
-            var res = sut.ParseEntry(input, user);
+            var res = await sut.ParseEntry(input, user);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -94,7 +94,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void ParseEntry_SportsBikeAndDance_Exists_CaseUser1()
+        public async void ParseEntry_SportsBikeAndDance_Exists_CaseUser1()
         {
             int aBike = 3;
             int aDance = 2;
@@ -112,7 +112,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new EntryParserService(context);
-            var res = sut.ParseEntry(input, user);
+            var res = await sut.ParseEntry(input, user);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -122,7 +122,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void ParseEntry_SportsBikeAndExerciseRun_Exists_CaseUser1()
+        public async void ParseEntry_SportsBikeAndExerciseRun_Exists_CaseUser1()
         {
             int aBike = 2;
             int aRun = 4;
@@ -140,7 +140,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new EntryParserService(context);
-            var res = sut.ParseEntry(input, user);
+            var res = await sut.ParseEntry(input, user);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -150,7 +150,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void ParseEntry_BlankAndSportsBike_Exists_CaseUser1()
+        public async void ParseEntry_BlankAndSportsBike_Exists_CaseUser1()
         {
             int aBike = 2;
             var user = DbFixture.Users[1];
@@ -167,7 +167,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new EntryParserService(context);
-            var res = sut.ParseEntry(input, user);
+            var res = await sut.ParseEntry(input, user);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -176,7 +176,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void ParseEntry_DifficultCompetionsParticipatinginRaceWithSpaces_Exists_CaseUser1()
+        public async void ParseEntry_DifficultCompetionsParticipatinginRaceWithSpaces_Exists_CaseUser1()
         {
             var user = DbFixture.Users[1];
             int aRace = 5;
@@ -191,7 +191,7 @@ namespace WeeklyReview.Shared.Tests.Services
             };
             // Act
             var sut = new EntryParserService(context);
-            var res = sut.ParseEntry(input, user);
+            var res = await sut.ParseEntry(input, user);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -202,7 +202,7 @@ namespace WeeklyReview.Shared.Tests.Services
         [Theory]
         [InlineData(" ")]
         [InlineData(" \t ", " ")]
-        public void ParseEntry_Blank_Exists_CaseUser1(params string[] input)
+        public async void ParseEntry_Blank_Exists_CaseUser1(params string[] input)
         {
             var user = DbFixture.Users[1];
 
@@ -213,7 +213,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new EntryParserService(context);
-            var res = sut.ParseEntry(input.ToList(), user);
+            var res = await sut.ParseEntry(input.ToList(), user);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -221,7 +221,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void ParseEntry_NoEntries_Exists_CaseUser1()
+        public async void ParseEntry_NoEntries_Exists_CaseUser1()
         {
             var user = DbFixture.Users[1];
 
@@ -232,7 +232,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new EntryParserService(context);
-            var res = sut.ParseEntry(new List<string>(), user);
+            var res = await sut.ParseEntry(new List<string>(), user);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -240,7 +240,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void ParseEntry_MultipleColons_Error_CaseUser1()
+        public async void ParseEntry_MultipleColons_Error_CaseUser1()
         {
             var user = DbFixture.Users[1];
 
@@ -256,13 +256,13 @@ namespace WeeklyReview.Shared.Tests.Services
             var sut = new EntryParserService(context);
 
             // Assert
-            var exception = Assert.Throws<ArgumentException>(() => sut.ParseEntry(input, user));
+            var exception = await Assert.ThrowsAsync<ArgumentException>(async () => await sut.ParseEntry(input, user));
             context.ChangeTracker.Clear();
             Assert.Equal("An entry cannot contain multiple ':'", exception.Message);
         }
 
         [Fact]
-        public void ParseEntry_OnlyCategory_Error_CaseUser1()
+        public async void ParseEntry_OnlyCategory_Error_CaseUser1()
         {
             var user = DbFixture.Users[1];
 
@@ -278,13 +278,13 @@ namespace WeeklyReview.Shared.Tests.Services
             var sut = new EntryParserService(context);
 
             // Assert
-            var exception = Assert.Throws<ArgumentException>(() => sut.ParseEntry(input, user));
+            var exception = await Assert.ThrowsAsync<ArgumentException>(async () => await sut.ParseEntry(input, user));
             context.ChangeTracker.Clear();
             Assert.Equal("An entry must contain an Activity, if a category is supplied", exception.Message);
         }
 
         [Fact]
-        public void ParseEntry_DoubleSwimEntry_OnlyOneSwim_CaseUser1()
+        public async void ParseEntry_DoubleSwimEntry_OnlyOneSwim_CaseUser1()
         {
             var user = DbFixture.Users[1];
             int aSwim = 1;
@@ -296,7 +296,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new EntryParserService(context);
-            var res = sut.ParseEntry(new List<string>()
+            var res = await sut.ParseEntry(new List<string>()
             {
                 "Swim",
                 "Swim"
@@ -309,7 +309,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void ParseEntry_ActivityExists_DoNothing_CaseUser2()
+        public async void ParseEntry_ActivityExists_DoNothing_CaseUser2()
         {
             var user = DbFixture.Users[2];
 
@@ -322,7 +322,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new EntryParserService(context);
-            var res = sut.ParseEntry(new List<string>()
+            var res = await sut.ParseEntry(new List<string>()
             {
                 "Sports: Bike"
             }, user);
@@ -334,7 +334,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void ParseEntry_SportsExist_RunDoesNotExist_AddRun_CaseUser2()
+        public async void ParseEntry_SportsExist_RunDoesNotExist_AddRun_CaseUser2()
         {
             var user = DbFixture.Users[2];
             int cSports = 6;
@@ -348,7 +348,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new EntryParserService(context);
-            var res = sut.ParseEntry(new List<string>()
+            var res = await sut.ParseEntry(new List<string>()
             {
                 "Sports: Run"
             }, user);
@@ -363,7 +363,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void ParseEntry_NoDefaultCat_SwimDoesNotExist_AddSwim_CaseUser2()
+        public async void ParseEntry_NoDefaultCat_SwimDoesNotExist_AddSwim_CaseUser2()
         {
             var user = DbFixture.Users[2];
 
@@ -375,7 +375,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new EntryParserService(context);
-            var res = sut.ParseEntry(new List<string>()
+            var res = await sut.ParseEntry(new List<string>()
             {
                 "Swim"
             }, user);
@@ -388,7 +388,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void ParseEntry_NoDefaultCat_SwimDoesExist_AssignDefaultCategory_CaseUser2()
+        public async void ParseEntry_NoDefaultCat_SwimDoesExist_AssignDefaultCategory_CaseUser2()
         {
             var user = DbFixture.Users[2];
 
@@ -400,7 +400,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new EntryParserService(context);
-            var res = sut.ParseEntry(new List<string>()
+            var res = await sut.ParseEntry(new List<string>()
             {
                 "Swim"
             }, user);
@@ -420,7 +420,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void ParseEntry_ExerciseDoesNotExist_BikeDoesNotExist_AddExerciseAndBike_CaseUser2()
+        public async void ParseEntry_ExerciseDoesNotExist_BikeDoesNotExist_AddExerciseAndBike_CaseUser2()
         {
             var user = DbFixture.Users[2];
             int cExercise = 7;
@@ -434,7 +434,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new EntryParserService(context);
-            var res = sut.ParseEntry(new List<string>()
+            var res = await sut.ParseEntry(new List<string>()
             {
                 "Exercise: Bike"
             }, user);
@@ -450,7 +450,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void ParseEntry_Blank_DoNothing_CaseUser2()
+        public async void ParseEntry_Blank_DoNothing_CaseUser2()
         {
             var user = DbFixture.Users[2];
 
@@ -463,7 +463,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new EntryParserService(context);
-            var res = sut.ParseEntry(new List<string>()
+            var res = await sut.ParseEntry(new List<string>()
             {
             }, user);
             context.ChangeTracker.Clear();
@@ -474,7 +474,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void ParseEntry_NoDefaultCat_SwimDoesNotExist_AddDefaultCategory_CaseUser3()
+        public async void ParseEntry_NoDefaultCat_SwimDoesNotExist_AddDefaultCategory_CaseUser3()
         {
             var user = DbFixture.Users[3];
 
@@ -486,7 +486,7 @@ namespace WeeklyReview.Shared.Tests.Services
 
             // Act
             var sut = new EntryParserService(context);
-            var res = sut.ParseEntry(new List<string>()
+            var res = await sut.ParseEntry(new List<string>()
             {
                 "Swim"
             }, user);

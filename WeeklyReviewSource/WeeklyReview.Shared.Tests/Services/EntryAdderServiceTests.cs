@@ -27,7 +27,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void Entry_OnlyEntry_AddEntry_CaseMovies()
+        public async void Entry_OnlyEntry_AddEntry_CaseMovies()
         {
             int aSeries = 1;
             int aMovies = 2;
@@ -44,7 +44,7 @@ namespace WeeklyReview.Shared.Tests.Services
             // Act
             var sut = new EntryAdderService(context, TimeService);
             var activities = context.Activity.Where(x => x.Id == aSeries || x.Id == aMovies).ToList();
-            var res = sut.AddEntry(date, activities, user);
+            var res = await sut.AddEntry(date, activities, user);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -63,7 +63,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Theory, AutoData]
-        public void Entry_OnlyEntry_AddEntry_CaseMovies_CheckThatDateIsFlooredTo15Minutes([Range(0, 59)] int minutes)
+        public async void Entry_OnlyEntry_AddEntry_CaseMovies_CheckThatDateIsFlooredTo15Minutes([Range(0, 59)] int minutes)
         {
             int aSeries = 1;
             int aMovies = 2;
@@ -81,7 +81,7 @@ namespace WeeklyReview.Shared.Tests.Services
             // Act
             var sut = new EntryAdderService(context, TimeService);
             var activities = context.Activity.Where(x => x.Id == aSeries || x.Id == aMovies).ToList();
-            var res = sut.AddEntry(date, activities, user);
+            var res = await sut.AddEntry(date, activities, user);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -96,7 +96,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void Entry_EntrieArround_AddEntryAndUpdateTimes_CaseFoods()
+        public async void Entry_EntrieArround_AddEntryAndUpdateTimes_CaseFoods()
         {
             int aDinner = 5;
             var startTime = DbFixture.Dt.AddHours(2);
@@ -113,7 +113,7 @@ namespace WeeklyReview.Shared.Tests.Services
             // Act
             var sut = new EntryAdderService(context, TimeService);
             var activities = context.Activity.Where(x => x.Id == aDinner).ToList();
-            var res = sut.AddEntry(startTime, activities, user);
+            var res = await sut.AddEntry(startTime, activities, user);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -136,7 +136,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void Entry_EntryAtAndAfter_OverrideEntry_CaseSports()
+        public async void Entry_EntryAtAndAfter_OverrideEntry_CaseSports()
         {
             int aSwim = 8;
             var startTime = DbFixture.Dt.AddHours(0);
@@ -153,7 +153,7 @@ namespace WeeklyReview.Shared.Tests.Services
             // Act
             var sut = new EntryAdderService(context, TimeService);
             var activities = context.Activity.Where(x => x.Id == aSwim).ToList();
-            var res = sut.AddEntry(startTime, activities, user);
+            var res = await sut.AddEntry(startTime, activities, user);
             context.ChangeTracker.Clear();
 
             // Assert
@@ -174,7 +174,7 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
-        public void Entry_EntryAtBeforeAndAfter_InsertingBlank_DeleteEntryAndUpdateTime_CaseTrip()
+        public async void Entry_EntryAtBeforeAndAfter_InsertingBlank_DeleteEntryAndUpdateTime_CaseTrip()
         {
             var startTime = DbFixture.Dt.AddHours(2);
             var endTime = startTime.AddHours(2);
@@ -190,7 +190,7 @@ namespace WeeklyReview.Shared.Tests.Services
             // Act
             var sut = new EntryAdderService(context, TimeService);
             var activities = new List<ActivityModel>();
-            var res = sut.AddEntry(startTime, activities, user);
+            var res = await sut.AddEntry(startTime, activities, user);
             context.ChangeTracker.Clear();
 
             // Assert

@@ -34,11 +34,11 @@ namespace WeeklyReview.Shared.Services
             return await _db.Entry.Include(x => x.Activities).SingleOrDefaultAsync(x => x.Id == key && x.UserGuid == userGuid);
         }
 
-        public Task<EntryModel?> Create(EnterEntryModel model, Guid userGuid)
+        public async Task<EntryModel?> Create(EnterEntryModel model, Guid userGuid)
         {
-            var activities = _entryParserService.ParseEntry(model.Entries, userGuid);
-            var entry = _entryAdderService.AddEntry(model.Date, activities, userGuid);
-            return Task.FromResult(entry);
+            var activities = await _entryParserService.ParseEntry(model.Entries, userGuid);
+            var entry = await _entryAdderService.AddEntry(model.Date, activities, userGuid);
+            return entry;
         }
     }
 }
