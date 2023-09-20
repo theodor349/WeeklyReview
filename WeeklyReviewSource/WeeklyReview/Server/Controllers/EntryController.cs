@@ -23,24 +23,24 @@ namespace WeeklyReview.Server.Controllers
 
         [HttpGet]
         [EnableQuery]
-        public ActionResult<IEnumerable<EntryModel>> GetAll()
+        public async Task<ActionResult<IEnumerable<EntryModel>>> GetAll()
         {
-            return Ok(_entryService.GetAll(UserGuid));
+            return Ok(await _entryService.GetAll(UserGuid));
         }
 
         [HttpGet("{key}")]
         [EnableQuery]
-        public ActionResult<EntryModel?> Get([FromRoute] int key)
+        public async Task<ActionResult<EntryModel?>> Get([FromRoute] int key)
         {
-            return Ok(_entryService.Get(key, UserGuid));
+            return Ok(await _entryService.Get(key, UserGuid));
         }
 
         [HttpPost("Enter")]
-        public ActionResult<EntryModel?> Create([FromBody] EnterEntryModel model)
+        public async Task<ActionResult<EntryModel?>> Create([FromBody] EnterEntryModel model)
         {
             try
             {
-                return Ok(_entryService.Create(model, UserGuid));
+                return Ok(await _entryService.Create(model, UserGuid));
             }
             catch(ArgumentException e)
             {

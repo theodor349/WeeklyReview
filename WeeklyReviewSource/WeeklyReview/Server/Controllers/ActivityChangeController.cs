@@ -21,24 +21,24 @@ namespace WeeklyReview.Server.Controllers
 
         [HttpGet]
         [EnableQuery]
-        public ActionResult<IEnumerable<CategoryModel>> GetAll()
+        public async Task<ActionResult<IEnumerable<CategoryModel>>> GetAll()
         {
-            return Ok(_activityChangeService.GetAll(UserGuid));
+            return Ok(await _activityChangeService.GetAll(UserGuid));
         }
 
         [HttpGet("{key}")]
         [EnableQuery]
-        public ActionResult<CategoryModel> Get([FromRoute] int key)
+        public async Task<ActionResult<CategoryModel>> Get([FromRoute] int key)
         {
-            return Ok(_activityChangeService.Get(key, UserGuid));
+            return Ok(await _activityChangeService.Get(key, UserGuid));
         }
 
         [HttpDelete("{key}")]
-        public ActionResult<ActivityChangeModel> Delete([FromRoute] int key)
+        public async Task<ActionResult<ActivityChangeModel>> Delete([FromRoute] int key)
         {
             try
             {
-                var model = _activityChangeService.Delete(key, UserGuid);
+                var model = await _activityChangeService.Delete(key, UserGuid);
                 return Ok(model);
             }
             catch(KeyNotFoundException e)
@@ -48,9 +48,9 @@ namespace WeeklyReview.Server.Controllers
         }
 
         [HttpPost("{key}/Rollback")]
-        public ActionResult Rollback([FromRoute] int key)
+        public async Task<ActionResult> Rollback([FromRoute] int key)
         {
-            _activityChangeService.RollBackActivityChange(key, UserGuid);
+            await _activityChangeService.RollBackActivityChange(key, UserGuid);
             return Ok();
         }
     }

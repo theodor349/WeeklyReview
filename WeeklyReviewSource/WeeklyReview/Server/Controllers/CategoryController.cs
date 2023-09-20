@@ -21,28 +21,28 @@ namespace WeeklyReview.Server.Controllers
 
         [HttpGet]
         [EnableQuery]
-        public ActionResult<IEnumerable<CategoryModel>> GetAll()
+        public async Task<ActionResult<IEnumerable<CategoryModel>>> GetAll()
         {
-            return Ok(_categoryService.GetAll(UserGuid));
+            return Ok(await _categoryService.GetAll(UserGuid));
         }
 
         [HttpGet("{key}")]
         [EnableQuery]
-        public ActionResult<CategoryModel> Get([FromRoute] int key)
+        public async Task<ActionResult<CategoryModel>> Get([FromRoute] int key)
         {
-            return Ok(_categoryService.Get(key, UserGuid));
+            return Ok(await _categoryService.Get(key, UserGuid));
         }
 
         [HttpDelete("{key}")]
-        public ActionResult<ActivityModel> Delete([FromRoute] int key)
+        public async Task<ActionResult<ActivityModel>> Delete([FromRoute] int key)
         {
-            return Ok(_categoryService.Delete(key, UserGuid));
+            return Ok(await _categoryService.Delete(key, UserGuid));
         }
 
         [HttpPost("{key}/ChangeColor")]
-        public ActionResult<ActivityChangeModel> ChangeColor([FromRoute] int key, [FromBody] Color color)
+        public async Task<ActionResult<ActivityChangeModel>> ChangeColor([FromRoute] int key, [FromBody] Color color)
         {
-            return Ok(_categoryService.ChangeColor(key, color, UserGuid));
+            return Ok(await _categoryService.ChangeColor(key, color, UserGuid));
         }
     }
 }
