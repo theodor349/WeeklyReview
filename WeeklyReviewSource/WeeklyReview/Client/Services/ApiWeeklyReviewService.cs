@@ -68,7 +68,7 @@ namespace WeeklyReview.Client.Services
 
         public async Task<ActivityChangeModel> Delete(int key, Guid userGuid)
         {
-            var task = await _client.DELETEAsync<ActivityChangeModel, object>($"/api/v1/ActivityChange/{key}", null, CancellationToken.None);
+            var task = await _client.DELETEAsync<ActivityChangeModel, object>($"/api/v1/ActivityChange/{key}", CancellationToken.None);
 
             return task;
         }
@@ -112,7 +112,7 @@ namespace WeeklyReview.Client.Services
 
         public async Task<CategoryModel> Delete(int key, Guid userGuid)
         {
-            var task = await _client.DELETEAsync<CategoryModel, object>($"/api/v1/Category/{key}", null, CancellationToken.None);
+            var task = await _client.DELETEAsync<CategoryModel, object>($"/api/v1/Category/{key}", CancellationToken.None);
 
             return task;
         }
@@ -150,7 +150,7 @@ namespace WeeklyReview.Client.Services
 
         public async Task<ActivityModel> Delete(int key, Guid userGuid)
         {
-            var task = await _client.DELETEAsync<ActivityModel, object>($"/api/v1/Activity/{key}", null, CancellationToken.None);
+            var task = await _client.DELETEAsync<ActivityModel, object>($"/api/v1/Activity/{key}", CancellationToken.None);
 
             return task;
         }
@@ -164,6 +164,7 @@ namespace WeeklyReview.Client.Services
 
         public async Task<IEnumerable<ActivityModel>> GetAll(Guid userGuid)
         {
+            // TODO: This Does Not Parse Correctly 
             var task = await _client.GETCollectionAsync<ActivityModel>($"/api/v1/Activity", CancellationToken.None);
 
             return task;
