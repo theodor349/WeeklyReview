@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Syncfusion.Blazor.HeatMap.Internal;
+using System.Collections.ObjectModel;
 using WeeklyReview.Client.Services;
 using WeeklyReview.Client.ViewModels;
 using WeeklyReview.Database.Models;
@@ -15,28 +16,24 @@ namespace WeeklyReview.Client.Pages
 
         public DateTime InputDate = DateTime.Now;
         public DateTime ViewDate = DateTime.Now;
-        public List<ScheduleViewModel> DataSource { get; set; }
-        public List<CategoryViewModel> Categories { get; set; }
+        public ObservableCollection<ScheduleViewModel> DataSource { get; set; } = new ObservableCollection<ScheduleViewModel>();
+        public List<CategoryViewModel> Categories { get; set; } = new List<CategoryViewModel>();
         public IEnumerable<ActivityModel> Activities = new List<ActivityModel>();
         public async Task<IEnumerable<ActivityModel>> GetActivities() => await WeeklyReviewService.Activity.GetAll(UserGuid);
         public string EnteredActivity { get; set; }
 
-        protected override async void OnParametersSet()
+        protected async override Task OnInitializedAsync()
         {
-            if (DataSource is null) 
+            if (DataSource.Count() == 0)
             {
-                DataSource = new List<ScheduleViewModel>();
+                DataSource = new ObservableCollection<ScheduleViewModel>();
                 Categories = new List<CategoryViewModel>();
                 await GenerateViewModels();
                 TimeUpdated();
             }
-            base.OnParametersSet();
-        }
-
-        protected async override Task OnInitializedAsync()
-        {
-            await base.OnInitializedAsync();
             Activities = await GetActivities();
+
+            await base.OnInitializedAsync();
         }
 
         public void TimeUpdated()

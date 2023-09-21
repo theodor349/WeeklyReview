@@ -1,9 +1,10 @@
 ﻿using Syncfusion.PdfExport;
+using System.ComponentModel;
 using System.Drawing;
 
 namespace WeeklyReview.Client.ViewModels
 {
-    public class ScheduleViewModel
+    public class ScheduleViewModel : INotifyPropertyChanged
     {
         public string Subject { get; set; }
         public int CategoryId { get; set; }
@@ -12,5 +13,7 @@ namespace WeeklyReview.Client.ViewModels
         public DateTime EndTime { get; set; }
 
         public TimeSpan Duration => EndTime - StartTime;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
     }
 }
