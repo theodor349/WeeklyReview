@@ -3,7 +3,11 @@
 @using System.Drawing;
 
 <PageTitle>Week View</PageTitle>
-<div class="container-fluid">
+@if(DataSource is null){
+    <div>Loading ...</div>
+}
+else {
+    <div class="container-fluid">
     <SfSchedule TValue="ScheduleViewModel" @ref="ScheduleObj" Width="100%" Height="calc(100vh - 4.6rem)" @bind-SelectedDate="@ViewDate"
                 EnableAutoRowHeight="true"
                 AllowMultiCellSelection="false" AllowMultiRowSelection="false" AllowDragAndDrop="false" AllowResizing="false"
@@ -48,6 +52,7 @@
         </ScheduleViews>
     </SfSchedule>
 </div>
+}
 
 @code{
 

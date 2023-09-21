@@ -25,7 +25,7 @@ namespace WeeklyReview.Shared.Services
 
         public async Task<IEnumerable<EntryModel>> GetAll(Guid userGuid)
         {
-            var res = await _db.Entry.Include(x => x.Activities).Where(x => x.UserGuid == userGuid).ToListAsync();
+            var res = await _db.Entry.Include(x => x.Activities).ThenInclude(x => x.Category).Where(x => x.UserGuid == userGuid && x.Deleted == false).ToListAsync();
             return res;
         }
 

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Syncfusion.Blazor.HeatMap.Internal;
 using WeeklyReview.Client.Services;
 using WeeklyReview.Client.ViewModels;
 using WeeklyReview.Database.Models;
@@ -14,27 +15,27 @@ namespace WeeklyReview.Client.Pages
 
         public DateTime InputDate = DateTime.Now;
         public DateTime ViewDate = DateTime.Now;
-        public List<ScheduleViewModel> DataSource { get; set; } = new List<ScheduleViewModel>();
-        public List<CategoryViewModel> Categories { get; set; } = new List<CategoryViewModel>();
+        public List<ScheduleViewModel> DataSource { get; set; }
+        public List<CategoryViewModel> Categories { get; set; }
         public IEnumerable<ActivityModel> Activities = new List<ActivityModel>();
         public async Task<IEnumerable<ActivityModel>> GetActivities() => await WeeklyReviewService.Activity.GetAll(UserGuid);
         public string EnteredActivity { get; set; }
 
-        protected override void OnParametersSet()
+        protected override async void OnParametersSet()
         {
-            base.OnParametersSet();
-         
-            if (DataSource.Count == 0 ) 
+            if (DataSource is null) 
             {
-                GenerateViewModels();
+                DataSource = new List<ScheduleViewModel>();
+                Categories = new List<CategoryViewModel>();
+                await GenerateViewModels();
                 TimeUpdated();
             }
+            base.OnParametersSet();
         }
 
-        protected override async Task OnParametersSetAsync()
+        protected async override Task OnInitializedAsync()
         {
-            await base.OnParametersSetAsync();
-
+            await base.OnInitializedAsync();
             Activities = await GetActivities();
         }
 
@@ -48,12 +49,14 @@ namespace WeeklyReview.Client.Pages
 
         private async Task GenerateViewModels()
         {
-            foreach (var cat in await WeeklyReviewService.Category.GetAll(UserGuid))
+            var categories = (await WeeklyReviewService.Category.GetAll(UserGuid)).ToList();
+            foreach (var cat in categories)
             {
                 Categories.Add(new CategoryViewModel(cat));
             }
 
-            foreach (var entry in await WeeklyReviewService.Entry.GetAll(UserGuid))
+            var entries = (await WeeklyReviewService.Entry.GetAll(UserGuid)).ToList();
+            foreach (var entry in entries)
             {
                 var s = new ScheduleViewModel();
                 s.Subject = entry.Activities.ConvertAll(x => x.Name).Aggregate((x, y) => x + " + " + y);
