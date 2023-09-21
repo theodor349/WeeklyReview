@@ -97,7 +97,7 @@
     [Parameter]
     public DateTime ViewDate { get; set; } = DateTime.Now;
     [Parameter]
-    public Action OnAfterEntryAdded { get; set; }
+    public Action<EntryModel?> OnAfterEntryAdded { get; set; }
     [Parameter]
     public bool ResetOnInit { get; set; } = false;
 

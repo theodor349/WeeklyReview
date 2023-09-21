@@ -81,13 +81,6 @@
             return "black";
     }
 
-    public void OnEntryAdded()
-    {
-        var task = ScheduleObj.CloseQuickInfoPopupAsync();
-        task.Wait();
-        StateHasChanged();
-    }
-
     private void OnPopupOpen(PopupOpenEventArgs<ScheduleViewModel> args)
     {
         if (args.Type == PopupType.Editor) //to prevent the editor on cells

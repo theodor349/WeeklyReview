@@ -55,16 +55,16 @@ namespace WeeklyReview.Client.Pages
             Socials = await GetSocials();
         }
 
-        public void SubmitEntry()
+        public async Task SubmitEntry()
         {
             var submittedActivities = new List<string>();
             submittedActivities.AddRange(InputActivities.Where(x => !string.IsNullOrWhiteSpace(x)));
             submittedActivities.AddRange(InputSocials.Where(x => !string.IsNullOrWhiteSpace(x)).ToList().ConvertAll(x => IsDiscord ? "Discord: " + x : "Social: " + x));
 
-            WeeklyReviewService.Entry.Create(new EnterEntryModel() { Date = ViewDate, Entries = submittedActivities }, UserGuid);
+            var entry = await WeeklyReviewService.Entry.Create(new EnterEntryModel() { Date = ViewDate, Entries = submittedActivities }, UserGuid);
 
             if(OnAfterEntryAdded != null) 
-                OnAfterEntryAdded.Invoke();
+                OnAfterEntryAdded.Invoke(entry);
         }
 
         private void AddInputActivity()

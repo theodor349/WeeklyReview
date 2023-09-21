@@ -5,6 +5,7 @@ using System.Net.Http.Json;
 using Syncfusion.Blazor.PdfViewer;
 using Syncfusion.Blazor.Kanban.Internal;
 using System.Reflection.PortableExecutable;
+using static WeeklyReview.Client.Http.WeeklyReviewApiClient;
 
 namespace WeeklyReview.Client.Http
 {
@@ -57,7 +58,7 @@ namespace WeeklyReview.Client.Http
         }
         #endregion
 
-        public virtual async Task<T> GETAsync<T>(string endpoint, CancellationToken cancellationToken)
+        public virtual async Task<ApiResponse<T>> GETAsync<T>(string endpoint, CancellationToken cancellationToken)
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append(endpoint);
@@ -67,14 +68,17 @@ namespace WeeklyReview.Client.Http
             var response = await client_.GetAsync(url);
             if (response is null)
                 throw new ApiException("Response was null which was not expected.", (int)response.StatusCode, response.ReasonPhrase, (IReadOnlyDictionary<string, IEnumerable<string>>)response.Headers.ToList().ConvertAll(x => new KeyValuePair<string, IEnumerable<string>>(x.Key, x.Value)), null);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                return new ApiResponse<T>();
 
             var res = await response.Content.ReadFromJsonAsync<T>();
             if (res is null)
                 throw new ApiException("Response was null which was not expected.");
-            return res;
+            return new ApiResponse<T>(res);
         }
 
-        public virtual async Task<ICollection<T>> GETCollectionAsync<T>(string endpoint, CancellationToken cancellationToken)
+        public virtual async Task<ApiResponse<ICollection<T>>> GETCollectionAsync<T>(string endpoint, CancellationToken cancellationToken)
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append(endpoint);
@@ -85,13 +89,16 @@ namespace WeeklyReview.Client.Http
             if (response is null)
                 throw new ApiException("Response was null which was not expected.", (int)response.StatusCode, response.ReasonPhrase, (IReadOnlyDictionary<string, IEnumerable<string>>)response.Headers.ToList().ConvertAll(x => new KeyValuePair<string, IEnumerable<string>>(x.Key, x.Value)), null);
 
+            if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                return new ApiResponse<ICollection<T>>();
+
             var res = await response.Content.ReadFromJsonAsync<ICollection<T>>();
             if (res is null)
                 throw new ApiException("Response was null which was not expected.");
-            return res;
+            return new ApiResponse<ICollection<T>>(res);
         }
 
-        public virtual async Task<T> POSTAsync<T, C>(string endpoint, C body, CancellationToken cancellationToken)
+        public virtual async Task<ApiResponse<T>> POSTAsync<T, C>(string endpoint, C body, CancellationToken cancellationToken)
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append(endpoint);
@@ -102,13 +109,16 @@ namespace WeeklyReview.Client.Http
             if (response is null)
                 throw new ApiException("Response was null which was not expected.", (int)response.StatusCode, response.ReasonPhrase, (IReadOnlyDictionary<string, IEnumerable<string>>) response.Headers.ToList().ConvertAll(x => new KeyValuePair<string, IEnumerable<string>>(x.Key, x.Value)), null);
 
+            if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                return new ApiResponse<T>();
+
             var res = await response.Content.ReadFromJsonAsync<T>();
             if (res is null)
                 throw new ApiException("Response was null which was not expected.");
-            return res;
+            return new ApiResponse<T>(res);
         }
 
-        public virtual async Task<T> PUTAsync<T, C>(string endpoint, C body, CancellationToken cancellationToken)
+        public virtual async Task<ApiResponse<T>> PUTAsync<T, C>(string endpoint, C body, CancellationToken cancellationToken)
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append(endpoint);
@@ -119,10 +129,13 @@ namespace WeeklyReview.Client.Http
             if (response is null)
                 throw new ApiException("Response was null which was not expected.", (int)response.StatusCode, response.ReasonPhrase, (IReadOnlyDictionary<string, IEnumerable<string>>)response.Headers.ToList().ConvertAll(x => new KeyValuePair<string, IEnumerable<string>>(x.Key, x.Value)), null);
 
+            if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                return new ApiResponse<T>();
+
             var res = await response.Content.ReadFromJsonAsync<T>();
             if (res is null)
                 throw new ApiException("Response was null which was not expected.");
-            return res;
+            return new ApiResponse<T>(res);
         }
 
         public virtual async Task<MemoryStream> PUTFileAsync<C>(string endpoint, C body, CancellationToken cancellationToken)
@@ -142,7 +155,7 @@ namespace WeeklyReview.Client.Http
             return res.ms;
         }
 
-        public virtual async Task<ICollection<T>> PUTCollectionAsync<T, C>(string endpoint, C body, CancellationToken cancellationToken)
+        public virtual async Task<ApiResponse<ICollection<T>>> PUTCollectionAsync<T, C>(string endpoint, C body, CancellationToken cancellationToken)
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append(endpoint);
@@ -153,13 +166,16 @@ namespace WeeklyReview.Client.Http
             if (response is null)
                 throw new ApiException("Response was null which was not expected.", (int)response.StatusCode, response.ReasonPhrase, (IReadOnlyDictionary<string, IEnumerable<string>>)response.Headers.ToList().ConvertAll(x => new KeyValuePair<string, IEnumerable<string>>(x.Key, x.Value)), null);
 
+            if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                return new ApiResponse<ICollection<T>>();
+
             var res = await response.Content.ReadFromJsonAsync<ICollection<T>>();
             if (res is null)
                 throw new ApiException("Response was null which was not expected.");
-            return res;
+            return new ApiResponse<ICollection<T>>(res);
         }
 
-        public virtual async Task<T> DELETEAsync<T, C>(string endpoint, CancellationToken cancellationToken)
+        public virtual async Task<ApiResponse<T>> DELETEAsync<T, C>(string endpoint, CancellationToken cancellationToken)
         {
             var urlBuilder_ = new StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append(endpoint);
@@ -170,10 +186,13 @@ namespace WeeklyReview.Client.Http
             if (response is null)
                 throw new ApiException("Response was null which was not expected.", (int)response.StatusCode, response.ReasonPhrase, (IReadOnlyDictionary<string, IEnumerable<string>>)response.Headers.ToList().ConvertAll(x => new KeyValuePair<string, IEnumerable<string>>(x.Key, x.Value)), null);
 
+            if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                return new ApiResponse<T>();
+
             var res = await response.Content.ReadFromJsonAsync<T>();
             if (res is null)
                 throw new ApiException("Response was null which was not expected.");
-            return res;
+            return new ApiResponse<T>(res);
         }
 
         public virtual async Task DELETEAsync(string endpoint, CancellationToken cancellationToken)
@@ -205,6 +224,23 @@ namespace WeeklyReview.Client.Http
             {
                 var message = "Could not deserialize the response body stream as " + typeof(T).FullName + ".";
                 throw new ApiException("Response was null which was not expected.", (int)response.StatusCode, response.ReasonPhrase, (IReadOnlyDictionary<string, IEnumerable<string>>)response.Headers.ToList().ConvertAll(x => new KeyValuePair<string, IEnumerable<string>>(x.Key, x.Value)), null);
+            }
+        }
+
+        public struct ApiResponse<T>
+        {
+            public T Value { get; set; }
+            public bool IsEmpty { get; set; }
+
+            public ApiResponse(T model)
+            {
+                Value = model;
+                IsEmpty = false;
+            }
+
+            public ApiResponse()
+            {
+                IsEmpty = true;
             }
         }
 

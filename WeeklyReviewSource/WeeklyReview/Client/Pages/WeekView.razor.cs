@@ -18,22 +18,23 @@ namespace WeeklyReview.Client.Pages
         public DateTime ViewDate = DateTime.Now;
         public ObservableCollection<ScheduleViewModel> DataSource { get; set; } = new ObservableCollection<ScheduleViewModel>();
         public List<CategoryViewModel> Categories { get; set; } = new List<CategoryViewModel>();
-        public IEnumerable<ActivityModel> Activities = new List<ActivityModel>();
-        public async Task<IEnumerable<ActivityModel>> GetActivities() => await WeeklyReviewService.Activity.GetAll(UserGuid);
-        public string EnteredActivity { get; set; }
 
         protected async override Task OnInitializedAsync()
         {
             if (DataSource.Count() == 0)
             {
-                DataSource = new ObservableCollection<ScheduleViewModel>();
-                Categories = new List<CategoryViewModel>();
-                await GenerateViewModels();
-                TimeUpdated();
+                await Update();
             }
-            Activities = await GetActivities();
 
             await base.OnInitializedAsync();
+        }
+
+        private async Task Update()
+        {
+            DataSource.Clear();
+            Categories.Clear();
+            await GenerateViewModels();
+            TimeUpdated();
         }
 
         public void TimeUpdated()
@@ -42,6 +43,13 @@ namespace WeeklyReview.Client.Pages
             minutes /= 3;
             minutes *= 15;
             ViewDate.AddMinutes(minutes - ViewDate.Minute);
+        }
+
+        public async void OnEntryAdded(EntryModel? entry)
+        {
+            await ScheduleObj.CloseQuickInfoPopupAsync();
+            await Update();
+            StateHasChanged();
         }
 
         private async Task GenerateViewModels()
@@ -55,15 +63,20 @@ namespace WeeklyReview.Client.Pages
             var entries = (await WeeklyReviewService.Entry.GetAll(UserGuid)).ToList();
             foreach (var entry in entries)
             {
-                var s = new ScheduleViewModel();
-                s.Subject = entry.Activities.ConvertAll(x => x.Name).Aggregate((x, y) => x + " + " + y);
-                s.StartTime = entry.StartTime;
-                s.EndTime = entry.EndTime is null ? entry.StartTime.AddHours(12) : entry.EndTime.Value;
-                var primaryCat = entry.Activities.ConvertAll(x => x.Category).MaxBy(x => x.Priority);
-                s.CategoryId = primaryCat.Id;
-                s.Color = primaryCat.Color;
-                DataSource.Add(s);
+                AddScheduleEntry(entry);
             }
+        }
+
+        private void AddScheduleEntry(EntryModel? entry)
+        {
+            var s = new ScheduleViewModel();
+            s.Subject = entry.Activities.ConvertAll(x => x.Name).Aggregate((x, y) => x + " + " + y);
+            s.StartTime = entry.StartTime;
+            s.EndTime = entry.EndTime is null ? entry.StartTime.AddHours(12) : entry.EndTime.Value;
+            var primaryCat = entry.Activities.ConvertAll(x => x.Category).MaxBy(x => x.Priority);
+            s.CategoryId = primaryCat.Id;
+            s.Color = primaryCat.Color;
+            DataSource.Add(s);
         }
     }
 }
