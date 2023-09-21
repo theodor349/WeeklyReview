@@ -26,6 +26,7 @@ namespace WeeklyReview.Client.Pages
                 await Update();
             }
 
+            await this.ScheduleObj.ScrollToAsync("08:00");
             await base.OnInitializedAsync();
         }
 
