@@ -1,6 +1,7 @@
 ﻿using Syncfusion.PdfExport;
 using System.ComponentModel;
 using System.Drawing;
+using WeeklyReview.Shared.Extensions;
 
 namespace WeeklyReview.Client.ViewModels
 {
@@ -14,6 +15,7 @@ namespace WeeklyReview.Client.ViewModels
 
         public TimeSpan Duration => EndTime - StartTime;
 
+        public string RgbColor => Color.ToRgb();
         public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

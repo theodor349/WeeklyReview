@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Syncfusion.Blazor.HeatMap.Internal;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using WeeklyReview.Client.Services;
 using WeeklyReview.Client.ViewModels;
 using WeeklyReview.Database.Models;
@@ -76,8 +77,14 @@ namespace WeeklyReview.Client.Pages
             s.EndTime = entry.EndTime is null ? entry.StartTime.AddHours(12) : entry.EndTime.Value;
             var primaryCat = entry.Activities.ConvertAll(x => x.Category).MaxBy(x => x.Priority);
             s.CategoryId = primaryCat.Id;
-            s.Color = primaryCat.Color;
+            s.Color = RandomColor();
             DataSource.Add(s);
+        }
+
+        private Color RandomColor()
+        {
+            var r = new Random();
+            return Color.FromArgb(r.Next(0, 255), r.Next(0, 255), r.Next(0, 255));
         }
     }
 }

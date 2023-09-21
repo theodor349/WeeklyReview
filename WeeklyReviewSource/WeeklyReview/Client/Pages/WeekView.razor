@@ -15,10 +15,12 @@
                 <div class="date-text">@(getDateHeaderText((context as TemplateContext).Date))</div>
             </DateHeaderTemplate>
         </ScheduleTemplates>
-        <ScheduleResources>
-            <ScheduleResource TItem="CategoryViewModel" TValue="int" DataSource="@Categories" Field="CategoryId" IdField="Id" ColorField="Color"></ScheduleResource>
-        </ScheduleResources>
-        <ScheduleEventSettings DataSource="@DataSource" IgnoreWhitespace="true" AllowDeleting="false" SpannedEventPlacement="@SpannedEventPlacement.TimeSlot">
+@*        <ScheduleResources>
+            <ScheduleResource TItem="CategoryViewModel" TValue="int" DataSource="@Categories" Field="CategoryId" IdField="Id" ColorField="Color" AllowMultiple="false"></ScheduleResource>
+        </ScheduleResources>*@
+        <ScheduleEvents TValue="ScheduleViewModel" EventRendered="OnEventRendered"></ScheduleEvents>
+        <ScheduleEventSettings DataSource="@DataSource"
+            IgnoreWhitespace="true" AllowDeleting="false" SpannedEventPlacement="@SpannedEventPlacement.TimeSlot">
             <Template>
                 <div class="e-appointment-details">
                     <div class="e-subject" style="color:@(TextColor((context as ScheduleViewModel).Color))">@((context as ScheduleViewModel).Subject)</div>
@@ -72,6 +74,13 @@
     public static string getDateHeaderText(DateTime date)
     {
         return date.ToString("dd dddd", CultureInfo.CurrentCulture);
+    }
+
+    public void OnEventRendered(EventRenderedArgs<ScheduleViewModel> args)
+    {
+        Dictionary<string, object> attributes = new Dictionary<string, object>();
+        attributes.Add("style", "background: " + args.Data.RgbColor);
+        args.Attributes = attributes;
     }
 
     public void Add15Minutes() => InputDate = InputDate.AddMinutes(15);
