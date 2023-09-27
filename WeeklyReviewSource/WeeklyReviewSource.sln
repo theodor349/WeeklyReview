@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeeklyReview.Shared", "Week
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeeklyReview.Shared.Tests", "WeeklyReview.Shared.Tests\WeeklyReview.Shared.Tests.csproj", "{0D30DB01-2710-4845-8355-4387C15F681E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WeeklyReview.Database", "WeeklyReview.Database\WeeklyReview.Database.csproj", "{D54934E3-25B1-47CD-8495-37EDEC981EC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeeklyReview.Database", "WeeklyReview.Database\WeeklyReview.Database.csproj", "{D54934E3-25B1-47CD-8495-37EDEC981EC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

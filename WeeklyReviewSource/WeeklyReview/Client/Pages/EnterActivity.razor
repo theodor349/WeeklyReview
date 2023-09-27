@@ -1,5 +1,17 @@
 ﻿@page "/enteractivity"
+@using Syncfusion.Blazor.Notifications;
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.Buttons
+@inject SfDialogService DialogService
+
 <PageTitle>Enter Activity</PageTitle>
+
+<div class="col-lg-12 control-section toast-default-section">
+    <SfToast @ref="ToastObj" Title="Success" Content="A new entry has been added" Timeout="2000" Icon="e-meeting" CssClass="e-toast-success">
+        <ToastPosition X="Right" Y="Bottom"></ToastPosition>
+    </SfToast>
+</div>
+
 <SfCard style="max-width: 400px">
     <CardContent>
         <div class="container-fluid">
@@ -113,6 +125,12 @@
         ViewDate = args.Value;
         TimeUpdated();
         StateHasChanged();
+    }
+
+    SfToast ToastObj;
+    private async Task ShowSuccessToast()
+    {
+        await this.ToastObj.ShowAsync();
     }
 }
 
