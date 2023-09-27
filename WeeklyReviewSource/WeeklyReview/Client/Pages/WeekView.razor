@@ -101,9 +101,9 @@
     public string TextColor(ScheduleViewModel model)
     {
         if ((model.RgbR * 0.299 + model.RgbG * 0.587 + model.RgbB * 0.114) > 186)
-            return "white";
-        else
             return "black";
+        else
+            return "white";
     }
 
     private void OnPopupOpen(PopupOpenEventArgs<ScheduleViewModel> args)

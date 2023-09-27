@@ -1,4 +1,6 @@
 ﻿using System.Drawing;
+using System.Text.Json.Serialization;
+using WeeklyReview.Database.Converters;
 
 namespace WeeklyReview.Database.Models
 {
@@ -8,6 +10,7 @@ namespace WeeklyReview.Database.Models
         public string Name { get; set; }
         public string NormalizedName { get; set; }
         public int Priority { get; set; }
+        [JsonConverter(typeof(JsonColorConverter))]
         public Color Color { get; set; }
         public bool Deleted { get; set; }
         public Guid UserGuid { get; set; }

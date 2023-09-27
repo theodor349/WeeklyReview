@@ -6,6 +6,8 @@ using Syncfusion.Blazor.PdfViewer;
 using Syncfusion.Blazor.Kanban.Internal;
 using System.Reflection.PortableExecutable;
 using static WeeklyReview.Client.Http.WeeklyReviewApiClient;
+using WeeklyReview.Database.Models;
+using WeeklyReview.Database.Converters;
 
 namespace WeeklyReview.Client.Http
 {
@@ -41,7 +43,7 @@ namespace WeeklyReview.Client.Http
         #region Request Pipeline
         void UpdateJsonSerializerSettings(JsonSerializerOptions settings)
         {
-
+            settings.Converters.Add(new JsonColorConverter());
         }
 
         void PrepareRequest(HttpClient client, HttpRequestMessage request, StringBuilder urlBuilder)
