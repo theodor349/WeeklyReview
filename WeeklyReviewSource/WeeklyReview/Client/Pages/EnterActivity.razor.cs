@@ -86,6 +86,7 @@ namespace WeeklyReview.Client.Pages
             }
             Activities.AddRange(newActs);
 
+            await ShowSuccessToast();
             if (OnAfterEntryAdded != null) 
                 OnAfterEntryAdded.Invoke(entry);
         }
