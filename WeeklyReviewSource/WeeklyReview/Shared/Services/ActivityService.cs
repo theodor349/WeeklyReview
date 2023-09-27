@@ -21,19 +21,19 @@ namespace WeeklyReview.Shared.Services
             _activityChangeService = activityChangeService;
         }
 
-        public IEnumerable<ActivityModel> GetAll(Guid userGuid)
+        public async Task<IEnumerable<ActivityModel>> GetAll(Guid userGuid)
         {
-            return _db.Activity.Where(x => x.UserGuid == userGuid);
+            return await _db.Activity.Where(x => x.UserGuid == userGuid).ToListAsync();
         }
 
-        public ActivityModel? Get(int key, Guid userGuid)
+        public async Task<ActivityModel?> Get(int key, Guid userGuid)
         {
-            return _db.Activity.SingleOrDefault(x => x.Id == key && x.UserGuid == userGuid);
+            return await _db.Activity.SingleOrDefaultAsync(x => x.Id == key && x.UserGuid == userGuid);
         }
 
-        public ActivityModel Delete(int key, Guid userGuid)
+        public async Task<ActivityModel> Delete(int key, Guid userGuid)
         {
-            var model = _db.Activity.SingleOrDefault(x => x.Id == key && x.UserGuid == userGuid);
+            var model = await _db.Activity.SingleOrDefaultAsync(x => x.Id == key && x.UserGuid == userGuid);
             if (model is null)
                 throw new KeyNotFoundException($"Model not found with id {key}");
 
@@ -42,13 +42,13 @@ namespace WeeklyReview.Shared.Services
                 throw new InvalidOperationException ($"It is not possible to delete an activity which is still referenced by entries");
 
             model.Deleted = true;
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
             return model;
         }
 
-        public ActivityChangeModel Convert(int sKey, int dKey, Guid userGuid)
+        public async Task<ActivityChangeModel> Convert(int sKey, int dKey, Guid userGuid)
         {
-            return _activityChangeService.ChangeActivity(sKey, dKey, userGuid);
+            return await _activityChangeService.ChangeActivity(sKey, dKey, userGuid);
         }
     }
 }

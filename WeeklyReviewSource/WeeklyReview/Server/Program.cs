@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Microsoft.OData.ModelBuilder;
+using WeeklyReview.Database.Converters;
 using WeeklyReview.Database.Models;
 using WeeklyReview.Database.Persitance;
 using WeeklyReview.Server.Persitance;
@@ -54,6 +55,10 @@ builder.Services
         {
             options.Filters.Add<ExceptionFilter>();
         })
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonColorConverter());
+    })
     .AddOData(options => options.EnableQueryFeatures(null)
     .EnableQueryFeatures(null));
 builder.Services.AddRazorPages();

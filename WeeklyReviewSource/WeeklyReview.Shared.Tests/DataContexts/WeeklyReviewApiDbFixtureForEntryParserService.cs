@@ -49,6 +49,8 @@ namespace WeeklyReview.Shared.Tests.DataContexts
                             context.SaveChanges();
                             AddCaseUser2(context);
                             context.SaveChanges();
+                            AddCaseUser3(context);
+                            context.SaveChanges();
                             transaction.Commit();
                         }
                     }
@@ -61,29 +63,35 @@ namespace WeeklyReview.Shared.Tests.DataContexts
         private async void AddCaseUser1(WeeklyReviewDbContext context)
         {
             var user = users[1];
+            var defaultCategory = new CategoryModel("", 0, Color.White, user);
 
             var cSports = new CategoryModel("Sports", 1, Color.Green, user);
             var cExercise = new CategoryModel("Exercise", 1, Color.Green, user);
             var cCompetitions = new CategoryModel("Difficult Competions", 1, Color.Green, user);
-            var aSwim = new ActivityModel("Swim", false, user);
+            var aSwim = new ActivityModel("Swim", false, defaultCategory, user);
             var aBike = new ActivityModel("Sports: Bike", false, cSports, user);
-            var aDance = new ActivityModel("Dance", false, user);
+            var aDance = new ActivityModel("Dance", false, defaultCategory, user);
             var aRun = new ActivityModel("Exercise: Run", false, cExercise, user);
             var aRace = new ActivityModel("Difficult Competions: Participating in Race", false, cExercise, user);
 
-            context.Category.AddRange(cSports, cExercise, cCompetitions);
+            context.Category.AddRange(defaultCategory, cSports, cExercise, cCompetitions);
             context.Activity.AddRange(aSwim, aBike, aDance, aRun, aRace);
         }
 
         private void AddCaseUser2(WeeklyReviewDbContext context)
         {
             var user = users[2];
+            var defaultCategory = new CategoryModel("", 0, Color.White, user);
 
             var cSports = new CategoryModel("Sports", 1, Color.Green, user);
-            var aBike = new ActivityModel("Sports: Bike", false, user);
+            var aBike = new ActivityModel("Sports: Bike", false, defaultCategory, user);
 
-            context.Category.AddRange(cSports);
+            context.Category.AddRange(defaultCategory, cSports);
             context.Activity.AddRange(aBike);
+        }
+
+        private void AddCaseUser3(WeeklyReviewDbContext context)
+        {
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WeeklyReview.Server.Persitance;
 
@@ -11,9 +12,11 @@ using WeeklyReview.Server.Persitance;
 namespace WeeklyReview.Server.Migrations
 {
     [DbContext(typeof(WeeklyReviewApiDbContext))]
-    partial class WeeklyReviewApiDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230920163607_AfterFrontend")]
+    partial class AfterFrontend
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

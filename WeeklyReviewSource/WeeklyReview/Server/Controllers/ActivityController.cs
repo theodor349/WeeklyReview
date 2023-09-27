@@ -25,28 +25,28 @@ namespace WeeklyReview.Server.Controllers
 
         [HttpGet]
         [EnableQuery]
-        public ActionResult<IEnumerable<ActivityModel>> GetAll()
+        public async Task<ActionResult<IEnumerable<ActivityModel>>> GetAll()
         {
-            return Ok(_activityService.GetAll(UserGuid));
+            return Ok(await _activityService.GetAll(UserGuid));
         }
 
         [HttpGet("{key}")]
         [EnableQuery]
-        public ActionResult<ActivityModel> Get([FromRoute] int key)
+        public async Task<ActionResult<ActivityModel>> Get([FromRoute] int key)
         {
-            return Ok(_activityService.Get(key, UserGuid));
+            return Ok(await _activityService.Get(key, UserGuid));
         }
 
         [HttpDelete("{key}")]
-        public ActionResult<ActivityModel> Delete([FromRoute] int key)
+        public async Task<ActionResult<ActivityModel>> Delete([FromRoute] int key)
         {
-            return Ok(_activityService.Delete(key, UserGuid));
+            return Ok(await _activityService.Delete(key, UserGuid));
         }
 
         [HttpPost("{sKey}/ChangeTo/{dKey}")]
-        public ActionResult<ActivityChangeModel> Create([FromRoute] int sKey, [FromRoute] int dKey)
+        public async Task<ActionResult<ActivityChangeModel>> Create([FromRoute] int sKey, [FromRoute] int dKey)
         {
-            return Ok(_activityService.Convert(sKey, dKey, UserGuid));
+            return Ok(await _activityService.Convert(sKey, dKey, UserGuid));
         }
     }
 }

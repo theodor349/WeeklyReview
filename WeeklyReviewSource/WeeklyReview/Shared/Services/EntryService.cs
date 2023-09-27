@@ -13,30 +13,31 @@ namespace WeeklyReview.Shared.Services
     internal class EntryService : IEntryService
     {
         private readonly WeeklyReviewDbContext _db;
-        private readonly INewEntryAdderService _entryAdderService;
-        private readonly INewEntryParserService _entryParserService;
+        private readonly IEntryAdderService _entryAdderService;
+        private readonly IEntryParserService _entryParserService;
 
-        public EntryService(WeeklyReviewDbContext db, INewEntryAdderService entryAdderService, INewEntryParserService entryParserService)
+        public EntryService(WeeklyReviewDbContext db, IEntryAdderService entryAdderService, IEntryParserService entryParserService)
         {
             _db = db;
             _entryAdderService = entryAdderService;
             _entryParserService = entryParserService;
         }
 
-        public IEnumerable<EntryModel> GetAll(Guid userGuid)
+        public async Task<IEnumerable<EntryModel>> GetAll(Guid userGuid)
         {
-            return _db.Entry.Include(x => x.Activities).Where(x => x.UserGuid == userGuid);
+            var res = await _db.Entry.Include(x => x.Activities).ThenInclude(x => x.Category).Where(x => x.UserGuid == userGuid && x.Deleted == false).ToListAsync();
+            return res;
         }
 
-        public EntryModel? Get(int key, Guid userGuid)
+        public async Task<EntryModel?> Get(int key, Guid userGuid)
         {
-            return _db.Entry.Include(x => x.Activities).SingleOrDefault(x => x.Id == key && x.UserGuid == userGuid);
+            return await _db.Entry.Include(x => x.Activities).SingleOrDefaultAsync(x => x.Id == key && x.UserGuid == userGuid);
         }
 
-        public EntryModel? Create(EnterEntryModel model, Guid userGuid)
+        public async Task<EntryModel?> Create(EnterEntryModel model, Guid userGuid)
         {
-            var activities = _entryParserService.ParseEntry(model.Entries, userGuid);
-            var entry = _entryAdderService.AddEntry(model.Date, activities, userGuid);
+            var activities = await _entryParserService.ParseEntry(model.Entries, userGuid);
+            var entry = await _entryAdderService.AddEntry(model.Date, activities, userGuid);
             return entry;
         }
     }

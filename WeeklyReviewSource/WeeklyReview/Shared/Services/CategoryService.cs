@@ -19,38 +19,38 @@ namespace WeeklyReview.Shared.Services
             _db = db;
         }
 
-        public IEnumerable<CategoryModel> GetAll(Guid userGuid)
+        public async Task<IEnumerable<CategoryModel>> GetAll(Guid userGuid)
         {
-            return _db.Category.Where(x => x.UserGuid == userGuid);
+            return await _db.Category.Where(x => x.UserGuid == userGuid).ToListAsync();
         }
 
-        public CategoryModel? Get(int key, Guid userGuid)
+        public async Task<CategoryModel?> Get(int key, Guid userGuid)
         {
-            return _db.Category.SingleOrDefault(x => x.Id == key && x.UserGuid == userGuid);
+            return await _db.Category.SingleOrDefaultAsync(x => x.Id == key && x.UserGuid == userGuid);
         }
 
-        public CategoryModel Delete(int key, Guid userGuid)
+        public async Task<CategoryModel> Delete(int key, Guid userGuid)
         {
-            var model = _db.Category.SingleOrDefault(x => x.Id == key && x.UserGuid == userGuid);
+            var model = await _db.Category.SingleOrDefaultAsync(x => x.Id == key && x.UserGuid == userGuid);
             if (model is null)
                 throw new KeyNotFoundException($"Model not found with id {key}");
 
-            var activitiesReferencesActivity = _db.Activity.Include(x => x.Category).Any(x => x.Category == model && x.Deleted == false);
+            var activitiesReferencesActivity = await _db.Activity.Include(x => x.Category).AnyAsync(x => x.Category == model && x.Deleted == false);
             if (activitiesReferencesActivity)
                 throw new InvalidOperationException($"It is not possible to delete a category which is still referenced by activities");
 
             model.Deleted = true;
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
             return model;
         }
 
-        public CategoryModel ChangeColor(int key, Color color, Guid userGuid)
+        public async Task<CategoryModel> ChangeColor(int key, Color color, Guid userGuid)
         {
-            var model = _db.Category.SingleOrDefault(x => x.Id == key && x.UserGuid == userGuid);
+            var model = await _db.Category.SingleOrDefaultAsync(x => x.Id == key && x.UserGuid == userGuid);
             if (model is null)
                 throw new KeyNotFoundException($"Model not found with id {key}");
             model.Color = color;
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
             return model;
         }
     }

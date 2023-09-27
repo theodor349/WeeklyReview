@@ -1,72 +1,63 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
-using System.Net.Http;
-using System.Net.Http.Json;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.Web.Virtualization;
-using Microsoft.AspNetCore.Components.WebAssembly.Http;
-using Microsoft.JSInterop;
-using WeeklyReview.Client;
-using WeeklyReview.Client.Shared;
-using Syncfusion.Blazor;
-using Syncfusion.Blazor.Calendars;
-using Syncfusion.Blazor.Schedule;
-using Syncfusion.Blazor.Cards;
-using Syncfusion.Blazor.Buttons;
-using Syncfusion.Blazor.SplitButtons;
-using Syncfusion.Blazor.DropDowns;
-using WeeklyReview.Client.ViewModels;
-using WeeklyReview.Client.Services;
+using WeeklyReview.Database.Models;
+using WeeklyReview.Shared.Models;
 using WeeklyReview.Shared.Services;
-using WeeklyReview.Shared.Models.DTOs;
 
 namespace WeeklyReview.Client.Pages
 {
     public partial class EnterActivity
     {
         [Inject]
-        public IDataService DataService { get; set; }
-        [Inject]
-        public IEntryAdderService EntryAdderService { get; set; }
+        public IWeeklyReviewService WeeklyReviewService { get; set; }
+        public Guid UserGuid = new Guid("24fe9480-4e7a-4515-b96c-248171496591");
 
-        public DateTime ViewDate = DateTime.Now;
         public bool IsDiscord { get; set; }
         public List<string> InputActivities { get; set; } = new List<string>();
         public List<string> InputSocials { get; set; } = new List<string>();
 
-        public List<ActivityDto> Activities
-        {
-            get
-            {
-                var task = DataService.GetActivities();
-                task.Wait();
-                return task.Result.ToList();
-            }
-        }
+        public List<ActivityModel> Activities = new List<ActivityModel>();
+        public List<string> Socials = new List<string>();
+        public async Task<List<ActivityModel>> GetActivities()
+            => (await WeeklyReviewService.Activity.GetAll(UserGuid)).ToList();
 
-        public List<string> Socials
-        {
-            get
-            {
-                var task = DataService.GetSocials();
-                task.Wait();
-                return task.Result.ToList();
-            }
-        }
+        public async Task<List<string>> GetSocials()
+            => (await WeeklyReviewService.Activity.GetAll(UserGuid)).ToList().ConvertAll(x => x.Name).ToList();
 
         protected override void OnParametersSet()
         {
             base.OnParametersSet();
             TimeUpdated();
 
-            AddInputActivity();
-            AddInputSocial();
+            if (ResetOnInit)
+            {
+                for (int i = 0; i < InputActivities.Count; i++)
+                {
+                    RemoveInputActivity();
+                }
+                for (int i = 0; i < InputSocials.Count; i++)
+                {
+                    RemoveInputSocial();
+                }
+            }
+
+            if (InputActivities.Count() == 0)
+            {
+                AddInputActivity();
+                AddInputSocial();
+            }
+        }
+
+        protected override async Task OnParametersSetAsync()
+        {
+            await base.OnParametersSetAsync();
+
+            await GetData();
+        }
+
+        private async Task GetData()
+        {
+            Activities = await GetActivities();
+            Socials = await GetSocials();
         }
 
         public async Task SubmitEntry()
@@ -75,12 +66,19 @@ namespace WeeklyReview.Client.Pages
             submittedActivities.AddRange(InputActivities.Where(x => !string.IsNullOrWhiteSpace(x)));
             submittedActivities.AddRange(InputSocials.Where(x => !string.IsNullOrWhiteSpace(x)).ToList().ConvertAll(x => IsDiscord ? "Discord: " + x : "Social: " + x));
 
-            await EntryAdderService.AddEntry(ViewDate, submittedActivities);
+            var entry = await WeeklyReviewService.Entry.Create(new EnterEntryModel() { Date = ViewDate, Entries = submittedActivities }, UserGuid);
 
-            for (int i = 0; i < InputActivities.Count(); i++)
-                RemoveInputActivity();
-            for (int i = 0; i < InputSocials.Count(); i++)
-                RemoveInputSocial();
+            var newActs = new List<ActivityModel>();
+            foreach (var a in entry.Activities)
+            {
+                if (Activities.Any(x => x.Id == a.Id))
+                    continue;
+                newActs.Add(a);
+            }
+            Activities.AddRange(newActs);
+
+            if (OnAfterEntryAdded != null) 
+                OnAfterEntryAdded.Invoke(entry);
         }
 
         private void AddInputActivity()

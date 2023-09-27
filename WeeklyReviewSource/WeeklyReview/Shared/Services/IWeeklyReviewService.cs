@@ -38,33 +38,33 @@ namespace WeeklyReview.Shared.Services
 
     public interface IActivityService
     {
-        ActivityChangeModel Convert(int sKey, int dKey, Guid userGuid);
-        ActivityModel Delete(int key, Guid userGuid);
-        ActivityModel? Get(int key, Guid userGuid);
-        IEnumerable<ActivityModel> GetAll(Guid userGuid);
+        Task<ActivityChangeModel> Convert(int sKey, int dKey, Guid userGuid);
+        Task<ActivityModel> Delete(int key, Guid userGuid);
+        Task<ActivityModel?> Get(int key, Guid userGuid);
+        Task<IEnumerable<ActivityModel>> GetAll(Guid userGuid);
     }
 
     public interface ICategoryService
     {
-        CategoryModel ChangeColor(int key, Color color, Guid userGuid);
-        CategoryModel Delete(int key, Guid userGuid);
-        CategoryModel? Get(int key, Guid userGuid);
-        IEnumerable<CategoryModel> GetAll(Guid userGuid);
+        Task<CategoryModel> ChangeColor(int key, Color color, Guid userGuid);
+        Task<CategoryModel> Delete(int key, Guid userGuid);
+        Task<CategoryModel?> Get(int key, Guid userGuid);
+        Task<IEnumerable<CategoryModel>> GetAll(Guid userGuid);
     }
 
     public interface IEntryService
     {
-        EntryModel? Create(EnterEntryModel model, Guid userGuid);
-        EntryModel? Get(int key, Guid userGuid);
-        IEnumerable<EntryModel> GetAll(Guid userGuid);
+        Task<EntryModel?> Create(EnterEntryModel model, Guid userGuid);
+        Task<EntryModel?> Get(int key, Guid userGuid);
+        Task<IEnumerable<EntryModel>> GetAll(Guid userGuid);
     }
 
     public interface IActivityChangeService
     {
-        ActivityChangeModel ChangeActivity(int sourceKey, int destinationKey, Guid userGuid);
-        void RollBackActivityChange(int key, Guid UserGuid);
-        ActivityChangeModel Delete(int key, Guid UserGuid);
-        ActivityChangeModel? Get(int key, Guid UserGuid);
-        IEnumerable<ActivityChangeModel> GetAll(Guid UserGuid);
+        Task<ActivityChangeModel> ChangeActivity(int sourceKey, int destinationKey, Guid userGuid);
+        Task RollBackActivityChange(int key, Guid UserGuid);
+        Task<ActivityChangeModel> Delete(int key, Guid UserGuid);
+        Task<ActivityChangeModel?> Get(int key, Guid UserGuid);
+        Task<IEnumerable<ActivityChangeModel>> GetAll(Guid UserGuid);
     }
 }

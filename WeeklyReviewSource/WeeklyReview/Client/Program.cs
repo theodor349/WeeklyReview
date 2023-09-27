@@ -1,9 +1,14 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using WeeklyReview.Client;
+using Microsoft.EntityFrameworkCore;
 using Syncfusion.Blazor;
+using WeeklyReview.Client;
+using WeeklyReview.Client.Http;
+using WeeklyReview.Client.Persistance;
 using WeeklyReview.Client.Services;
+using WeeklyReview.Database.Persitance;
+using WeeklyReview.Shared;
 using WeeklyReview.Shared.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -15,9 +20,20 @@ builder.Services.AddHttpClient("WeeklyReview.ServerAPI", client => client.BaseAd
 
 // Supply HttpClient instances that include access tokens when making requests to the server project
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("WeeklyReview.ServerAPI"));
-builder.Services.AddScoped<IDataService, DataService>();
-builder.Services.AddTransient<IEntryParserService, EntryParserService>();
-builder.Services.AddTransient<IEntryAdderService, EntryAdderService>();
+builder.Services.AddDbContext<WeeklyReviewBlazorClientDbContext>(options =>
+{
+    //options.UseLazyLoadingProxies();
+    options.UseInMemoryDatabase(databaseName: "WeeklyReview"); 
+});
+builder.Services.AddScoped<WeeklyReviewDbContext, WeeklyReviewBlazorClientDbContext>();
+builder.Services.AddSharedServices();
+builder.Services.AddTransient<IClientWeeklyReviewService, ClientWeeklyReviewService>();
+builder.Services.AddTransient<WeeklyReviewApiClient>();
+builder.Services.AddTransient<IActivityChangeService, ActivityChangeService>();
+builder.Services.AddTransient<IActivityService, ActivityService>();
+builder.Services.AddTransient<ICategoryService, CategoryService>();
+builder.Services.AddTransient<IEntryService, EntryService>();
+builder.Services.AddTransient<IApiWeeklyReviewService, ApiWeeklyReviewService>();
 
 builder.Services.AddMsalAuthentication(options =>
 {
@@ -27,6 +43,5 @@ builder.Services.AddMsalAuthentication(options =>
 
 Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Mgo+DSMBaFt+QHJqVk1hXk5Hd0BLVGpAblJ3T2ZQdVt5ZDU7a15RRnVfRF1iSXpSckBkWnlddw==;Mgo+DSMBPh8sVXJ1S0R+X1pFdEBBXHxAd1p/VWJYdVt5flBPcDwsT3RfQF5jT35SdkFiXXpZdXdVQQ==;ORg4AjUWIQA/Gnt2VFhiQlJPd11dXmJWd1p/THNYflR1fV9DaUwxOX1dQl9gSXhTd0VnWHtbd3JcQ2c=;MjI3OTc0N0AzMjMxMmUzMDJlMzBHSW9lQ2ZJeUFFZWZmSmRncjA5VXpoWmxicmlEVWlXZXRBMDBOcnh1WG9VPQ==;MjI3OTc0OEAzMjMxMmUzMDJlMzBBTHRla2VSN0d0SDF1Mk5vR1M5bmhuSXVYcXhnRUF2RStJRUdFeTUzcTN3PQ==;NRAiBiAaIQQuGjN/V0d+Xk9HfV5AQmBIYVp/TGpJfl96cVxMZVVBJAtUQF1hSn5VdkRjXX5adXxQRmhb;MjI3OTc1MEAzMjMxMmUzMDJlMzBkaUdHMXUxb2htaVdKdWdTYVJqZGR1bGxpaCtITitzVE1VL0RKaDNxSFJNPQ==;MjI3OTc1MUAzMjMxMmUzMDJlMzBVSjJHc2lOWkI0bG1jWVJhYXpVU3NlQnNrZDhpVXVxKzVtSEhYRVUyNGNrPQ==;Mgo+DSMBMAY9C3t2VFhiQlJPd11dXmJWd1p/THNYflR1fV9DaUwxOX1dQl9gSXhTd0VnWHtbeHxTRGU=;MjI3OTc1M0AzMjMxMmUzMDJlMzBlemtDclVYUFJTVFlzVU04SVdWcjkzdWl4WlB2cG0yZFhQdG94OGZLZTIwPQ==;MjI3OTc1NEAzMjMxMmUzMDJlMzBuM1dCY010RDdmaXdKck5EaGJyTmRxeml0Y2lVM0hhVFloc003NnRqbUJrPQ==;MjI3OTc1NUAzMjMxMmUzMDJlMzBkaUdHMXUxb2htaVdKdWdTYVJqZGR1bGxpaCtITitzVE1VL0RKaDNxSFJNPQ==");
 builder.Services.AddSyncfusionBlazor();
-builder.Services.AddScoped<DataService>();
 
 await builder.Build().RunAsync();
