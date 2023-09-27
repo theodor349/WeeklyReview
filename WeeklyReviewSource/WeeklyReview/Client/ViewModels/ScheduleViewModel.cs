@@ -9,13 +9,15 @@ namespace WeeklyReview.Client.ViewModels
     {
         public string Subject { get; set; }
         public int CategoryId { get; set; }
-        public Color Color { get; set; }
+        public string RgbColorString { get; set; }
+        public int RgbR { get; set; }
+        public int RgbG { get; set; }
+        public int RgbB { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
 
         public TimeSpan Duration => EndTime - StartTime;
 
-        public string RgbColor => Color.ToRgb();
         public event PropertyChangedEventHandler? PropertyChanged;
     }
 }

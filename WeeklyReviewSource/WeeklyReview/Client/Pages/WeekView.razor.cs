@@ -5,6 +5,7 @@ using System.Drawing;
 using WeeklyReview.Client.Services;
 using WeeklyReview.Client.ViewModels;
 using WeeklyReview.Database.Models;
+using WeeklyReview.Shared.Extensions;
 using WeeklyReview.Shared.Services;
 
 namespace WeeklyReview.Client.Pages
@@ -18,7 +19,6 @@ namespace WeeklyReview.Client.Pages
         public DateTime InputDate = DateTime.Now;
         public DateTime ViewDate = DateTime.Now;
         public ObservableCollection<ScheduleViewModel> DataSource { get; set; } = new ObservableCollection<ScheduleViewModel>();
-        public List<CategoryViewModel> Categories { get; set; } = new List<CategoryViewModel>();
 
         protected async override Task OnInitializedAsync()
         {
@@ -34,7 +34,6 @@ namespace WeeklyReview.Client.Pages
         private async Task Update()
         {
             DataSource.Clear();
-            Categories.Clear();
             await GenerateViewModels();
             TimeUpdated();
         }
@@ -56,12 +55,6 @@ namespace WeeklyReview.Client.Pages
 
         private async Task GenerateViewModels()
         {
-            var categories = (await WeeklyReviewService.Category.GetAll(UserGuid)).ToList();
-            foreach (var cat in categories)
-            {
-                Categories.Add(new CategoryViewModel(cat));
-            }
-
             var entries = (await WeeklyReviewService.Entry.GetAll(UserGuid)).ToList();
             foreach (var entry in entries)
             {
@@ -77,7 +70,11 @@ namespace WeeklyReview.Client.Pages
             s.EndTime = entry.EndTime is null ? entry.StartTime.AddHours(12) : entry.EndTime.Value;
             var primaryCat = entry.Activities.ConvertAll(x => x.Category).MaxBy(x => x.Priority);
             s.CategoryId = primaryCat.Id;
-            s.Color = RandomColor();
+            var c = primaryCat.Color;
+            s.RgbColorString = c.ToRgb();
+            s.RgbR = c.R;
+            s.RgbG = c.G;
+            s.RgbB = c.B;
             DataSource.Add(s);
         }
 

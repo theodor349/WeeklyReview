@@ -23,10 +23,10 @@
             IgnoreWhitespace="true" AllowDeleting="false" SpannedEventPlacement="@SpannedEventPlacement.TimeSlot">
             <Template>
                 <div class="e-appointment-details">
-                    <div class="e-subject" style="color:@(TextColor((context as ScheduleViewModel).Color))">@((context as ScheduleViewModel).Subject)</div>
+                    <div class="e-subject" style="color:@(TextColor((context as ScheduleViewModel)))">@((context as ScheduleViewModel).Subject)</div>
                     @if((context as ScheduleViewModel).Duration.TotalMinutes > 15)
                     {
-                        <div class="e-time" style="color:@(TextColor((context as ScheduleViewModel).Color))">@((context as ScheduleViewModel).StartTime.ToString("HH:mm")) - @((context as ScheduleViewModel).EndTime.ToString("HH:mm"))</div>
+                        <div class="e-time" style="color:@(TextColor((context as ScheduleViewModel)))">@((context as ScheduleViewModel).StartTime.ToString("HH:mm")) - @((context as ScheduleViewModel).EndTime.ToString("HH:mm"))</div>
                     }
                 </div>
             </Template>
@@ -79,7 +79,7 @@
     public void OnEventRendered(EventRenderedArgs<ScheduleViewModel> args)
     {
         Dictionary<string, object> attributes = new Dictionary<string, object>();
-        attributes.Add("style", "background: " + args.Data.RgbColor);
+        attributes.Add("style", "background: " + args.Data.RgbColorString);
         args.Attributes = attributes;
     }
 
@@ -98,9 +98,9 @@
         StateHasChanged();
     }
 
-    public string TextColor(Color background)
+    public string TextColor(ScheduleViewModel model)
     {
-        if ((background.R * 0.299 + background.G * 0.587 + background.B * 0.114) > 186)
+        if ((model.RgbR * 0.299 + model.RgbG * 0.587 + model.RgbB * 0.114) > 186)
             return "white";
         else
             return "black";
