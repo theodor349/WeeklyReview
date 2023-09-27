@@ -15,13 +15,13 @@ namespace WeeklyReview.Client.Pages
         public List<string> InputActivities { get; set; } = new List<string>();
         public List<string> InputSocials { get; set; } = new List<string>();
 
-        public IEnumerable<ActivityModel> Activities = new List<ActivityModel>();
-        public IEnumerable<string> Socials = new List<string>();
-        public async Task<IEnumerable<ActivityModel>> GetActivities()
-            => await WeeklyReviewService.Activity.GetAll(UserGuid);
+        public List<ActivityModel> Activities = new List<ActivityModel>();
+        public List<string> Socials = new List<string>();
+        public async Task<List<ActivityModel>> GetActivities()
+            => (await WeeklyReviewService.Activity.GetAll(UserGuid)).ToList();
 
-        public async Task<IEnumerable<string>> GetSocials()
-            => (await WeeklyReviewService.Activity.GetAll(UserGuid)).ToList().ConvertAll(x => x.Name);
+        public async Task<List<string>> GetSocials()
+            => (await WeeklyReviewService.Activity.GetAll(UserGuid)).ToList().ConvertAll(x => x.Name).ToList();
 
         protected override void OnParametersSet()
         {
@@ -50,7 +50,12 @@ namespace WeeklyReview.Client.Pages
         protected override async Task OnParametersSetAsync()
         {
             await base.OnParametersSetAsync();
-         
+
+            await GetData();
+        }
+
+        private async Task GetData()
+        {
             Activities = await GetActivities();
             Socials = await GetSocials();
         }
@@ -63,7 +68,16 @@ namespace WeeklyReview.Client.Pages
 
             var entry = await WeeklyReviewService.Entry.Create(new EnterEntryModel() { Date = ViewDate, Entries = submittedActivities }, UserGuid);
 
-            if(OnAfterEntryAdded != null) 
+            var newActs = new List<ActivityModel>();
+            foreach (var a in entry.Activities)
+            {
+                if (Activities.Any(x => x.Id == a.Id))
+                    continue;
+                newActs.Add(a);
+            }
+            Activities.AddRange(newActs);
+
+            if (OnAfterEntryAdded != null) 
                 OnAfterEntryAdded.Invoke(entry);
         }
 
