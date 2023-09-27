@@ -66,6 +66,15 @@ namespace WeeklyReview.Client.Pages
             submittedActivities.AddRange(InputActivities.Where(x => !string.IsNullOrWhiteSpace(x)));
             submittedActivities.AddRange(InputSocials.Where(x => !string.IsNullOrWhiteSpace(x)).ToList().ConvertAll(x => IsDiscord ? "Discord: " + x : "Social: " + x));
 
+            foreach (var act in submittedActivities)
+            {
+                if(!Activities.Any(x => x.Name == act))
+                {
+                    if (!await ConfirmNewEntry(act))
+                        return;
+                }
+            }
+
             var entry = await WeeklyReviewService.Entry.Create(new EnterEntryModel() { Date = ViewDate, Entries = submittedActivities }, UserGuid);
 
             var newActs = new List<ActivityModel>();
@@ -79,6 +88,13 @@ namespace WeeklyReview.Client.Pages
 
             if (OnAfterEntryAdded != null) 
                 OnAfterEntryAdded.Invoke(entry);
+        }
+
+        private async Task<bool> ConfirmNewEntry(string act)
+        {
+            bool isConfirm = await DialogService.ConfirmAsync($"You have never entered ´{act}´, are you sure?", "Add new Activity");
+            string confirmMessage = isConfirm ? "confirmed" : "canceled";
+            return isConfirm;
         }
 
         private void AddInputActivity()

@@ -1,5 +1,14 @@
 ﻿@page "/enteractivity"
+@using Syncfusion.Blazor.Popups
+@using Syncfusion.Blazor.Buttons
+@inject SfDialogService DialogService
+
 <PageTitle>Enter Activity</PageTitle>
+
+<div class="status" style="padding-top:10px">
+    @DialogStatus
+</div>
+
 <SfCard style="max-width: 400px">
     <CardContent>
         <div class="container-fluid">
