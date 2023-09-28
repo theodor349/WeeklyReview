@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.OData.Routing.Controllers;
 
 namespace WeeklyReview.Server.Controllers.Internal
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]")]
     public class GenericAuthorizedApiController : ODataController
