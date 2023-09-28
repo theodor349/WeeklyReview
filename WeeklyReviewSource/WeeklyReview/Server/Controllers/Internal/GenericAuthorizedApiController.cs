@@ -1,6 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Routing.Controllers;
+using System.Security.Claims;
+using System.DirectoryServices.AccountManagement;
+using System.Security.Principal;
+
 
 namespace WeeklyReview.Server.Controllers.Internal
 {
@@ -9,7 +14,15 @@ namespace WeeklyReview.Server.Controllers.Internal
     [Route("api/v{version:apiVersion}/[controller]")]
     public class GenericAuthorizedApiController : ODataController
     {
-        public Guid UserGuid => new Guid("24fe9480-4e7a-4515-b96c-248171496591");
+        public Guid UserGuid
+        {
+            get
+            {
+                var guidString = User.Claims.First(x => x.Type.Contains("objectidentifier")).Value;
+                var userGuid = new Guid(guidString);
+                return userGuid;
+            }
+        }
 
         public GenericAuthorizedApiController()
         {

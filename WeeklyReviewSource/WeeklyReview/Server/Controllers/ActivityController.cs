@@ -27,6 +27,7 @@ namespace WeeklyReview.Server.Controllers
         [EnableQuery]
         public async Task<ActionResult<IEnumerable<ActivityModel>>> GetAll()
         {
+            var guid = UserGuid;
             return Ok(await _activityService.GetAll(UserGuid));
         }
 
