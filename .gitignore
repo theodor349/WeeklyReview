@@ -349,3 +349,9 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 /WeeklyReviewSource/WeeklyReviewSource.lutconfig
+/WeeklyReviewSource/WeeklyReview/Server/appsettings.Release.json
+/WeeklyReviewSource/WeeklyReview/Client/wwwroot/appsettings.Release.json
+/WeeklyReviewSource/WeeklyReview/Client/Properties/serviceDependencies.local.json
+/WeeklyReviewSource/WeeklyReview/Client/wwwroot/appsettings.Production.json
+/WeeklyReviewSource/WeeklyReview/Server/appsettings.Production.json
+/WeeklyReviewSource/WeeklyReview/Server/appsettings.Development.json
