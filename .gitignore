@@ -355,3 +355,4 @@ MigrationBackup/
 /WeeklyReviewSource/WeeklyReview/Client/wwwroot/appsettings.Production.json
 /WeeklyReviewSource/WeeklyReview/Server/appsettings.Production.json
 /WeeklyReviewSource/WeeklyReview/Server/appsettings.Development.json
+/WeeklyReviewSource/WeeklyReview/Client/wwwroot/appsettings.Development.json
