@@ -6,6 +6,7 @@ using WeeklyReview.Database.Models;
 using WeeklyReview.Server.Controllers.Internal;
 using WeeklyReview.Server.Persitance;
 using WeeklyReview.Shared.Models;
+using WeeklyReview.Shared.Models.DTOs;
 using WeeklyReview.Shared.Services;
 
 namespace WeeklyReview.Server.Controllers
@@ -33,6 +34,13 @@ namespace WeeklyReview.Server.Controllers
         public async Task<ActionResult<EntryModel?>> Get([FromRoute] int key)
         {
             return Ok(await _entryService.Get(key, UserGuid));
+        }
+
+        [HttpPut("around")]
+        [EnableQuery]
+        public async Task<ActionResult<EntryModel?>> GetAllAround([FromBody] GetEntriesAroundDto model)
+        {
+            return Ok(await _entryService.GetAllAroundDate(UserGuid, model.Date, model.DaysAround));
         }
 
         [HttpPost("Enter")]

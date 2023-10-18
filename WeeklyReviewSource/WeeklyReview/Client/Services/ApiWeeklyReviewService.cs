@@ -1,7 +1,9 @@
-﻿using System.Drawing;
+﻿using Microsoft.EntityFrameworkCore.Design;
+using System.Drawing;
 using WeeklyReview.Client.Http;
 using WeeklyReview.Database.Models;
 using WeeklyReview.Shared.Models;
+using WeeklyReview.Shared.Models.DTOs;
 using WeeklyReview.Shared.Services;
 
 namespace WeeklyReview.Client.Services
@@ -60,7 +62,7 @@ namespace WeeklyReview.Client.Services
 
         public async Task<IEnumerable<EntryModel>> GetAllAroundDate(Guid userGuid, DateTime date, int daysAround)
         {
-            var res = await _client.GETCollectionAsync<EntryModel>($"/api/v1/Entry/Around", CancellationToken.None);
+            var res = await _client.PUTCollectionAsync<EntryModel, GetEntriesAroundDto>($"/api/v1/Entry/around", new GetEntriesAroundDto(date, daysAround), CancellationToken.None);
             if (res.IsEmpty)
                 return null;
             else

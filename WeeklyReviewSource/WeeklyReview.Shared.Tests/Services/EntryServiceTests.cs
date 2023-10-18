@@ -31,6 +31,37 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
+        public async void Entry_Day10_PM5_CheckActivitiesAndCategories()
+        {
+            var date = DbFixture.Dt.AddHours(0);
+            var entryDate = date.AddDays(10);
+            var user = DbFixture.Users[2];
+            int daysAround = 5;
+            int expectedCount = 11;
+
+            // Arrange 
+            using var context = DbFixture.CreateContext();
+            var _dt = DbFixture.Dt;
+            context.Database.BeginTransaction();
+
+            // Act
+            var sut = new EntryService(context, _entryAdderService, _entryParserService);
+            var res = await sut.GetAllAroundDate(user, entryDate, daysAround);
+            context.ChangeTracker.Clear();
+
+            // Assert
+            Assert.Equal(expectedCount, res.Count());
+            foreach (var entry in res)
+            {
+                Assert.NotNull(entry.Activities);
+                var act = entry.Activities.FirstOrDefault();
+                Assert.NotNull(act);
+                var cat = act.Category;
+                Assert.NotNull(cat);
+            }
+        }
+
+        [Fact]
         public async void Entry_Day10_PM5_Get10()
         {
             var date = DbFixture.Dt.AddHours(0);
@@ -50,7 +81,7 @@ namespace WeeklyReview.Shared.Tests.Services
             context.ChangeTracker.Clear();
 
             // Assert
-            Assert.Equal(res.Count(), expectedCount);
+            Assert.Equal(expectedCount, res.Count());
             foreach (var entry in res)
             {
                 var time = entry.StartTime - date;

@@ -46,7 +46,7 @@ namespace WeeklyReview.Shared.Services
         {
             var startDate = date.AddDays(-daysAround);
             var endDate = date.AddDays(daysAround);
-            var res = await _db.Entry.Where(x => x.UserGuid == userGuid && startDate <= x.StartTime && x.StartTime <= endDate).ToListAsync();
+            var res = await _db.Entry.Include(x => x.Activities).ThenInclude(x => x.Category).Where(x => x.UserGuid == userGuid && x.Deleted == false && startDate <= x.StartTime && x.StartTime <= endDate).ToListAsync();
             return res;
         }
     }

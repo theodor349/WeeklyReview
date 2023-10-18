@@ -19,6 +19,7 @@ namespace WeeklyReview.Client.Pages
 
         public DateTime InputDate = DateTime.Now;
         public DateTime ViewDate = DateTime.Now;
+        private DateTime LastDateUpdate = DateTime.Now;
         public ObservableCollection<ScheduleViewModel> DataSource { get; set; } = new ObservableCollection<ScheduleViewModel>();
 
         protected async override Task OnInitializedAsync()
@@ -34,12 +35,8 @@ namespace WeeklyReview.Client.Pages
 
         private async Task OnDateChanged(DateTime newDate)
         {
-            var diff = newDate - ViewDate;
-            var months = Math.Abs(diff.TotalDays);
-            if (months > 30)
-                await Update();
-
             ViewDate = newDate;
+            await Update();
         }
 
         private async Task Update()
@@ -65,7 +62,8 @@ namespace WeeklyReview.Client.Pages
 
         private async Task GenerateViewModels()
         {
-            var entries = (await WeeklyReviewService.Entry.GetAll(UserGuid)).ToList();
+            LastDateUpdate = ViewDate;
+            var entries = (await WeeklyReviewService.Entry.GetAllAroundDate(UserGuid, ViewDate, 32)).ToList();
             DataSource.Clear();
             foreach (var entry in entries)
             {
