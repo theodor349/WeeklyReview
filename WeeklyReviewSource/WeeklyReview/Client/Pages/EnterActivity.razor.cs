@@ -111,8 +111,10 @@ namespace WeeklyReview.Client.Pages
             {
                 act = splits[0];
             }
-
-            return TrimSentance(cat)  + ": " + TrimSentance(act);
+            if(cat is null)
+                return TrimSentance(act);
+            else 
+                return TrimSentance(cat)  + ": " + TrimSentance(act);
         }
 
         private string? TrimSentance(string? sentance)
