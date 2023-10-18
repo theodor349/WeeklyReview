@@ -40,5 +40,10 @@ namespace WeeklyReview.Shared.Services
             var entry = await _entryAdderService.AddEntry(model.Date, activities, userGuid);
             return entry;
         }
+
+        public Task<IEnumerable<EntryModel>> GetAllAroundDate(Guid userGuid, DateTime date)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

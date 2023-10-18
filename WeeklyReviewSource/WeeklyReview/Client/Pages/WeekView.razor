@@ -6,7 +6,7 @@
 
 <PageTitle>Week View</PageTitle>
     <div class="container-fluid">
-    <SfSchedule TValue="ScheduleViewModel" @ref="ScheduleObj" Width="100%" Height="calc(100vh - 4.6rem)" @bind-SelectedDate="@ViewDate"
+    <SfSchedule TValue="ScheduleViewModel" @ref="ScheduleObj" Width="100%" Height="calc(100vh - 4.6rem)" SelectedDateChanged=@(OnDateChanged) 
                 EnableAutoRowHeight="true"
                 AllowMultiCellSelection="false" AllowMultiRowSelection="false" AllowDragAndDrop="false" AllowResizing="false"
                 DateFormat="yyyy-MM-dd" TimeFormat="HH:mm" StartHour="00:00" FirstDayOfWeek="1" ShowWeekNumber="true">

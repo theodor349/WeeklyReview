@@ -57,6 +57,15 @@ namespace WeeklyReview.Client.Services
             else
                 return res.Value;
         }
+
+        public async Task<IEnumerable<EntryModel>> GetAllAroundDate(Guid userGuid, DateTime date)
+        {
+            var res = await _client.GETCollectionAsync<EntryModel>($"/api/v1/Entry/Around", CancellationToken.None);
+            if (res.IsEmpty)
+                return null;
+            else
+                return res.Value;
+        }
     }
 
     public class ActivityChangeService : IActivityChangeService

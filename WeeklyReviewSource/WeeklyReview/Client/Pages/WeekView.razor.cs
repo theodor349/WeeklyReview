@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using Syncfusion.Blazor.Charts;
 using Syncfusion.Blazor.HeatMap.Internal;
 using System.Collections.ObjectModel;
 using System.Drawing;
@@ -31,9 +32,18 @@ namespace WeeklyReview.Client.Pages
             await base.OnInitializedAsync();
         }
 
+        private async Task OnDateChanged(DateTime newDate)
+        {
+            var diff = newDate - ViewDate;
+            var months = Math.Abs(diff.TotalDays);
+            if (months > 30)
+                await Update();
+
+            ViewDate = newDate;
+        }
+
         private async Task Update()
         {
-            DataSource.Clear();
             await GenerateViewModels();
             TimeUpdated();
         }
@@ -56,6 +66,7 @@ namespace WeeklyReview.Client.Pages
         private async Task GenerateViewModels()
         {
             var entries = (await WeeklyReviewService.Entry.GetAll(UserGuid)).ToList();
+            DataSource.Clear();
             foreach (var entry in entries)
             {
                 AddScheduleEntry(entry);
