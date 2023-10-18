@@ -45,7 +45,9 @@ namespace WeeklyReview.Shared.Tests.DataContexts
 
                         using (var transaction = context.Database.BeginTransaction())
                         {
-                            AddCaseMovies(context);
+                            AddPerson1(context);
+                            context.SaveChanges();
+                            AddPerson2(context);
                             context.SaveChanges();
                             transaction.Commit();
                         }
@@ -56,7 +58,7 @@ namespace WeeklyReview.Shared.Tests.DataContexts
             }
         }
 
-        private void AddCaseMovies(WeeklyReviewDbContext context)
+        private void AddPerson1(WeeklyReviewDbContext context)
         {
             var user = users[1];
             var date = _dt;
@@ -77,6 +79,29 @@ namespace WeeklyReview.Shared.Tests.DataContexts
             context.Activity.AddRange(aSeries);
             context.Entry.AddRange(entries);
         }
+
+        private void AddPerson2(WeeklyReviewDbContext context)
+        {
+            var user = users[2];
+            var date = _dt;
+
+            var defaultCategory = new CategoryModel("", 0, Color.White, user);
+
+            var aSeries = new ActivityModel("Series", false, defaultCategory, user);
+
+            var entries = new List<EntryModel>();
+            int entryLength = 1;
+            for (int i = 0; i < 20; i++)
+            {
+                var e = new EntryModel(date.AddDays(i * entryLength), date.AddDays((i + 1) * entryLength), _dt, aSeries, false, user);
+                entries.Add(e);
+            }
+
+            context.Category.AddRange(defaultCategory);
+            context.Activity.AddRange(aSeries);
+            context.Entry.AddRange(entries);
+        }
+
 
     }
 }
