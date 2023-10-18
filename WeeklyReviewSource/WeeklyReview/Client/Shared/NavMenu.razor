@@ -9,7 +9,7 @@
     <AppBarSpacer></AppBarSpacer>
     <AuthorizeView>
         <Authorized>
-            Hello, @context.User.Identity?.Name!
+            Hello, @((context.User.Identity?.Name!).Split('@').First())
             <SfButton CssClass=@("e-inherit home e-appbar-menu e-dark") @onclick="BeginLogOut">Log out</SfButton>
         </Authorized>
         <NotAuthorized>
