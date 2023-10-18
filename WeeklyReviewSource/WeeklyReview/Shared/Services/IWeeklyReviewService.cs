@@ -57,7 +57,7 @@ namespace WeeklyReview.Shared.Services
         Task<EntryModel?> Create(EnterEntryModel model, Guid userGuid);
         Task<EntryModel?> Get(int key, Guid userGuid);
         Task<IEnumerable<EntryModel>> GetAll(Guid userGuid);
-        Task<IEnumerable<EntryModel>> GetAllAroundDate(Guid userGuid, DateTime date);
+        Task<IEnumerable<EntryModel>> GetAllAroundDate(Guid userGuid, DateTime date, int daysAround);
     }
 
     public interface IActivityChangeService

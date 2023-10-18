@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,9 +42,12 @@ namespace WeeklyReview.Shared.Services
             return entry;
         }
 
-        public Task<IEnumerable<EntryModel>> GetAllAroundDate(Guid userGuid, DateTime date)
+        public async Task<IEnumerable<EntryModel>> GetAllAroundDate(Guid userGuid, DateTime date, int daysAround)
         {
-            throw new NotImplementedException();
+            var startDate = date.AddDays(-daysAround);
+            var endDate = date.AddDays(daysAround);
+            var res = await _db.Entry.Where(x => x.UserGuid == userGuid && startDate <= x.StartTime && x.StartTime <= endDate).ToListAsync();
+            return res;
         }
     }
 }

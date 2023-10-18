@@ -58,7 +58,7 @@ namespace WeeklyReview.Client.Services
                 return res.Value;
         }
 
-        public async Task<IEnumerable<EntryModel>> GetAllAroundDate(Guid userGuid, DateTime date)
+        public async Task<IEnumerable<EntryModel>> GetAllAroundDate(Guid userGuid, DateTime date, int daysAround)
         {
             var res = await _client.GETCollectionAsync<EntryModel>($"/api/v1/Entry/Around", CancellationToken.None);
             if (res.IsEmpty)
