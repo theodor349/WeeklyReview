@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components;
+using System.Text.RegularExpressions;
 using WeeklyReview.Database.Models;
 using WeeklyReview.Shared.Models;
 using WeeklyReview.Shared.Services;
@@ -65,7 +66,7 @@ namespace WeeklyReview.Client.Pages
             var submittedActivities = new List<string>();
             submittedActivities.AddRange(InputActivities.Where(x => !string.IsNullOrWhiteSpace(x)));
             submittedActivities.AddRange(InputSocials.Where(x => !string.IsNullOrWhiteSpace(x)).ToList().ConvertAll(x => IsDiscord ? "Discord: " + x : "Social: " + x));
-
+            TrimActivities(submittedActivities);
             foreach (var act in submittedActivities)
             {
                 if(!Activities.Any(x => x.Name == act))
@@ -76,7 +77,59 @@ namespace WeeklyReview.Client.Pages
             }
 
             var entry = await WeeklyReviewService.Entry.Create(new EnterEntryModel() { Date = ViewDate, Entries = submittedActivities }, UserGuid);
+            if (entry is not null)
+                AddNewActivities(entry);
 
+            await ShowSuccessToast();
+            if (OnAfterEntryAdded != null) 
+                OnAfterEntryAdded.Invoke(entry);
+        }
+
+        private void TrimActivities(List<string> submittedActivities)
+        {
+            for (int i = 0; i < submittedActivities.Count; i++)
+            {
+                submittedActivities[i] = TrimActivity(submittedActivities[i]);
+            }
+        }
+
+        private string TrimActivity(string entry)
+        {
+            var splits = entry.Split(':');
+            string? cat = null;
+            string? act;
+            if (splits.Count() > 2)
+            {
+                throw new ArgumentException("An entry cannot contain multiple ':'");
+            }
+            else if (splits.Count() == 2)
+            {
+                cat = splits[0];
+                act = splits[1];
+            }
+            else
+            {
+                act = splits[0];
+            }
+
+            return TrimSentance(cat)  + ": " + TrimSentance(act);
+        }
+
+        private string? TrimSentance(string? sentance)
+        {
+            if (sentance is null)
+                return null;
+
+            var regX = new Regex("\\s+");
+            var res = regX.Replace(sentance, " ").Trim();
+            if (res.Count() > 0)
+                return res;
+            else
+                return null;
+        }
+
+        private void AddNewActivities(EntryModel? entry)
+        {
             var newActs = new List<ActivityModel>();
             foreach (var a in entry.Activities)
             {
@@ -85,10 +138,6 @@ namespace WeeklyReview.Client.Pages
                 newActs.Add(a);
             }
             Activities.AddRange(newActs);
-
-            await ShowSuccessToast();
-            if (OnAfterEntryAdded != null) 
-                OnAfterEntryAdded.Invoke(entry);
         }
 
         private async Task<bool> ConfirmNewEntry(string act)
