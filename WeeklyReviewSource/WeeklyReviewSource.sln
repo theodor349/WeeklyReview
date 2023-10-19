@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeeklyReview.Shared.Tests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WeeklyReview.Database", "WeeklyReview.Database\WeeklyReview.Database.csproj", "{D54934E3-25B1-47CD-8495-37EDEC981EC9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataMigration", "DataMigration\DataMigration.csproj", "{568BCB4B-DCA5-4DB8-B688-BCC0BB9EBC9C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{D54934E3-25B1-47CD-8495-37EDEC981EC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D54934E3-25B1-47CD-8495-37EDEC981EC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D54934E3-25B1-47CD-8495-37EDEC981EC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{568BCB4B-DCA5-4DB8-B688-BCC0BB9EBC9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{568BCB4B-DCA5-4DB8-B688-BCC0BB9EBC9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{568BCB4B-DCA5-4DB8-B688-BCC0BB9EBC9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{568BCB4B-DCA5-4DB8-B688-BCC0BB9EBC9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
