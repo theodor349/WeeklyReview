@@ -1,6 +1,9 @@
 ﻿using DataMigration.Models;
 using DataMigration.Sql;
 using System.Drawing;
+using System.Net.Http.Headers;
+using System.Text;
+using Newtonsoft.Json;
 
 public class Migrator : IMigrator
 {
@@ -24,7 +27,33 @@ public class Migrator : IMigrator
 
         var entries = MergeRecords(sortedrecordTimes, sortedrecords, sortedActivities);
 
+        await SendEntries(entries);
+    }
 
+    private async Task SendEntries(List<EntryModel> entries)
+    {
+        var client = new HttpClient();
+
+        var contentType = new MediaTypeWithQualityHeaderValue("application/json");
+        var baseAddress = "https://localhost:7007";
+        var api = "/api/v1/Entry/Enter";
+        client.BaseAddress = new Uri(baseAddress);
+        client.DefaultRequestHeaders.Accept.Add(contentType);
+        
+        foreach (var entry in entries)
+        {
+            var jsonData = JsonConvert.SerializeObject(entry);
+            var contentData = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync(api, contentData);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                var stringData = await response.Content.ReadAsStringAsync();
+                var result = JsonConvert.DeserializeObject<object>(stringData);
+            }
+            else
+                await Console.Out.WriteLineAsync("Unable to log for date: " + entry.Date.ToLongDateString() + " " + entry.Date.ToLongTimeString());
+        }
     }
 
     private void GetData(out SortedSet<DateTime> sortedrecordTimes, out SortedDictionary<DateTime, List<int>> sortedrecords, out SortedDictionary<int, string> sortedActivities)

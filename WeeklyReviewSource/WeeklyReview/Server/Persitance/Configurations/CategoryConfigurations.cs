@@ -11,6 +11,8 @@ namespace WeeklyReview.Server.Persitance.Configurations
         {
             builder.HasKey(x => x.Id);
 
+            builder.HasIndex(nameof(CategoryModel.UserGuid), nameof(CategoryModel.NormalizedName)).IsUnique();
+
             builder.Property(x => x.Name)
                 .HasMaxLength(64);
 
