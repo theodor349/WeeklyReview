@@ -16,6 +16,7 @@ namespace WeeklyReview.Shared.Services
         private record ActivityCategory(string? Activity, string? Category);
 
         private readonly WeeklyReviewDbContext _db;
+        private List<CategoryModel> _addedCats = new List<CategoryModel>();
 
         public EntryParserService(WeeklyReviewDbContext db)
         {
@@ -54,8 +55,10 @@ namespace WeeklyReview.Shared.Services
             var cat = entry.Category;
 
             var catModel = cat is null ? null : await _db.Category.SingleOrDefaultAsync(x => x.NormalizedName == cat.ToLower() && x.UserGuid == userGuid);
+            if(catModel is null)
+                catModel = _addedCats.FirstOrDefault(x => x.Name.Equals(cat));
 
-            if(string.IsNullOrEmpty(cat))
+            if (string.IsNullOrEmpty(cat))
             {
                 var defaultCat = await _db.Category.SingleOrDefaultAsync(x => x.UserGuid == userGuid && x.NormalizedName.Length == 0);
                 if(defaultCat is null)
@@ -69,6 +72,7 @@ namespace WeeklyReview.Shared.Services
             {
                 catModel = new CategoryModel(cat, 0, Color.White, userGuid);
                 _db.Category.Add(catModel);
+                _addedCats.Add(catModel);
             }
 
             var actModel = new ActivityModel(act, false, catModel, userGuid);

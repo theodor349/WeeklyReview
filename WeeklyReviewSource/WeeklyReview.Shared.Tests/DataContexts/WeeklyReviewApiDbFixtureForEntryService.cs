@@ -20,6 +20,8 @@ namespace WeeklyReview.Shared.Tests.DataContexts
             Guid.NewGuid(), // 3
             Guid.NewGuid(), // 4
         };
+        private Dictionary<Guid, CategoryModel> DefaultCategories;
+
         public List<Guid> Users => users;
 
         private DateTime _dt = new DateTime(2023, 1, 1);
@@ -34,6 +36,8 @@ namespace WeeklyReview.Shared.Tests.DataContexts
 
         public WeeklyReviewApiDbFixtureForEntryService()
         {
+
+
             lock (_lock)
             {
                 if (!_databaseInitialized)
@@ -45,11 +49,13 @@ namespace WeeklyReview.Shared.Tests.DataContexts
 
                         using (var transaction = context.Database.BeginTransaction())
                         {
+                            AddDefaultCategories(context);
+                            context.SaveChanges();
                             AddPerson1(context);
                             context.SaveChanges();
-                            AddPerson2Deleted(context);
+                            var a = AddPerson2Deleted(context);
                             context.SaveChanges();
-                            AddPerson2(context);
+                            AddPerson2(context, a);
                             context.SaveChanges();
                             transaction.Commit();
                         }
@@ -60,12 +66,24 @@ namespace WeeklyReview.Shared.Tests.DataContexts
             }
         }
 
+        private void AddDefaultCategories(WeeklyReviewDbContext context)
+        {
+            DefaultCategories = new Dictionary<Guid, CategoryModel>()
+            {
+                { users[0], new CategoryModel("", 0, Color.White, users[0]) },
+                { users[1], new CategoryModel("", 0, Color.White, users[1]) },
+                { users[2], new CategoryModel("", 0, Color.White, users[2]) },
+                { users[3], new CategoryModel("", 0, Color.White, users[3]) },
+                { users[4], new CategoryModel("", 0, Color.White, users[4]) },
+            };
+            context.Category.AddRange(DefaultCategories.Values);
+        }
+
         private void AddPerson1(WeeklyReviewDbContext context)
         {
             var user = users[1];
             var date = _dt;
-
-            var defaultCategory = new CategoryModel("", 0, Color.White, user);
+            var defaultCategory = DefaultCategories[user];
 
             var aSeries = new ActivityModel("Series", false, defaultCategory, user);
 
@@ -77,17 +95,15 @@ namespace WeeklyReview.Shared.Tests.DataContexts
                 entries.Add(e);
             }
 
-            context.Category.AddRange(defaultCategory);
             context.Activity.AddRange(aSeries);
             context.Entry.AddRange(entries);
         }
 
-        private void AddPerson2Deleted(WeeklyReviewDbContext context)
+        private ActivityModel AddPerson2Deleted(WeeklyReviewDbContext context)
         {
             var user = users[2];
             var date = _dt;
-
-            var defaultCategory = new CategoryModel("", 0, Color.White, user);
+            var defaultCategory = DefaultCategories[user];
 
             var aSeries = new ActivityModel("Series", false, defaultCategory, user);
 
@@ -99,19 +115,15 @@ namespace WeeklyReview.Shared.Tests.DataContexts
                 entries.Add(e);
             }
 
-            context.Category.AddRange(defaultCategory);
             context.Activity.AddRange(aSeries);
             context.Entry.AddRange(entries);
+            return aSeries;
         }
 
-        private void AddPerson2(WeeklyReviewDbContext context)
+        private void AddPerson2(WeeklyReviewDbContext context, ActivityModel aSeries)
         {
             var user = users[2];
             var date = _dt;
-
-            var defaultCategory = new CategoryModel("", 0, Color.White, user);
-
-            var aSeries = new ActivityModel("Series", false, defaultCategory, user);
 
             var entries = new List<EntryModel>();
             int entryLength = 1;
@@ -121,8 +133,6 @@ namespace WeeklyReview.Shared.Tests.DataContexts
                 entries.Add(e);
             }
 
-            context.Category.AddRange(defaultCategory);
-            context.Activity.AddRange(aSeries);
             context.Entry.AddRange(entries);
         }
     }

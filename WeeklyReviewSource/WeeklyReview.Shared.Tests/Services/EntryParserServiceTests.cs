@@ -450,6 +450,45 @@ namespace WeeklyReview.Shared.Tests.Services
         }
 
         [Fact]
+        public async void ParseEntry_3ExerciseDoesNotExist_3BikeDoesNotExist_AddExerciseAndBike_CaseUser2()
+        {
+            var user = DbFixture.Users[2];
+            int cExercise = 7;
+
+            // Arrange 
+            using var context = DbFixture.CreateContext();
+            var _dt = DbFixture.Dt;
+            context.Database.BeginTransaction();
+            var expectedActivityCount = context.Activity.Count() + 2;
+            var expectedCategoryCount = context.Category.Count() + 1;
+
+            // Act
+            var sut = new EntryParserService(context);
+            var res = await sut.ParseEntry(new List<string>()
+            {
+                "Exercise: Bike",
+                "Exercise: Run",
+            }, user);
+            context.ChangeTracker.Clear();
+
+            var cats = context.Category.ToList();
+
+            // Assert
+            var newActivity = context.Activity.Include(x => x.Category).Single(x => x.NormalizedName == "Exercise: Bike" && x.UserGuid == user);
+            Assert.Equal("Exercise: Bike", newActivity.Name);
+            Assert.Equal(cExercise, newActivity.Category.Id);
+            Assert.Equal("Exercise", newActivity.Category.Name);
+
+            newActivity = context.Activity.Include(x => x.Category).Single(x => x.NormalizedName == "Exercise: Run" && x.UserGuid == user);
+            Assert.Equal("Exercise: Run", newActivity.Name);
+            Assert.Equal(cExercise, newActivity.Category.Id);
+            Assert.Equal("Exercise", newActivity.Category.Name);
+
+            Assert.Equal(expectedActivityCount, context.Activity.Count());
+            Assert.Equal(expectedCategoryCount, context.Category.Count());
+        }
+
+        [Fact]
         public async void ParseEntry_Blank_DoNothing_CaseUser2()
         {
             var user = DbFixture.Users[2];
