@@ -13,10 +13,10 @@ namespace WeeklyReview.Server.Persitance.Configurations
 
             builder.HasIndex(nameof(ActivityModel.UserGuid), nameof(ActivityModel.NormalizedName)).IsUnique();
             builder.Property(x => x.Name)
-                .HasMaxLength(64);
+                .HasMaxLength(128);
 
             builder.Property(x => x.NormalizedName)
-                .HasMaxLength(64);
+                .HasMaxLength(128);
 
             builder.Property(x => x.UserGuid);
 

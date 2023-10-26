@@ -27,7 +27,8 @@ public class Migrator : IMigrator
 
         var entries = MergeRecords(sortedrecordTimes, sortedrecords, sortedActivities);
 
-        await SendEntries(entries);
+        var dateSplit = new DateTime(2023, 10, 19, 18, 45, 0);
+        await SendEntries(entries.Where(x => x.Date > dateSplit).ToList());
     }
 
     private async Task SendEntries(List<EntryModel> entries)
@@ -39,21 +40,29 @@ public class Migrator : IMigrator
         var api = "/api/v1/Entry/Enter";
         client.BaseAddress = new Uri(baseAddress);
         client.DefaultRequestHeaders.Accept.Add(contentType);
-        
-        foreach (var entry in entries)
+
+        int count = 0;
+        for (int i = 0; i < entries.Count; i++)
         {
-            var jsonData = JsonConvert.SerializeObject(entry);
-            var contentData = new StringContent(jsonData, Encoding.UTF8, "application/json");
-            var response = await client.PostAsync(api, contentData);
-            
-            if (response.IsSuccessStatusCode)
-            {
-                var stringData = await response.Content.ReadAsStringAsync();
-                var result = JsonConvert.DeserializeObject<object>(stringData);
-            }
-            else
-                await Console.Out.WriteLineAsync("Unable to log for date: " + entry.Date.ToLongDateString() + " " + entry.Date.ToLongTimeString());
+            if (count++ % 100 == 0)
+                await Console.Out.WriteLineAsync(DateTime.Now.ToShortTimeString() + ": " + count + "/" + entries.Count);
+            await SendEntry(client, api, entries[i]);
         }
+    }
+
+    private static async Task SendEntry(HttpClient client, string api, EntryModel entry)
+    {
+        var jsonData = JsonConvert.SerializeObject(entry);
+        var contentData = new StringContent(jsonData, Encoding.UTF8, "application/json");
+        var response = await client.PostAsync(api, contentData);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var stringData = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<object>(stringData);
+        }
+        else
+            await Console.Out.WriteLineAsync("Unable to log for date: " + entry.Date.ToLongDateString() + " " + entry.Date.ToLongTimeString());
     }
 
     private void GetData(out SortedSet<DateTime> sortedrecordTimes, out SortedDictionary<DateTime, List<int>> sortedrecords, out SortedDictionary<int, string> sortedActivities)
