@@ -35,6 +35,7 @@ namespace WeeklyReview.Client.Services
 
         public async Task<EntryModel?> Create(EnterEntryModel model, Guid userGuid)
         {
+            model.Date = model.Date.ToUniversalTime();
             var res = await _client.POSTAsync<EntryModel?, EnterEntryModel>($"/api/v1/Entry/Enter", model, CancellationToken.None);
             if (res.IsEmpty)
                 return null;
@@ -48,7 +49,14 @@ namespace WeeklyReview.Client.Services
             if (res.IsEmpty)
                 return null;
             else
-                return res.Value;
+            {
+                var entry = res.Value;
+                entry.StartTime = entry.StartTime.ToLocalTime();
+                if(entry.EndTime.HasValue)
+                    entry.EndTime = entry.EndTime.Value.ToLocalTime();
+                entry.RecordedTime = entry.RecordedTime.ToLocalTime();
+                return entry;
+            }
         }
 
         public async Task<IEnumerable<EntryModel>> GetAll(Guid userGuid)
@@ -57,7 +65,17 @@ namespace WeeklyReview.Client.Services
             if (res.IsEmpty)
                 return null;
             else
-                return res.Value;
+            {
+                var entries = res.Value;
+                foreach (var entry in entries)
+                {
+                    entry.StartTime = entry.StartTime.ToLocalTime();
+                    if (entry.EndTime.HasValue)
+                        entry.EndTime = entry.EndTime.Value.ToLocalTime();
+                    entry.RecordedTime = entry.RecordedTime.ToLocalTime();
+                }
+                return entries;
+            }
         }
 
         public async Task<IEnumerable<EntryModel>> GetAllAroundDate(Guid userGuid, DateTime date, int daysAround)
@@ -66,7 +84,17 @@ namespace WeeklyReview.Client.Services
             if (res.IsEmpty)
                 return null;
             else
-                return res.Value;
+            {
+                var entries = res.Value;
+                foreach (var entry in entries)
+                {
+                    entry.StartTime = entry.StartTime.ToLocalTime();
+                    if (entry.EndTime.HasValue)
+                        entry.EndTime = entry.EndTime.Value.ToLocalTime();
+                    entry.RecordedTime = entry.RecordedTime.ToLocalTime();
+                }
+                return entries;
+            }
         }
     }
 
