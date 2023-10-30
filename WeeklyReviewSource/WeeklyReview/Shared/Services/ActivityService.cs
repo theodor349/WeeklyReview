@@ -23,7 +23,7 @@ namespace WeeklyReview.Shared.Services
 
         public async Task<IEnumerable<ActivityModel>> GetAll(Guid userGuid)
         {
-            return await _db.Activity.Where(x => x.UserGuid == userGuid).ToListAsync();
+            return await _db.Activity.Where(x => x.UserGuid == userGuid).OrderBy(x => x.NormalizedName).ToListAsync();
         }
 
         public async Task<ActivityModel?> Get(int key, Guid userGuid)

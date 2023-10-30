@@ -21,7 +21,7 @@ namespace WeeklyReview.Shared.Services
 
         public async Task<IEnumerable<CategoryModel>> GetAll(Guid userGuid)
         {
-            return await _db.Category.Where(x => x.UserGuid == userGuid).ToListAsync();
+            return await _db.Category.Where(x => x.UserGuid == userGuid).OrderBy(x => x.NormalizedName).ToListAsync();
         }
 
         public async Task<CategoryModel?> Get(int key, Guid userGuid)

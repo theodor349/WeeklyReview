@@ -20,7 +20,7 @@ namespace WeeklyReview.Server.Controllers.Internal
             {
                 var guidString = User.Claims.First(x => x.Type.Contains("objectidentifier")).Value;
                 var userGuid = new Guid(guidString);
-                return new Guid("99d18c23-0f97-47ac-8f8c-2ccae411ee14");
+                return userGuid;
             }
         }
 
