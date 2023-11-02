@@ -14,6 +14,8 @@ builder.AddEndpoints();
 builder.Services.AddSharedServices();
 
 var app = builder.Build();
+var db = builder.Configuration.GetConnectionString("WeeklyReview").Substring(0, 60);
+Console.WriteLine("DB Connection: " + db);
 
 app.UseSwagger();
 var provider = app.Services.GetService<IApiVersionDescriptionProvider>();
