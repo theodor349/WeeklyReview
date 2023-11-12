@@ -19,7 +19,8 @@ namespace WeeklyReview.Client.Pages
 
         public DateTime InputDate = DateTime.Now;
         public DateTime ViewDate = DateTime.Now;
-        private DateTime LastDateUpdate = DateTime.Now;
+        private DateTime LastMidleOfTheMonth = DateTime.Now;
+        private DateTime LastDateUpdate = DateTime.MinValue;
         public ObservableCollection<ScheduleViewModel> DataSource { get; set; } = new ObservableCollection<ScheduleViewModel>();
 
         protected async override Task OnInitializedAsync()
@@ -62,12 +63,20 @@ namespace WeeklyReview.Client.Pages
 
         private async Task GenerateViewModels()
         {
-            LastDateUpdate = ViewDate;
-            var entries = (await WeeklyReviewService.Entry.GetAllAroundDate(UserGuid, ViewDate, 32)).ToList();
-            DataSource.Clear();
-            foreach (var entry in entries)
+            var middleOfTheMonth = new DateTime(ViewDate.Year, ViewDate.Month, 16);
+            bool shouldUpdate = middleOfTheMonth != LastMidleOfTheMonth || (DateTime.Now - LastDateUpdate) > TimeSpan.FromMinutes(1);
+
+            if (shouldUpdate)
             {
-                AddScheduleEntry(entry);
+                LastDateUpdate = DateTime.Now;
+                LastMidleOfTheMonth = middleOfTheMonth;
+
+                var entries = (await WeeklyReviewService.Entry.GetAllAroundDate(UserGuid, middleOfTheMonth, 21)).ToList();
+                DataSource.Clear();
+                foreach (var entry in entries)
+                {
+                    AddScheduleEntry(entry);
+                }
             }
         }
 
