@@ -1,8 +1,6 @@
-﻿using System.Diagnostics;
-using System.Drawing;
+﻿using System.Drawing;
 using WeeklyReview.Database.Models;
 using WeeklyReview.Shared.Models;
-using WeeklyReview.Shared.Models.DTOs;
 using WeeklyReview.Shared.Services;
 
 namespace WeeklyReview.Client.Services

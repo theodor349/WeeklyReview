@@ -4,7 +4,7 @@ using WeeklyReview.Database.Converters;
 
 namespace WeeklyReview.Database.Models
 {
-    public class CategoryModel
+    public class CategoryModel : ICloneable
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -37,6 +37,20 @@ namespace WeeklyReview.Database.Models
             NormalizedName = name.ToLower();
             Deleted = deleted;
             UserGuid = userGuid;
+        }
+
+        public object Clone()
+        {
+            return new CategoryModel()
+            {
+                Id = Id,
+                Name = Name,
+                NormalizedName = NormalizedName,
+                Priority = Priority,
+                Color = Color,
+                Deleted = Deleted,
+                UserGuid = UserGuid
+            };
         }
     }
 }

@@ -1,74 +1,16 @@
 ﻿@page "/categories"
-@using Syncfusion.Blazor.Grids
+@using Syncfusion.Blazor.Grids;
 @using Syncfusion.Blazor.Inputs;
 @using Syncfusion.Blazor.Notifications;
-
-<SfGrid DataSource="@Orders" Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Update", "Cancel" })">
-    <GridEditSettings AllowEditing="true" AllowAdding="true" Mode="EditMode.Normal"></GridEditSettings>
-    <GridColumns>
-        <GridColumn Field=@nameof(Order.OrderID) HeaderText="Order ID" IsPrimaryKey="true" TextAlign="TextAlign.Right" Width="120"></GridColumn>
-        <GridColumn Field=@nameof(Order.CustomerID) HeaderText="Customer Name" Width="150"></GridColumn>
-        <GridColumn Field=@nameof(Order.OrderDate) HeaderText=" Order Date" Format="d" Type="ColumnType.Date" TextAlign="TextAlign.Right" Width="130"></GridColumn>
-        <GridColumn Field=@nameof(Order.Freight) HeaderText="Freight" Format="C2" TextAlign="TextAlign.Right" Width="120"></GridColumn>
-    </GridColumns>
-    <GridEvents TValue="Order" OnActionBegin="ActionBegin"></GridEvents>
-</SfGrid>
-
-@code {
-
-    List<Order> Orders { get; set; }
-
-    protected override void OnInitialized()
-    {
-        Orders = Enumerable.Range(1, 10).Select(x => new Order(1000 + x)
-            {
-                OrderID = 1000 + x,
-                CustomerID = (new string[] { "ALFKI",
-                "ANANTR", "ANTON", "BLONP", "BOLID" })[new Random().Next(5)],
-                Freight = (new double[] { 2, 1, 4, 5, 3 })[new Random().Next(5)] * x,
-                OrderDate = (new DateTime[] { new DateTime(2019, 01, 01), new DateTime(2019, 01, 02) })[new Random().Next(2)]
-            }).ToList();
-    }
-
-    public void ActionBegin(ActionEventArgs<Order> arg)
-    {
-        //Handles add operation
-        if (arg.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Add))
-        {
-            arg.Data = new Order(0) { CustomerID = "Customer ID" };
-        }
-
-        //Handles edit operation. During edit operation, original object will be cloned.
-        if (arg.RequestType.Equals(Syncfusion.Blazor.Grids.Action.BeginEdit))
-        {
-            arg.Data = new Order(arg.RowData.OrderID)
-                {
-                    CustomerID = arg.RowData.CustomerID,
-                    Freight = arg.RowData.Freight,
-                    OrderDate = arg.RowData.OrderDate
-                };
-        }
-    }
-
-    // This class does not contain any parameter-less constructor, hence this cannot be instantiated using Activator.CreateInstance.
-    public class Order
-    {
-        public Order(int? orderid) => OrderID = orderid;
-
-        public int? OrderID { get; set; }
-        public string CustomerID { get; set; }
-        public DateTime? OrderDate { get; set; }
-        public double? Freight { get; set; }
-    }
-}
-
-
-
-
-
-
 <PageTitle>Categories</PageTitle>
 
+<SfColorPicker></SfColorPicker>
+
+<SfColorPicker 
+    Mode="ColorPickerMode.Palette" 
+    ModeSwitcher="false" 
+    PresetColors="@CustomColors">
+</SfColorPicker>
 
 <Syncfusion.Blazor.Grids.SfGrid AllowPaging="true" DataSource="@Categories" Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Update", "Cancel" })">
     <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Normal"/>
@@ -76,35 +18,63 @@
         <GridColumn Field=@nameof(CategoryViewModel.Name) HeaderText="Category" AllowEditing="false" ValidationRules="@(new ValidationRules{ Required=true})" TextAlign="TextAlign.Left" Type="ColumnType.String" Width="120"></GridColumn>
         <GridColumn Field=@nameof(CategoryViewModel.Priority) HeaderText="Priority" ValidationRules="@(new ValidationRules{ Required=true})" EditType="EditType.NumericEdit" Width="120"></GridColumn>
         <GridColumn Field=@nameof(CategoryViewModel.Color) HeaderText="Codor" TextAlign="TextAlign.Right" Width="130">
-            <EditTemplate>
-                <SfColorPicker Mode="ColorPickerMode.Palette" ModeSwitcher="false" @bind-Value="@((context as CategoryViewModel).ColorHex)">
+            <Template>
+                <SfColorPicker Mode="ColorPickerMode.Palette" Disabled="true" ModeSwitcher="false" @bind-Value="@((context as CategoryViewModel).ColorHex)">
                 </SfColorPicker>
+            </Template>
+            <EditTemplate>
+                <SfColorPicker 
+                    Mode="ColorPickerMode.Palette" 
+                    ModeSwitcher="false" 
+                    ShowButtons="false" 
+                    @bind-Value="@((context as CategoryViewModel).ColorHex)" 
+                    PresetColors="@CustomColors"/>
             </EditTemplate>
         </GridColumn>
     </GridColumns>
     <GridEvents TValue="CategoryViewModel" OnActionBegin="ActionBegin" OnActionComplete="ActionComplete"></GridEvents>
 </Syncfusion.Blazor.Grids.SfGrid>
 
+<SfColorPicker></SfColorPicker>
+
+
 @code{
     public void ActionBegin(ActionEventArgs<CategoryViewModel> arg)
     {
-        //Handles add operation
         if (arg.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Add))
         {
             arg.Data = new CategoryViewModel();
         }
-
-        //Handles edit operation. Clones object
-        if (arg.RequestType.Equals(Syncfusion.Blazor.Grids.Action.BeginEdit))
+        else if (arg.RequestType.Equals(Syncfusion.Blazor.Grids.Action.BeginEdit))
         {
-            arg.Data = new CategoryViewModel(arg.RowData.GetModel());
+            arg.Data = new CategoryViewModel(arg.RowData.GetModel()); // Todo: change back to CloneModel
+        }
+        else if (arg.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Save))
+        {
+            UpdateCategory(arg.Data.GetModel());
+        }
+        else if (arg.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Cancel))
+        {
+            UpdateCategory(arg.Data.GetModel());
+        }
+        else 
+        {
+
         }
     }
     public void ActionComplete(ActionEventArgs<CategoryViewModel> arg)
     {
         if (arg.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Save))
         {
-            arg.Data.Update();
+            UpdateCategory(arg.Data.GetModel());
+        }
+        if (arg.RequestType.Equals(Syncfusion.Blazor.Grids.Action.Cancel))
+        {
+            UpdateCategory(arg.Data.GetModel());
+        }
+        else
+        {
+
         }
     }
 }

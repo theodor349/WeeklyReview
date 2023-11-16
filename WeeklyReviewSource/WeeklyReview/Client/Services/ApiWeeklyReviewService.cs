@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Design;
-using System.Drawing;
+﻿using System.Drawing;
 using WeeklyReview.Client.Http;
 using WeeklyReview.Database.Models;
 using WeeklyReview.Shared.Models;

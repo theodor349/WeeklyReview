@@ -1,13 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.OData.Deltas;
 using Microsoft.AspNetCore.OData.Query;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Syncfusion.Blazor.Diagrams;
 using WeeklyReview.Database.Models;
 using WeeklyReview.Server.Controllers.Internal;
-using WeeklyReview.Server.Persitance;
 using WeeklyReview.Shared.Services;
 
 namespace WeeklyReview.Server.Controllers

@@ -1,7 +1,4 @@
-﻿using System.Runtime.Serialization;
-using System.Text.Json;
-
-namespace WeeklyReview.Client.Http
+﻿namespace WeeklyReview.Client.Http
 {
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "13.15.10.0 (NJsonSchema v10.6.10.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class ApiException : System.Exception

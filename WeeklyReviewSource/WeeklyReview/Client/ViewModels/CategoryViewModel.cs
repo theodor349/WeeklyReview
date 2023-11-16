@@ -17,6 +17,7 @@ namespace WeeklyReview.Client.ViewModels
             _model = model;
         }
 
+        public CategoryModel CloneModel() => (CategoryModel) _model.Clone();
         public CategoryModel GetModel() => _model;
 
         public string Name => _model.Name;
@@ -28,10 +29,6 @@ namespace WeeklyReview.Client.ViewModels
             {
                 _model.Priority = value;
             }
-        }
-
-        public async Task Update()
-        {
         }
 
         public string ColorHex

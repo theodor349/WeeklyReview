@@ -1,13 +1,10 @@
 using Microsoft.AspNetCore.Components;
-using Syncfusion.Blazor.Charts;
-using Syncfusion.Blazor.HeatMap.Internal;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using WeeklyReview.Client.Services;
 using WeeklyReview.Client.ViewModels;
 using WeeklyReview.Database.Models;
 using WeeklyReview.Shared.Extensions;
-using WeeklyReview.Shared.Services;
 
 namespace WeeklyReview.Client.Pages
 {

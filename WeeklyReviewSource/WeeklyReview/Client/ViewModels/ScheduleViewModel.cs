@@ -1,7 +1,4 @@
-﻿using Syncfusion.PdfExport;
-using System.ComponentModel;
-using System.Drawing;
-using WeeklyReview.Shared.Extensions;
+﻿using System.ComponentModel;
 
 namespace WeeklyReview.Client.ViewModels
 {

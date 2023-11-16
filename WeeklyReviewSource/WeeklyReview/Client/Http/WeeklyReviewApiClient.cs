@@ -1,12 +1,6 @@
-﻿using System.Net.Http.Headers;
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text;
 using System.Net.Http.Json;
-using Syncfusion.Blazor.PdfViewer;
-using Syncfusion.Blazor.Kanban.Internal;
-using System.Reflection.PortableExecutable;
-using static WeeklyReview.Client.Http.WeeklyReviewApiClient;
-using WeeklyReview.Database.Models;
 using WeeklyReview.Database.Converters;
 
 namespace WeeklyReview.Client.Http
