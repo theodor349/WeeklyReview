@@ -12,10 +12,10 @@
     PresetColors="@CustomColors">
 </SfColorPicker>
 
-<Syncfusion.Blazor.Grids.SfGrid AllowPaging="true" DataSource="@Categories" Toolbar="@(new List<string>() { "Add", "Edit", "Delete", "Update", "Cancel" })">
-    <GridEditSettings AllowAdding="true" AllowEditing="true" AllowDeleting="true" Mode="EditMode.Normal"/>
+<Syncfusion.Blazor.Grids.SfGrid AllowPaging="true" DataSource="@Categories" Toolbar="@(new List<string>() { "Edit", "Update", "Cancel" })">
+    <GridEditSettings AllowAdding="false" AllowEditing="true" AllowDeleting="false" Mode="EditMode.Dialog" />
     <GridColumns>
-        <GridColumn Field=@nameof(CategoryViewModel.Name) HeaderText="Category" AllowEditing="false" ValidationRules="@(new ValidationRules{ Required=true})" TextAlign="TextAlign.Left" Type="ColumnType.String" Width="120"></GridColumn>
+        <GridColumn Field=@nameof(CategoryViewModel.Name) HeaderText="Category" AllowEditing="false" ValidationRules="@(new ValidationRules{ Required=true})" IsPrimaryKey="true" TextAlign="TextAlign.Left" Type="ColumnType.String" Width="120"></GridColumn>
         <GridColumn Field=@nameof(CategoryViewModel.Priority) HeaderText="Priority" ValidationRules="@(new ValidationRules{ Required=true})" EditType="EditType.NumericEdit" Width="120"></GridColumn>
         <GridColumn Field=@nameof(CategoryViewModel.Color) HeaderText="Codor" TextAlign="TextAlign.Right" Width="130">
             <Template>
