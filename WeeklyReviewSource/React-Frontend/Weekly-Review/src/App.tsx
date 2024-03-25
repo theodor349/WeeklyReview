@@ -1,4 +1,5 @@
 import styles from './App.module.scss';
+import { PrimaryButton } from './components/primary-button/primary-button';
 
 function App() {
     return (
@@ -22,6 +23,7 @@ function App() {
                 <img src="/src/assets/typescript.svg" width="12" />
                 Visit vitejs.dev to learn more.
             </p>
+            <PrimaryButton />
         </div>
     );
 }
