@@ -33,6 +33,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { useState } from "react";
 
 const formSchema = z.object({
   date: z.date(),
@@ -104,6 +105,8 @@ export function EnterActivityFrom() {
     form.setValue("socials", socials.slice(0, socials.length - 1))
   }
 
+  const [calendarOpen, setCalendarOpen] = useState(false);
+
   return (
     <Card className="w-[350px]">
       <CardHeader>
@@ -120,24 +123,24 @@ export function EnterActivityFrom() {
                 <>
                   <FormItem>
                     <FormControl>
-                      <Popover>
+                      <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                         <PopoverTrigger asChild>
                           <Button
                             variant={"outline"}
                             className={cn(
-                              "w-[280px] justify-start text-left font-normal",
+                              "w-[300px] flex justify-between font-normal",
                               !{...date} && "text-muted-foreground"
                             )}
                           >
+                            {format(date.value, "MMM d, yyyy HH:mm")}
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {date.value ? format(date.value, "MMM d, yyyy HH:mm") : "Select a date"}
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0">
                           <Calendar
                             mode="single"
                             selected={date.value}
-                            onSelect={(date:Date) => {updateDate(date)}}
+                            onSelect={(date:Date) => {updateDate(date); setCalendarOpen(false)}}
                             initialFocus
                           />
                         </PopoverContent>
@@ -145,9 +148,11 @@ export function EnterActivityFrom() {
                     </FormControl>
                     <FormMessage />
                   </FormItem>
-                  <Button variant={"secondary"} onClick={() => addMinutes(-15)}>-15</Button>
-                  <Button variant={"secondary"} onClick={() => resetDate()}>Reset</Button>
-                  <Button variant={"secondary"} onClick={() => addMinutes(15)}>+15</Button>
+                  <div className="flex justify-between">
+                    <Button type="button" variant={"secondary"} onClick={() => addMinutes(-15)}>-15</Button>
+                    <Button type="button" variant={"secondary"} onClick={() => resetDate()}>Reset</Button>
+                    <Button type="button" variant={"secondary"} onClick={() => addMinutes(15)}>+15</Button>
+                  </div>
                 </>
               )}
             />
@@ -170,8 +175,10 @@ export function EnterActivityFrom() {
                       )}
                     />
                   ))}
-                  <Button variant={"secondary"} onClick={() => removeActivity()}>Remove</Button>
-                  <Button variant={"secondary"} onClick={() => addActivity()}>Add</Button>
+                  <div className="flex justify-between">
+                    <Button type="button" variant={"secondary"} onClick={() => removeActivity()}>Remove</Button>
+                    <Button type="button" variant={"secondary"} onClick={() => addActivity()}>Add</Button>
+                  </div>
                 </FormItem>
               )}
             />
@@ -194,8 +201,10 @@ export function EnterActivityFrom() {
                       )}
                     />
                   ))}
-                  <Button variant={"secondary"} onClick={() => removeSocial()}>Remove</Button>
-                  <Button variant={"secondary"} onClick={() => addSocial()}>Add</Button>
+                  <div className="flex justify-between">
+                    <Button type="button" variant={"secondary"} onClick={() => removeSocial()}>Remove</Button>
+                    <Button type="button" variant={"secondary"} onClick={() => addSocial()}>Add</Button>
+                  </div>
                 </FormItem>
               )}
             />
