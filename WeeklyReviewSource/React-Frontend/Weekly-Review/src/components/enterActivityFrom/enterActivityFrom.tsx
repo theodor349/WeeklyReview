@@ -127,10 +127,7 @@ export function EnterActivityFrom() {
                         <PopoverTrigger asChild>
                           <Button
                             variant={"outline"}
-                            className={cn(
-                              "w-[300px] flex justify-between font-normal",
-                              !{...date} && "text-muted-foreground"
-                            )}
+                            className={"w-[300px] flex justify-between font-normal"}
                           >
                             {format(date.value, "MMM d, yyyy HH:mm")}
                             <CalendarIcon className="mr-2 h-4 w-4" />
@@ -147,12 +144,12 @@ export function EnterActivityFrom() {
                       </Popover>
                     </FormControl>
                     <FormMessage />
+                    <div className="flex justify-between">
+                      <Button type="button" variant={"secondary"} onClick={() => addMinutes(-15)}>-15</Button>
+                      <Button type="button" variant={"secondary"} onClick={() => resetDate()}>Reset</Button>
+                      <Button type="button" variant={"secondary"} onClick={() => addMinutes(15)}>+15</Button>
+                    </div>
                   </FormItem>
-                  <div className="flex justify-between">
-                    <Button type="button" variant={"secondary"} onClick={() => addMinutes(-15)}>-15</Button>
-                    <Button type="button" variant={"secondary"} onClick={() => resetDate()}>Reset</Button>
-                    <Button type="button" variant={"secondary"} onClick={() => addMinutes(15)}>+15</Button>
-                  </div>
                 </>
               )}
             />
@@ -208,7 +205,7 @@ export function EnterActivityFrom() {
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
+            <Button className="w-full" type="submit">Submit</Button>
           </form>
         </Form>
       </CardContent>
