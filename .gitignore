@@ -360,3 +360,4 @@ MigrationBackup/
 /WeeklyReviewSource/DataMigration/appsettings.Production.json
 .vscode/launch.json
 .vscode/tasks.json
+WeeklyReviewSource/weekly-review-client/.env
