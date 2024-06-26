@@ -9,7 +9,7 @@ using System.Security.Principal;
 
 namespace WeeklyReview.Server.Controllers.Internal
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("api/v{version:apiVersion}/[controller]")]
     public class GenericAuthorizedApiController : ODataController
@@ -18,9 +18,11 @@ namespace WeeklyReview.Server.Controllers.Internal
         {
             get
             {
-                var guidString = User.Claims.First(x => x.Type.Contains("objectidentifier")).Value;
-                var userGuid = new Guid(guidString);
-                return userGuid;
+                //var guidString = User.Claims.First(x => x.Type.Contains("objectidentifier")).Value;
+                //var userGuid = new Guid(guidString);
+                //return userGuid;
+
+                return new Guid("99D18C23-0F97-47AC-8F8C-2CCAE411EE14");
             }
         }
 
