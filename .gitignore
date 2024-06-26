@@ -358,3 +358,5 @@ MigrationBackup/
 /WeeklyReviewSource/WeeklyReview/Client/wwwroot/appsettings.Development.json
 /WeeklyReviewSource/DataMigration/appsettings.Development.json
 /WeeklyReviewSource/DataMigration/appsettings.Production.json
+.vscode/launch.json
+.vscode/tasks.json
