@@ -30,7 +30,7 @@ export default function Navbar({ avatarUrl } : Props) {
   const [nav, setNav] = useState(false);
 
   return (
-    <div className="flex justify-between items-center w-full bg-gray-900 p-2 fixed nav">
+    <header className="flex justify-between items-center w-full bg-primary p-2 fixed nav">
       <div>
         <h1 className="text-2xl text-white font-signature ml-2">
           <a
@@ -78,7 +78,7 @@ export default function Navbar({ avatarUrl } : Props) {
       </div>
 
       {nav && (
-        <ul className="flex flex-col justify-center items-center absolute top-0 left-0 w-full h-screen bg-gray-900 text-gray-300">
+        <ul className="flex flex-col justify-center items-center absolute top-0 left-0 w-full h-screen bg-primary text-gray-300">
           {links.map(({ id, link }) => (
             <li
               key={id}
@@ -97,6 +97,6 @@ export default function Navbar({ avatarUrl } : Props) {
           </li>
         </ul>
       )}
-    </div>
+    </header>
   )
 }

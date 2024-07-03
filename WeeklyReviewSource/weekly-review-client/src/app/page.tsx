@@ -1,24 +1,49 @@
 import { getServerSession } from 'next-auth';
 import { options } from '@/app/api/auth/[...nextauth]/options';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 
 export default async function Home() {
-  const session = await getServerSession(options);
-  if(session){
-    const email = session.user?.email!
-    return (
-      <main className="flex min-h-screen flex-col items-center justify-between p-24">
-        <h1>Weekly Review</h1>
-        <p>Signed in</p>
-        <div>Email {email}</div>
-      </main>
-    );
-  }
-  else {
-    return (
-      <main className="flex min-h-screen flex-col items-center justify-between p-24">
-        <h1>Weekly Review</h1>
-        <p>Not signed in</p>
-      </main>
-    );
-  }
+  return (
+    <main className="flex flex-col min-h-screen bg-foreground">
+        <div className='flex flex-col items-center justify-between w-full h-64 md:mt-14 mt-12'>
+          <div className='w-full p-2'>
+            <Card> 
+              <CardHeader>
+                <CardTitle>Weekly Review</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>
+                  The app that provides insights into your activities from the past
+                </CardDescription>
+              </CardContent>
+              <CardFooter>
+                <button className='btn-primary'>Get Started</button>
+              </CardFooter>
+            </Card>
+          </div>
+          <div className='bg-foreground w-full p-2'>
+            <Card> 
+              <CardHeader>
+                <CardTitle>Weekly Review</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>
+                  The app that provides insights into your activities from the past
+                </CardDescription>
+              </CardContent>
+              <CardFooter>
+                <button className='btn-primary'>Get Started</button>
+              </CardFooter>
+            </Card>
+          </div>
+        </div>
+    </main>
+  );
 }
