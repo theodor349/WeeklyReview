@@ -22,7 +22,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Navbar avatarUrl={session?.user?.image} />
+        <Navbar avatarUrl={session?.user?.image ? session?.user?.image : ""} />
         {children}
       </body>
     </html>
