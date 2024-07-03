@@ -4,10 +4,12 @@ import { options } from '@/app/api/auth/[...nextauth]/options';
 export default async function Home() {
   const session = await getServerSession(options);
   if(session){
+    const email = session.user?.email!
     return (
       <main className="flex min-h-screen flex-col items-center justify-between p-24">
         <h1>Weekly Review</h1>
         <p>Signed in</p>
+        <div>Email {email}</div>
       </main>
     );
   }
