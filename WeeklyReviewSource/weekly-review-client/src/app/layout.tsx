@@ -21,7 +21,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={inter.className + " bg-foreground"}>
         <Navbar avatarUrl={session?.user?.image ? session?.user?.image : ""} />
         {children}
       </body>
