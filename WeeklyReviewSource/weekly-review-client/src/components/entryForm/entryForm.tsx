@@ -1,5 +1,7 @@
 "use client"
 
+import StringList from "@/components/entryForm/stringList"
+import { useReducer } from "react"
 import { cn } from "@/lib/utils"
 import { z } from "zod"
 import { format } from "date-fns"
@@ -45,6 +47,8 @@ function roundMinutes(date: Date){
 }
 
 export default function EntryForm() {
+  const [, forceUpdate] = useReducer(x => x + 1, 0);
+
   var date = new Date();
   roundMinutes(date);
 
@@ -68,13 +72,33 @@ export default function EntryForm() {
   function overrideTime(time: string){
     const hours = parseInt(time.split(':')[0])
     const minutes = parseInt(time.split(':')[1])
-    date = new Date(form.getValues('date').setHours(hours, minutes))
+    var date = new Date(form.getValues('date').setHours(hours, minutes))
     roundMinutes(date);
     form.setValue('date', date)
   }
 
   function resetTime(){
-    form.setValue('date', new Date())
+    var date = new Date();
+    roundMinutes(date);
+    form.setValue('date', date);
+  }
+
+  function addActivity(){
+    console.log("Add Activity")
+    console.log(form.getValues('activity'))
+    form.setValue('activity', [...form.getValues('activity'), ""])
+    console.log(form.getValues('activity'))
+    forceUpdate();
+  }
+
+  function removeActivity(){
+    console.log("Remove Activity")
+    const length = form.getValues('activity').length
+    if(length === 1) 
+      form.setValue('activity', [""])
+    else 
+      form.setValue('activity', form.getValues('activity').slice(0, -1))
+    forceUpdate();
   }
 
   return (
@@ -85,87 +109,56 @@ export default function EntryForm() {
       <CardContent className="max-w-md">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="date"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <div className="flex flex-row gap-2">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "text-center font-normal w-full",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-                <Input className="max-w-24" type="time" onChange={(v) => overrideTime(v.target.value)} value={format(field.value, "HH:mm")}/>
-              </div>
-              <div className="flex flex-row justify-center gap-8">
-                <Button variant={"secondary"} onClick={(e) => { e.preventDefault(); addTime(-15) }}>-15</Button>
-                <Button variant={"secondary"} onClick={(e) => { e.preventDefault(); resetTime() }}>Reset</Button>
-                <Button variant={"secondary"} onClick={(e) => { e.preventDefault(); addTime(15) }}>+15</Button>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
           <FormField
             control={form.control}
-            name="activity[0]"
+            name="date"
             render={({ field }) => (
-              <FormItem>
-                <FormLabel>Activity</FormLabel>
-                <FormControl>
-                  <Input placeholder="shadcn" {...field} />
-                </FormControl>
+              <FormItem className="flex flex-col">
+                <div className="flex flex-row gap-2">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "text-center font-normal w-full",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <Input className="max-w-24" type="time" onChange={(v) => overrideTime(v.target.value)} value={format(field.value, "HH:mm")}/>
+                </div>
                 <div className="flex flex-row justify-center gap-8">
-                  <Button className="w-32" variant={"destructive"}>Remove</Button>
-                  <Button className="w-32" variant={"secondary"}>Add</Button>
+                  <Button size={"sm"} variant={"secondary"} onClick={(e) => { e.preventDefault(); addTime(-15) }}>-15</Button>
+                  <Button size={"sm"} variant={"secondary"} onClick={(e) => { e.preventDefault(); resetTime() }}>Reset</Button>
+                  <Button size={"sm"} variant={"secondary"} onClick={(e) => { e.preventDefault(); addTime(15) }}>+15</Button>
                 </div>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            name="social[0]"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Social</FormLabel>
-                <FormControl>
-                  <Input placeholder="shadcn" {...field} />
-                </FormControl>
-                <div className="flex flex-row justify-center gap-8">
-                  <Button className="w-32" variant={"destructive"}>Remove</Button>
-                  <Button className="w-32" variant={"secondary"}>Add</Button>
-                </div>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <Button type="submit">Submit</Button>
+          <StringList form={form} entry="activity" />
+          <StringList form={form} entry="social" />
+          <div className="flex justify-center">
+            <Button className="w-32" size={"sm"} type="submit">Submit</Button>
+          </div>
         </form>
       </Form>
       </CardContent>
