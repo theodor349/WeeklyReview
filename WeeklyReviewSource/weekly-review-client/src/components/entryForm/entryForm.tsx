@@ -154,8 +154,8 @@ export default function EntryForm() {
               </FormItem>
             )}
           />
-          <StringList form={form} entry="activity" />
-          <StringList form={form} entry="social" />
+          <StringList form={form} entry="activity" placeholder="Exercise: Running" />
+          <StringList form={form} entry="social" placeholder="John Doe" />
           <div className="flex justify-center">
             <Button className="w-32" size={"sm"} type="submit">Submit</Button>
           </div>

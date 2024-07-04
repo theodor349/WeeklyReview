@@ -20,9 +20,10 @@ import { Input } from "@/components/ui/input"
 interface Props {
   form: ReturnType<typeof useForm>
   entry: string
+  placeholder: string
 }
 
-export default function StringList({ form, entry }: Props) {
+export default function StringList({ form, entry, placeholder }: Props) {
   const [, forceUpdate] = useReducer(x => x + 1, 0);
 
   function addItem(){
@@ -32,12 +33,10 @@ export default function StringList({ form, entry }: Props) {
 
   function removeItem(){
     const length = form.getValues(entry).length
-    console.log(form.getValues(entry))
-    if(length === 1) 
-      form.getValues(entry)[0] = "";
+    if(length === 1)
+      form.setValue(entry + "[0]", "")
     else 
       form.setValue(entry, form.getValues(entry).slice(0, -1))
-    console.log(form.getValues(entry))
     forceUpdate();
   }
 
@@ -52,7 +51,7 @@ export default function StringList({ form, entry }: Props) {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input placeholder="Exercise: Running" {...field} />
+                <Input placeholder={placeholder} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
