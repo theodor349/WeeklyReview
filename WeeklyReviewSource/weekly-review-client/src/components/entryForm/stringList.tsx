@@ -18,9 +18,13 @@ import {
 import { Input } from "@/components/ui/input"
 
 interface Props {
-  form: ReturnType<typeof useForm>
-  entry: string
-  placeholder: string
+  form: {
+    setValue: (name: string, value: any) => void;
+    getValues: (name: string) => any;
+    control: any;
+  };
+  entry: string;
+  placeholder: string;
 }
 
 export default function StringList({ form, entry, placeholder }: Props) {

@@ -108,7 +108,7 @@ export default function EntryForm() {
       </CardHeader>
       <CardContent className="max-w-md">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
           <FormField
             control={form.control}
             name="date"
