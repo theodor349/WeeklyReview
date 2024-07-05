@@ -59,6 +59,7 @@ export default function Combobox(
   } = useCombobox({
     onInputValueChange({inputValue}) {
       setItems(selection.filter(getFilter(inputValue)))
+      form.setValue(`${entry}[${index}]`, inputValue);
     },
     items,
     itemToString(item) {
