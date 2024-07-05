@@ -57,7 +57,7 @@ export default function StringList({ form, entry, placeholder, selection }: Prop
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Combobox placeholder={placeholder} field={field} selection={selection} />
+                <Combobox placeholder={placeholder} form={form} entry={entry} index={index} selection={selection} />
               </FormControl>
               <FormMessage />
             </FormItem>
