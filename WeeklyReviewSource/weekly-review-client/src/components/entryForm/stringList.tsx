@@ -31,6 +31,7 @@ interface Props {
 
 export default function StringList({ form, entry, placeholder, selection }: Props) {
   const [, forceUpdate] = useReducer(x => x + 1, 0);
+  const [resetNumber, forceReset] = useReducer(x => x + 1, 0);
 
   function addItem(){
     form.setValue(entry, [...form.getValues(entry), ""])
@@ -39,8 +40,10 @@ export default function StringList({ form, entry, placeholder, selection }: Prop
 
   function removeItem(){
     const length = form.getValues(entry).length
-    if(length === 1)
+    if(length === 1){
       form.setValue(entry + "[0]", "")
+      forceReset()
+    }
     else 
       form.setValue(entry, form.getValues(entry).slice(0, -1))
     forceUpdate();
@@ -57,7 +60,7 @@ export default function StringList({ form, entry, placeholder, selection }: Prop
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Combobox placeholder={placeholder} form={form} entry={entry} index={index} selection={selection} />
+                <Combobox placeholder={placeholder} form={form} resetNumber={resetNumber} entry={entry} index={index} selection={selection} />
               </FormControl>
               <FormMessage />
             </FormItem>
