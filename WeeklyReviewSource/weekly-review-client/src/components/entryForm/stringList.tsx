@@ -16,6 +16,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import Combobox from "@/components/entryForm/combobox"
 
 interface Props {
   form: {
@@ -25,9 +26,10 @@ interface Props {
   };
   entry: string;
   placeholder: string;
+  selection: string[];
 }
 
-export default function StringList({ form, entry, placeholder }: Props) {
+export default function StringList({ form, entry, placeholder, selection }: Props) {
   const [, forceUpdate] = useReducer(x => x + 1, 0);
 
   function addItem(){
@@ -55,7 +57,7 @@ export default function StringList({ form, entry, placeholder }: Props) {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input placeholder={placeholder} {...field} />
+                <Combobox placeholder={placeholder} field={field} selection={selection} />
               </FormControl>
               <FormMessage />
             </FormItem>

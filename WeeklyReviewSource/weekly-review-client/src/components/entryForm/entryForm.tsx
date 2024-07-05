@@ -46,6 +46,8 @@ function roundMinutes(date: Date){
   date.setMilliseconds(0);
 }
 
+const selection = ["Option 1", "Option 2", "Option 3", "Option 4", "Option 5"]
+
 export default function EntryForm() {
   const [, forceUpdate] = useReducer(x => x + 1, 0);
 
@@ -154,8 +156,8 @@ export default function EntryForm() {
               </FormItem>
             )}
           />
-          <StringList form={form} entry="activity" placeholder="Exercise: Running" />
-          <StringList form={form} entry="social" placeholder="John Doe" />
+          <StringList form={form} entry="activity" placeholder="Exercise: Running" selection={selection} />
+          <StringList form={form} entry="social" placeholder="John Doe" selection={selection} />
           <div className="flex justify-center">
             <Button className="w-32" size={"sm"} type="submit">Submit</Button>
           </div>
