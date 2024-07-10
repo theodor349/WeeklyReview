@@ -45,10 +45,11 @@ function getFilter(inputValue: string) {
 }
 
 var currentResetNumber = 0;
+const MAX_ITEMS = 24;
 export default function Combobox(
   { form, entry, index, placeholder, selection, resetNumber }: Props,
 ) {
-  const [items, setItems] = React.useState(selection)
+  const [items, setItems] = React.useState(selection.slice(0, MAX_ITEMS))
   const {
     isOpen,
     getToggleButtonProps,
@@ -61,7 +62,7 @@ export default function Combobox(
     selectItem,
   } = useCombobox({
     onInputValueChange({inputValue}) {
-      setItems(selection.filter(getFilter(inputValue)))
+      setItems(selection.filter(getFilter(inputValue)).slice(0, MAX_ITEMS))
       form.setValue(`${entry}[${index}]`, inputValue);
     },
     items,
@@ -101,7 +102,7 @@ export default function Combobox(
         </div>
       </div>
       <ul
-        className={`absolute w-full max-w-sm bg-white mt-1 shadow-md max-h-80 overflow-scroll p-0 z-10 ${
+        className={`absolute w-full max-w-xs md:max-w-sm bg-white mt-1 shadow-md max-h-80 overflow-scroll p-0 z-10 ${
           !(isOpen && items.length) && 'hidden'
         }`}
         {...getMenuProps()}
