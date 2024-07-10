@@ -44,11 +44,11 @@ function getFilter(inputValue: string) {
   }
 }
 
-var currentResetNumber = 0;
 const MAX_ITEMS = 24;
 export default function Combobox(
   { form, entry, index, placeholder, selection, resetNumber }: Props,
 ) {
+  const [currentResetNumber, setcurrentResetNumber] = React.useState(0)
   const [items, setItems] = React.useState(selection.slice(0, MAX_ITEMS))
   const {
     isOpen,
@@ -72,9 +72,8 @@ export default function Combobox(
   })
 
   function reset() {
-    currentResetNumber = resetNumber;
+    setcurrentResetNumber(resetNumber);
     selectItem(null);
-    console.log("resetting");
   }
   
   if(currentResetNumber != resetNumber){
