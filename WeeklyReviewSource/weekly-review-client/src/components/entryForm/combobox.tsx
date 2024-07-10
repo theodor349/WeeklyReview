@@ -76,7 +76,7 @@ export default function Combobox(
     console.log("resetting");
   }
   
-  if(currentResetNumber < resetNumber){
+  if(currentResetNumber != resetNumber){
     reset();
   }
 
