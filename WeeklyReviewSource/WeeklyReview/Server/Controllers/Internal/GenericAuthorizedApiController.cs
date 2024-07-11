@@ -22,8 +22,16 @@ namespace WeeklyReview.Server.Controllers.Internal
                 //var userGuid = new Guid(guidString);
                 //return userGuid;
 
-                return new Guid("99D18C23-0F97-47AC-8F8C-2CCAE411EE14");
+                return new Guid("11D18C23-0F97-47AC-8F8C-2CCAE411EE14");
             }
+        }
+
+        public Guid GetUserGuid(string email)
+        {
+            if (email.Equals("theodor349@gmail.com", StringComparison.OrdinalIgnoreCase))
+                return new Guid("99D18C23-0F97-47AC-8F8C-2CCAE411EE14");
+            else 
+                return new Guid("11D18C23-0F97-47AC-8F8C-2CCAE411EE14");
         }
 
         public GenericAuthorizedApiController()

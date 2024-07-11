@@ -1,4 +1,6 @@
 import EntryFormClient from "@/components/entryForm/entryFormClient"
+import { options } from '@/app/api/auth/[...nextauth]/options';
+import { getServerSession } from 'next-auth';
 import {
   Card,
   CardContent,
@@ -7,31 +9,22 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import Email from "next-auth/providers/email";
 
-const selection = [
-  "Go for a walk",
-  "Read a book",
-  "Watch a movie",
-  "Cook a meal",
-  "Bake cookies",
-  "Do a puzzle",
-  "Learn a new skill",
-  "Practice yoga",
-  "Meditate",
-  "Call a friend or family member",
-  "Write in a journal",
-  "Clean the house",
-  "Organize your closet",
-  "Play a game",
-  "Go for a bike ride",
-  "Listen to music",
-  "Take a nap",
-  "Do some gardening",
-  "Work on a creative project"
-  ]
+export default async function EntryForm() {
+  const session = await getServerSession(options);
+  const userEmail = session!.user?.email!;
 
-export default function EntryForm() {
-
+  var selection: string[] = [];
+  await fetch("http://localhost:5197/api/v1/Activity?$orderby=normalizedName", {
+    method: "PUT",
+    body: JSON.stringify({Email: userEmail}),
+    headers: {
+      "Content-Type": "application/json",
+    }
+  }).then(response => response.json()).then(data => selection = data.map((item: any) => item.name));
+  
+  console.log(selection)
   return (
     <Card>
       <CardHeader>
