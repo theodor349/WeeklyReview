@@ -11,6 +11,7 @@ import {
 import EntryForm from '@/components/entryForm/entryForm';
 
 export default async function Home() {
+
   return (
     <main className="flex flex-col min-h-screen h-full">
         <div className='flex flex-col items-center justify-between w-full h-64 md:mt-14 mt-12'>
