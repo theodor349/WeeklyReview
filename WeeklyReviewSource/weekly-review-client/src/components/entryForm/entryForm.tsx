@@ -24,7 +24,6 @@ export default async function EntryForm() {
     }
   }).then(response => response.json()).then(data => selection = data.map((item: any) => item.name));
   
-  console.log(selection)
   return (
     <Card>
       <CardHeader>

@@ -83,6 +83,25 @@ export default function EntryFormClient({ selection }: Props) {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values)
+    const entries = values.activity.filter(x => x !== "").concat(values.social.filter(x => x !== "").map(x => "Social: " + x));
+    const uniqueEntries = Array.from(new Set(entries))
+    values.date.time = new Date(values.date.time.getTime() + values.date.time.getTimezoneOffset() * 60000)
+    const postData = async () => {
+      const data = {
+        date: format(values.date.date, "yyyy-MM-dd") + "T" + format(values.date.time, "HH:mm:ss") + "Z",
+        entries: uniqueEntries,
+      };
+
+      const response = await fetch("/api/entry", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+      return response.json();
+    };
+    postData().then((data) => {
+      console.log(data.message);
+    });
+
   }
 
   function addTime(minutes: number){
@@ -177,7 +196,7 @@ export default function EntryFormClient({ selection }: Props) {
           )}
         />
         <StringList form={form} entry="activity" placeholder="Exercise: Running" selection={selection} />
-        <StringList form={form} entry="social" placeholder="John Doe" selection={selection} />
+        {/* <StringList form={form} entry="social" placeholder="John Doe" selection={selection} /> */}
         <div className="flex justify-center">
           <Button className="w-32" size={"sm"} type="submit">Submit</Button>
         </div>

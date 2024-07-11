@@ -11,6 +11,8 @@ using WeeklyReview.Shared.Services;
 
 namespace WeeklyReview.Server.Controllers
 {
+    public record EnterEntryRequest(string Email, EnterEntryModel Model);
+
     [ApiVersion("1.0")]
     public class EntryController : GenericAuthorizedApiController
     {
@@ -44,11 +46,11 @@ namespace WeeklyReview.Server.Controllers
         }
 
         [HttpPost("Enter")]
-        public async Task<ActionResult<EntryModel?>> Create([FromBody] EnterEntryModel model)
+        public async Task<ActionResult<EntryModel?>> Create([FromBody] EnterEntryRequest model)
         {
             try
             {
-                return Ok(await _entryService.Create(model, UserGuid));
+                return Ok(await _entryService.Create(model.Model, GetUserGuid(model.Email)));
             }
             catch(ArgumentException e)
             {
