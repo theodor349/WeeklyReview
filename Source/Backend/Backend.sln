@@ -9,9 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database", "Database\Databa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{49554592-E8EC-4E66-A726-3DC314D3E634}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6C90846A-B77C-4A91-AB3D-8BC55C7A1A4D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Tests", "tests\shared.Tests\Shared.Tests.csproj", "{A0B9A4F8-139B-43F5-B5E2-7E16DEDCF13E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared.Tests", "Shared.Tests\Shared.Tests.csproj", "{A0B9A4F8-139B-43F5-B5E2-7E16DEDCF13E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
