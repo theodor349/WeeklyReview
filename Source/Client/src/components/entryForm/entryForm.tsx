@@ -9,16 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import Email from "next-auth/providers/email";
 
 export default async function EntryForm() {
   const session = await getServerSession(options);
-  const userEmail = session!.user?.email!;
 
   var selection: string[] = [];
-  await fetch("http://localhost:5197/api/v1/Activity?$orderby=normalizedName", {
-    method: "PUT",
-    body: JSON.stringify({Email: userEmail}),
+  await fetch("http://localhost:7151/api/v1/user/99D18C23-0F97-47AC-8F8C-2CCAE411EE14/activities", {
+    method: "GET",
     headers: {
       "Content-Type": "application/json",
     }
