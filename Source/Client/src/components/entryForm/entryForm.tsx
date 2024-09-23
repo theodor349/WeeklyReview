@@ -12,9 +12,10 @@ import {
 
 export default async function EntryForm() {
   const session = await getServerSession(options);
+  const userId = session!.user?.id!
 
   var selection: string[] = [];
-  await fetch("http://localhost:7151/api/v1/user/99D18C23-0F97-47AC-8F8C-2CCAE411EE14/activities", {
+  await fetch(`http://localhost:7151/api/v1/user/${userId}/activities`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
