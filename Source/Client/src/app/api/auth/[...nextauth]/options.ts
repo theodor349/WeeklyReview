@@ -11,7 +11,7 @@ export const options: NextAuthOptions = {
         ...session,
         user: {
           ...session.user,
-          id: uuidv5(token.sub, NAMESPACE ),
+          id: uuidv5(token.sub!, NAMESPACE ),
         },
       };
     }
