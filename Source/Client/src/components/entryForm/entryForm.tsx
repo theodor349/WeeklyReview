@@ -12,15 +12,25 @@ import {
 
 export default async function EntryForm() {
   const session = await getServerSession(options);
-  const userId = session!.user?.id!
+  let userId = session!.user?.id!
+  const baseUrl = process.env.BACKEND_URL;
+
+  if (userId == process.env.NEXT_USERID) {
+    userId = process.env.DOTNET_USERID
+  }
 
   var selection: string[] = [];
-  await fetch(`http://localhost:7151/api/v1/user/${userId}/activities`, {
+  await fetch(`${baseUrl}/api/v1/user/${userId}/activities`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     }
-  }).then(response => response.json()).then(data => selection = data.map((item: any) => item.name));
+  }).then(response => {
+    if (response.status == 204) {
+      return []
+    }
+    return response.json()
+  }).then(data => selection = data.map((item: any) => item.name));
   
   return (
     <Card>

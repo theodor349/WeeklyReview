@@ -35,7 +35,7 @@ public class GetAllActivities
         _logger.LogInformation("C# HTTP trigger function processed a request.");
         var res = await _activityService.GetAll(userGuid);
         if (res == null || !res.Any())
-            return new NotFoundResult();
+            return new NoContentResult();
         return new OkObjectResult(res);
     }
 }

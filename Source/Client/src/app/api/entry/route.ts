@@ -3,17 +3,17 @@ import { getServerSession } from 'next-auth';
 
 export async function POST(req: Request) {
   const session = await getServerSession(options);
-  const userEmail = session!.user?.email!;
+  let userId = session!.user?.id!
+  const baseUrl = process.env.BACKEND_URL;
 
-  const body = await req.json();
-  const data = {
-    email: userEmail,
-    model: body
+  if (userId == process.env.NEXT_USERID) {
+    userId = process.env.DOTNET_USERID
   }
 
-  const res = await fetch("http://localhost:5197/api/v1/entry/enter", {
+  const body = await req.json();
+  const res = await fetch(`${baseUrl}/api/v1/entry/enter`, {
     method: "POST",
-    body: JSON.stringify(data),
+    body: JSON.stringify(body),
     headers: {
       "Content-Type": "application/json",
     }
