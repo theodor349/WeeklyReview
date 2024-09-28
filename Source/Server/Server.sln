@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35312.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Function", "Function\Function.csproj", "{8765E644-C39A-498C-880F-8E8B4A9177A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{40D30962-FB7C-4EA5-B1C0-C37CB1A8AA7D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database", "Database\Database.csproj", "{F519A5D7-0BC2-4E60-96C0-31EAA33C9A73}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8765E644-C39A-498C-880F-8E8B4A9177A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8765E644-C39A-498C-880F-8E8B4A9177A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8765E644-C39A-498C-880F-8E8B4A9177A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8765E644-C39A-498C-880F-8E8B4A9177A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40D30962-FB7C-4EA5-B1C0-C37CB1A8AA7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40D30962-FB7C-4EA5-B1C0-C37CB1A8AA7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40D30962-FB7C-4EA5-B1C0-C37CB1A8AA7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40D30962-FB7C-4EA5-B1C0-C37CB1A8AA7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F519A5D7-0BC2-4E60-96C0-31EAA33C9A73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F519A5D7-0BC2-4E60-96C0-31EAA33C9A73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F519A5D7-0BC2-4E60-96C0-31EAA33C9A73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F519A5D7-0BC2-4E60-96C0-31EAA33C9A73}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {951F9B33-E3D5-4536-BFC2-795BC66857A9}
+	EndGlobalSection
+EndGlobal
