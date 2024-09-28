@@ -1,4 +1,4 @@
-//using Functions.Configuration;
+using Functions.Configuration;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +28,7 @@ var host = new HostBuilder()
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
         //services.AddSharedServices();
-        //services.AddDatabases(configuration);
+        services.AddDatabases(configuration);
     })
     .Build();
 
