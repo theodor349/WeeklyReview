@@ -3,10 +3,11 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-//using Shared;
+using Shared;
 
 var host = new HostBuilder()
     .ConfigureFunctionsWebApplication()
+    // This does not work on Azure Function App Instance
     //.ConfigureAppConfiguration((context, config) =>
     //{
     //    // Get the environment (e.g., Development, Production)
@@ -27,7 +28,7 @@ var host = new HostBuilder()
 
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
-        //services.AddSharedServices();
+        services.AddSharedServices();
         services.AddDatabases(configuration);
     })
     .Build();
