@@ -24,6 +24,7 @@ export default async function EntryForm() {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
+      "x-functions-key": process.env.FUNCTIONS_KEY || ""
     }
   }).then(response => {
     if (response.status == 204) {
