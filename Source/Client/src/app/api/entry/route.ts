@@ -16,6 +16,7 @@ export async function POST(req: Request) {
     body: JSON.stringify(body),
     headers: {
       "Content-Type": "application/json",
+      "x-functions-key": process.env.FUNCTIONS_KEY || ""
     }
   })
   return new Response(JSON.stringify({message: "Entry added"}));
