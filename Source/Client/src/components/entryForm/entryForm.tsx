@@ -27,6 +27,7 @@ export default async function EntryForm() {
       "x-functions-key": process.env.FUNCTIONS_KEY || ""
     }
   }).then(response => {
+    console.log(response.status)
     if (response.status == 204) {
       return []
     }
