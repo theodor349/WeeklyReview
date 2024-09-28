@@ -195,7 +195,7 @@ export default function EntryFormClient({ selection }: Props) {
             </FormItem>
           )}
         />
-        <StringList form={form} entry="activity" placeholder="Exercise: Running" selection={selection} />
+        <StringList form={form as unknown as { setValue: (name: string, value: any) => void; getValues: (name: string) => any; control: any; }} entry="activity" placeholder="Exercise: Running" selection={selection} />
         {/* <StringList form={form} entry="social" placeholder="John Doe" selection={selection} /> */}
         <div className="flex justify-center">
           <Button className="w-32" size={"sm"} type="submit">Submit</Button>
