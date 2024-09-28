@@ -2,7 +2,7 @@
 using database.Persitance;
 using Microsoft.EntityFrameworkCore;
 
-namespace shared.Services;
+namespace Shared.Services;
 
 internal partial class ActivityChangeService : IActivityChangeService
 {

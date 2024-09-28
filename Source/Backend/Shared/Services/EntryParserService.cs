@@ -1,10 +1,11 @@
 ﻿using database.Models;
 using database.Persitance;
 using Microsoft.EntityFrameworkCore;
+using Shared.Services;
 using System.Drawing;
 using System.Text.RegularExpressions;
 
-namespace shared.Services;
+namespace Shared.Services;
 
 internal class EntryParserService : IEntryParserService
 {

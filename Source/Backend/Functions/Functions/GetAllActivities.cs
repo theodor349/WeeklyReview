@@ -7,7 +7,7 @@ using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using shared.Services;
+using Shared.Services;
 using System.Net;
 
 namespace Functions.Functions;

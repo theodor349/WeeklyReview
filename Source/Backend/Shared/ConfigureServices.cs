@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using shared.Services;
+using Shared.Services;
+using Shared.Services;
 
 namespace shared;
 

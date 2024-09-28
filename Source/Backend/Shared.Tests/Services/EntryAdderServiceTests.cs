@@ -2,7 +2,7 @@
 using database.Models;
 using Microsoft.EntityFrameworkCore;
 using NSubstitute;
-using shared.Services;
+using Shared.Services;
 using Shared.Tests.DataContexts;
 using System.ComponentModel.DataAnnotations;
 

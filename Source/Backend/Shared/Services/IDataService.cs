@@ -1,6 +1,6 @@
-﻿using shared.Models.DTOs;
+﻿using Shared.Models.DTOs;
 
-namespace shared.Services;
+namespace Shared.Services;
 
 public interface IDataService
 {

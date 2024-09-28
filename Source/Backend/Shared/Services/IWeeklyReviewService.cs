@@ -1,8 +1,8 @@
 ﻿using database.Models;
-using shared.Models;
+using Shared.Models;
 using System.Drawing;
 
-namespace shared.Services;
+namespace Shared.Services;
 
 public interface IWeeklyReviewService
 {

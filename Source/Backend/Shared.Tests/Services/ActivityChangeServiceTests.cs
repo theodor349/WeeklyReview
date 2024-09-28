@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using NSubstitute;
-using shared.Services;
+using Shared.Services;
 using Shared.Tests.DataContexts;
 
 namespace Shared.Tests.Services;

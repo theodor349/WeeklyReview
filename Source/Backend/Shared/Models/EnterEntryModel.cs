@@ -1,4 +1,4 @@
-﻿namespace shared.Models;
+﻿namespace Shared.Models;
 
 public class EnterEntryModel
 {

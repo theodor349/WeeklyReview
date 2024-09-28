@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Drawing;
 
-namespace shared.Services;
+namespace Shared.Services;
 
 internal class CategoryService : ICategoryService
 {

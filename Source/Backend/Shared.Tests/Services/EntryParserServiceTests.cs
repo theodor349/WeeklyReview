@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using shared.Services;
+using Shared.Services;
 using Shared.Tests.DataContexts;
 using System.Drawing;
 

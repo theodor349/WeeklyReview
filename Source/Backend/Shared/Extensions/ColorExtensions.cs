@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace shared.Extensions;
+namespace Shared.Extensions;
 
 public static class ColorExtensions
 {

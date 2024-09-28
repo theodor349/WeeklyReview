@@ -1,10 +1,11 @@
 ﻿using database.Models;
 using database.Persitance;
 using Microsoft.EntityFrameworkCore;
-using shared.Models;
+using Shared.Models;
+using Shared.Services;
 using System.Data;
 
-namespace shared.Services;
+namespace Shared.Services;
 
 internal class EntryService : IEntryService
 {

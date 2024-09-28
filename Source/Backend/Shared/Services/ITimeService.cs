@@ -1,4 +1,4 @@
-﻿namespace shared.Services;
+﻿namespace Shared.Services;
 
 public interface ITimeService
 {

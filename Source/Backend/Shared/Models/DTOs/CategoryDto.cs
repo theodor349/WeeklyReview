@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace shared.Models.DTOs;
+namespace Shared.Models.DTOs;
 
 public class CategoryDto
 {

@@ -1,4 +1,4 @@
-﻿namespace shared.Models.DTOs;
+﻿namespace Shared.Models.DTOs;
 
 public class GetEntriesAroundDto
 {

@@ -1,6 +1,6 @@
 ﻿using database.Models;
 
-namespace shared.Services;
+namespace Shared.Services;
 
 public interface IEntryAdderService
 {
