@@ -19,7 +19,6 @@ export default async function EntryForm() {
     userId = process.env.DOTNET_USERID
   }
 
-  console.log(`UserId: ${userId}`)
   var selection: string[] = [];
   await fetch(`${baseUrl}/api/v1/user/${userId}/activities`, {
     method: "GET",
@@ -28,7 +27,6 @@ export default async function EntryForm() {
       "x-functions-key": process.env.FUNCTIONS_KEY || ""
     }
   }).then(response => {
-    console.log(response.status)
     if (response.status == 204) {
       return []
     }
