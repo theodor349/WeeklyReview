@@ -4,7 +4,7 @@ import { useState } from "react"
 import StringList from "@/components/entryForm/stringList"
 import { useReducer } from "react"
 import { cn } from "@/lib/utils"
-import { date, z } from "zod"
+import { date, unknown, z } from "zod"
 import { format, set } from "date-fns"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
@@ -66,6 +66,9 @@ interface Props {
 export default function EntryFormClient({ selection }: Props) {
   const [calendarOpen, setCalendarOpen] = useState(false);
   const [postingEntry, setPostingEntry] = useState(false);
+  const [localEntries, setLocalEntries] = useState<string[]>([]);
+
+  selection = [...selection, ...localEntries];
 
   var date = new Date();
   roundMinutes(date);
@@ -92,6 +95,14 @@ export default function EntryFormClient({ selection }: Props) {
     });
 
     return toCancle
+  }
+
+  function updateSelection(uniqueEntries: string[]){
+    const unknownEntries = getUnknowEntries(uniqueEntries)
+    const filteredLocalEntries = unknownEntries.filter(entry => !selection.includes(entry));
+    if (filteredLocalEntries.length > 0){
+      setLocalEntries([...localEntries, ...filteredLocalEntries]);
+    }
   }
 
   function getUnknowEntries(uniqueEntries: string[]): string[] {
@@ -127,6 +138,7 @@ export default function EntryFormClient({ selection }: Props) {
     };
     postData().then((data) => {
       setPostingEntry(false);
+      updateSelection(uniqueEntries)
     });
   }
 
