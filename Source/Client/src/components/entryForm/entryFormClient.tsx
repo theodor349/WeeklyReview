@@ -65,6 +65,7 @@ interface Props {
 
 export default function EntryFormClient({ selection }: Props) {
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const [postingEntry, setPostingEntry] = useState(false);
 
   var date = new Date();
   roundMinutes(date);
@@ -81,11 +82,37 @@ export default function EntryFormClient({ selection }: Props) {
     },
   })
 
+  function cancleBecauseOfUnknowEntries(uniqueEntries: string[]): boolean {
+    var toCancle = false
+    let unknownEntries = getUnknowEntries(uniqueEntries)
+    unknownEntries.forEach(entry => {
+      if (!window.confirm(`Do you want to add the entry: ${entry}`)){
+        toCancle = true
+      }
+    });
+
+    return toCancle
+  }
+
+  function getUnknowEntries(uniqueEntries: string[]): string[] {
+    const unknownEntries = uniqueEntries.filter(x => !selection.includes(x))
+    if (unknownEntries.length > 0){
+      console.log("Unknown entries: " + unknownEntries)
+      return unknownEntries
+    }
+    return []
+  }
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
     const entries = values.activity.filter(x => x !== "").concat(values.social.filter(x => x !== "").map(x => "Social: " + x));
     const uniqueEntries = Array.from(new Set(entries))
     values.date.time = new Date(values.date.time.getTime() + values.date.time.getTimezoneOffset() * 60000)
+
+    if (cancleBecauseOfUnknowEntries(uniqueEntries)){
+      return
+    }
+
+    setPostingEntry(true)
     const postData = async () => {
       const data = {
         date: format(values.date.date, "yyyy-MM-dd") + "T" + format(values.date.time, "HH:mm:ss") + "Z",
@@ -99,9 +126,8 @@ export default function EntryFormClient({ selection }: Props) {
       return response.json();
     };
     postData().then((data) => {
-      console.log(data.message);
+      setPostingEntry(false);
     });
-
   }
 
   function addTime(minutes: number){
@@ -198,7 +224,7 @@ export default function EntryFormClient({ selection }: Props) {
         <StringList form={form as unknown as { setValue: (name: string, value: any) => void; getValues: (name: string) => any; control: any; }} entry="activity" placeholder="Exercise: Running" selection={selection} />
         {/* <StringList form={form} entry="social" placeholder="John Doe" selection={selection} /> */}
         <div className="flex justify-center">
-          <Button className="w-32" size={"sm"} type="submit">Submit</Button>
+          <Button className="w-32" size={"sm"} type="submit" disabled={postingEntry}>Submit</Button>
         </div>
       </form>
     </Form>

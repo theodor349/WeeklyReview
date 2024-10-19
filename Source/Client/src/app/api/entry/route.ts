@@ -12,7 +12,7 @@ export async function POST(req: Request) {
 
   const body = await req.json();
   body.userGuid = userId;
-  console.log(body)
+  
   const res = await fetch(`${baseUrl}/api/v1/entry`, {
     method: "POST",
     body: JSON.stringify(body),
