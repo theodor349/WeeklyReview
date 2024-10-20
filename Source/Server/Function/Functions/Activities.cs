@@ -23,9 +23,26 @@ public class Activities(ILogger<Activities> logger, IActivityService activitySer
     [OpenApiSecurity("function_key", SecuritySchemeType.ApiKey, Name = "x-functions-key", In = OpenApiSecurityLocationType.Header)]
     public async Task<IActionResult> GetAllActivities([HttpTrigger(AuthorizationLevel.Function, "get", Route = "v1/user/{userGuid}/activities")] HttpRequest req, [FromRoute] Guid userGuid)
     {
-        var res = await activityService.GetAll(userGuid);
-        if (res == null || !res.Any())
-            return new NoContentResult();
-        return new OkObjectResult(res);
+        if (userGuid == Guid.Empty)
+        {
+            return new BadRequestObjectResult("Invalid user ID.");
+        }
+
+        try
+        {
+            var activities = await activityService.GetAll(userGuid);
+
+            if (activities == null || !activities.Any())
+            {
+                return new NoContentResult();
+            }
+
+            return new OkObjectResult(activities);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to fetch activities for user {UserGuid}", userGuid);
+            return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+        }
     }
 }
