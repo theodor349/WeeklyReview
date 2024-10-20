@@ -1,46 +1,33 @@
-import EntryFormClient from "@/components/entryForm/entryFormClient"
-import { options } from '@/app/api/auth/[...nextauth]/options';
-import { getServerSession } from 'next-auth';
+import React from 'react';
+import EntryFormClient from "@/components/entryForm/entryFormClient";
+import { getUserId } from "@/lib/serversideUser";
+import { getActivities } from "@/lib/backendApi";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card";
 
-export default async function EntryForm() {
-  const session = await getServerSession(options);
-  let userId = session!.user?.id!
-  const baseUrl = process.env.BACKEND_URL;
 
-  if (userId == process.env.NEXT_USERID) {
-    userId = process.env.DOTNET_USERID
+const EntryForm = async () => {
+  try {
+    const userId = await getUserId();
+    const activities = await getActivities(userId);
+
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Enter Entry</CardTitle>
+        </CardHeader>
+        <CardContent className="max-w-md">
+          <EntryFormClient selection={activities} />
+        </CardContent>
+      </Card>
+    );
+  } catch (error) {
+    return <div>Failed to load activities</div>;
   }
+};
 
-  var selection: string[] = [];
-  await fetch(`${baseUrl}/api/v1/user/${userId}/activities`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      "x-functions-key": process.env.FUNCTIONS_KEY || ""
-    }
-  }).then(response => {
-    if (response.status == 204) {
-      return []
-    }
-    return response.json()
-  }).then(data => selection = data.map((item: any) => item.name));
-  
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Enter Entry</CardTitle>
-      </CardHeader>
-      <CardContent className="max-w-md">
-        <EntryFormClient selection={selection}/>
-      </CardContent>
-    </Card>
-  )
-}
+export default EntryForm;

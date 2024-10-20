@@ -1,4 +1,4 @@
-import { postRequest } from "@/lib/backendApi";
+import { postEntry } from "@/lib/backendApi";
 import { createResponse } from "@/lib/response";
 import { getUserId } from "@/lib/serversideUser";
 
@@ -13,7 +13,7 @@ export async function POST(req: Request): Promise<Response> {
 
     body.userGuid = await getUserId();
 
-    const result = await postRequest(`/api/v1/entry`, body);
+    const result = await postEntry(body);
 
     return createResponse(result.message, result.status);
   } catch (error) {

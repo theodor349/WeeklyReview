@@ -14,3 +14,8 @@ interface EntryRequestBody {
   title: string;
   description: string;
 }
+
+
+interface Activity {
+  name: string;
+};
