@@ -9,9 +9,8 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Combobox } from "@/components/entryForm/combobox/combobox"
+import { Combobox } from "@/components/combobox/combobox"
 import { useStringList } from "./useStringList"
-import { capitalize } from "@/lib/string"
 import { FormSchema } from "../client/formSchema";
 
 interface Props {
@@ -27,19 +26,18 @@ export default function StringList({ form, placeholder, selection }: Props) {
   return (
     <>
       <FormLabel>Activities</FormLabel>
-      {form.getValues().activity.map((item: string, index: number) => (
+      {form.getValues().activity.map((_: string, index: number) => (
         <FormField
           control={form.control}
           name={`activity.${index}`}
           key={`activity_${index}`}
-          render={({ field }) => (
+          render={() => (
             <FormItem>
               <FormControl>
                 <Combobox 
                   placeholder={placeholder} 
-                  form={form} 
+                  onInputValueChange={v => form.setValue(`activity.${index}`, v)} 
                   resetNumber={resetNumber} 
-                  index={index} 
                   selection={selection} 
                 />
               </FormControl>

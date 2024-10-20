@@ -14,13 +14,3 @@ interface EntryRequestBody {
   title: string;
   description: string;
 }
-
-interface Activity {
-  name: string;
-};
-
-interface FormProps {
-  setValue: (name: string, value: any) => void;
-  getValues: (name: string) => any;
-  control: any;
-}

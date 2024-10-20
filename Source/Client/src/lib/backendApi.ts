@@ -4,7 +4,7 @@ export async function postEntry(body: EntryRequestBody): Promise<BackendApiRespo
   return post(`/api/v1/entry`, body);
 }
 
-export async function getActivities(userId: string) {
+export async function getActivities(userId: string): Promise<string[]> {
   const endpoint = `/api/v1/user/${userId}/activities`;
   const response = await get(endpoint);
 
@@ -15,6 +15,10 @@ export async function getActivities(userId: string) {
   const data = await response.json();
   return data.map((item: Activity) => item.name);
 }
+
+interface Activity {
+  name: string;
+};
 
 /////////////////////////////////////////
 //             API Helpers             //
