@@ -6,7 +6,6 @@ export const formSchema = z.object({
     time: z.date(),
   }),
   activity: z.array(z.string()),
-  social: z.array(z.string()),
 });
 
 export type FormSchema = z.infer<typeof formSchema>;

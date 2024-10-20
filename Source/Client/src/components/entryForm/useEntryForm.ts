@@ -10,7 +10,6 @@ export const useEntryForm = (initialSelection: string[]) => {
   const [localEntries, setLocalEntries] = useState<string[]>([]);
 
   const selection = [...initialSelection, ...localEntries];
-
   const initialDate = roundMinutes(new Date());
 
   const form = useForm<FormSchema>({
@@ -21,12 +20,11 @@ export const useEntryForm = (initialSelection: string[]) => {
         time: initialDate
       },
       activity: [""],
-      social: [""],
     },
   });
 
   const handleSubmit = async (values: FormSchema) => {
-    const entries = [...values.activity.filter(Boolean), ...values.social.filter(Boolean).map(x => `Social: ${x}`)];
+    const entries = [...values.activity.filter(Boolean)];
     const uniqueEntries = Array.from(new Set(entries));
     
     if (await confirmUnknownEntries(uniqueEntries)) {
