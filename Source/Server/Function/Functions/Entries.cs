@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Attributes;
 using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Enums;
+using Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Shared.Models;
@@ -32,6 +33,12 @@ namespace Function.Functions
                 {
                     logger.LogWarning("Deserialized entry is null.");
                     return new BadRequestObjectResult("Invalid input. Entry data is required.");
+                }
+
+                if (entry.UserGuid.IsNullOrDefault())
+                {
+                    logger.LogWarning("User Guid is null.");
+                    return new BadRequestObjectResult("Invalid input. User Guid is required.");
                 }
 
                 logger.LogInformation($"Entering {entry.Entries.Count} activities at {entry.Date:yyyy-MM-dd HH:mm}");

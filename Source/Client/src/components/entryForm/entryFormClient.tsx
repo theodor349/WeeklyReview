@@ -137,6 +137,11 @@ export default function EntryFormClient({ selection }: Props) {
       return response.json();
     };
     postData().then((data) => {
+      console.log(data)
+      if (data.status !== 200) {
+        alert("Failed to add entry")
+      }
+
       setPostingEntry(false);
       updateSelection(uniqueEntries)
     });

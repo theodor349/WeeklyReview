@@ -1,25 +1,23 @@
-import { options } from '@/app/api/auth/[...nextauth]/options';
-import { getServerSession } from 'next-auth';
+import { postRequest } from "@/lib/backendApi";
+import { createResponse } from "@/lib/response";
+import { getUserId } from "@/lib/serversideUser";
 
-export async function POST(req: Request) {
-  const session = await getServerSession(options);
-  let userId = session!.user?.id!
-  const baseUrl = process.env.BACKEND_URL;
-
-  if (userId == process.env.NEXT_USERID) {
-    userId = process.env.DOTNET_USERID
-  }
-
-  const body = await req.json();
-  body.userGuid = userId;
-  
-  const res = await fetch(`${baseUrl}/api/v1/entry`, {
-    method: "POST",
-    body: JSON.stringify(body),
-    headers: {
-      "Content-Type": "application/json",
-      "x-functions-key": process.env.FUNCTIONS_KEY || ""
+export async function POST(req: Request): Promise<Response> {
+  try {
+    let body: EntryRequestBody;
+    try {
+      body = await req.json();
+    } catch (error) {
+      return createResponse("Invalid JSON format", 400);
     }
-  })
-  return new Response(JSON.stringify({message: "Entry added"}));
+
+    body.userGuid = await getUserId();
+
+    const result = await postRequest(`/api/v1/entry`, body);
+
+    return createResponse(result.message, result.status);
+  } catch (error) {
+    console.error("Unexpected error in POST handler:", error);
+    return createResponse("Internal server error", 500);
+  }
 }
