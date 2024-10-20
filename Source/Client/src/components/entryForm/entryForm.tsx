@@ -1,5 +1,5 @@
 import React from 'react';
-import EntryFormClient from "@/components/entryForm/entryFormClient";
+import EntryFormClient from "@/components/entryForm/client/entryFormClient";
 import { getUserId } from "@/lib/serversideUser";
 import { getActivities } from "@/lib/backendApi";
 import {

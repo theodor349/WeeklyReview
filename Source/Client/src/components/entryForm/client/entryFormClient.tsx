@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import StringList from "@/components/entryForm/stringList";
+import StringList from "@/components/stringList/stringList";
 import { cn } from "@/lib/utils";
 import { useEntryForm } from "./useEntryForm";
 import { formatDate, formatTime } from "@/lib/date";

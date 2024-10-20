@@ -15,7 +15,19 @@ interface EntryRequestBody {
   description: string;
 }
 
-
 interface Activity {
   name: string;
 };
+
+interface FormProps {
+  setValue: (name: string, value: any) => void;
+  getValues: (name: string) => any;
+  control: any;
+}
+
+interface StringListProps {
+  form: FormProps;
+  entry: string;
+  placeholder: string;
+  selection: string[];
+}
