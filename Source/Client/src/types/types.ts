@@ -24,10 +24,3 @@ interface FormProps {
   getValues: (name: string) => any;
   control: any;
 }
-
-interface StringListProps {
-  form: FormProps;
-  entry: string;
-  placeholder: string;
-  selection: string[];
-}

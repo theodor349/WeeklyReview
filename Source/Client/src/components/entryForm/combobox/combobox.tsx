@@ -9,7 +9,7 @@ import { ComboboxList } from './ComboboxList';
 
 const MAX_ITEMS = 24;
 
-export function Combobox({ form, entry, index, placeholder, selection, resetNumber }: ComboboxProps) {
+export function Combobox({ form, index, placeholder, selection, resetNumber }: ComboboxProps) {
   const [currentResetNumber, setCurrentResetNumber] = React.useState(0);
   const { items, setItems } = useComboboxItems(selection, MAX_ITEMS);
 
@@ -25,7 +25,7 @@ export function Combobox({ form, entry, index, placeholder, selection, resetNumb
   } = useCombobox({
     onInputValueChange({ inputValue }) {
       setItems(inputValue);
-      form.setValue(`${entry}[${index}]`, inputValue);
+      form.setValue(`activity.${index}`, inputValue);
     },
     items,
     itemToString: (item: string | null) => item ?? '',

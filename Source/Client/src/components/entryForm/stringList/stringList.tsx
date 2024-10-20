@@ -1,5 +1,6 @@
 "use client"
 
+import { UseFormReturn } from "react-hook-form";
 import { Button } from "@/components/ui/button"
 import {
   FormControl,
@@ -8,21 +9,29 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Combobox } from "@/components/combobox/combobox"
+import { Combobox } from "@/components/entryForm/combobox/combobox"
 import { useStringList } from "./useStringList"
 import { capitalize } from "@/lib/string"
+import { FormSchema } from "../client/formSchema";
 
-export default function StringList({ form, entry, placeholder, selection }: StringListProps) {
-  const { addItem, removeItem, resetNumber } = useStringList(form, entry);
+interface Props {
+  form: UseFormReturn<FormSchema>;
+  entry: string;
+  placeholder: string;
+  selection: string[];
+}
+
+export default function StringList({ form, placeholder, selection }: Props) {
+  const { addItem, removeItem, resetNumber } = useStringList(form);
 
   return (
     <>
-      <FormLabel>{capitalize(entry)}</FormLabel>
-      {form.getValues(entry).map((item: string, index: number) => (
+      <FormLabel>Activities</FormLabel>
+      {form.getValues().activity.map((item: string, index: number) => (
         <FormField
           control={form.control}
-          name={`${entry}[${index}]`}
-          key={`${entry}_${index}`}
+          name={`activity.${index}`}
+          key={`activity_${index}`}
           render={({ field }) => (
             <FormItem>
               <FormControl>
@@ -30,7 +39,6 @@ export default function StringList({ form, entry, placeholder, selection }: Stri
                   placeholder={placeholder} 
                   form={form} 
                   resetNumber={resetNumber} 
-                  entry={entry} 
                   index={index} 
                   selection={selection} 
                 />
